@@ -1,47 +1,83 @@
- # project_blueprint/frontend/react_vite/src
+# project_blueprint/frontend/react_vite/src
 
 ## Purpose
-
-The `src` folder contains the source code for the React application within the `react_vite` frontend framework in our online bakery shop backend system.
+This directory contains the source code for the React Vite application, providing a user interface for the online bakery shop. It includes modularized components, utilities, and configuration settings necessary to build a dynamic and interactive frontend.
 
 ## Responsibilities
-
-The `src` folder is responsible for defining and organizing the components, hooks, styles, and configurations of the React application, ensuring a clean, maintainable, and scalable structure.
+- Implementing UI components for product listing, order placement, customer authentication, etc.
+- Handling state management and data fetching from the backend API.
+- Ensuring responsive design and user experience across various devices and browsers.
 
 ## Key Functions (Conceptual)
 
-### App
-- **Parameters**: none
-- **Return Value**: React Component
-- **Description**: Defines the top-level component for the entire React application. It serves as a container for other components and manages global state if necessary.
+### login
+- **Parameters**: 
+  - username: string
+  - password: string
+- **Return Value**: 
+  - { status: "success" | "failure", token?: string }
+- **Responsibility**:
+  Handle user authentication by making a POST request to the backend for login credentials.
 
-### Pages
-- **Parameters**: pageName (string)
-- **Return Value**: React Component
-- **Description**: Represents a specific page within the application, such as Home, About, or Shopping Cart. Each page can be composed of multiple sub-components and handles its own state management if needed.
+### register
+- **Parameters**: 
+  - firstName: string
+  - lastName: string
+  - email: string
+  - password: string
+- **Return Value**: 
+  - { status: "success" | "failure", token?: string }
+- **Responsibility**:
+  Handle user registration by making a POST request to the backend with new account details.
 
-### Components
-- **Parameters**: componentName (string)
-- **Return Value**: React Component
-- **Description**: A reusable UI element that can be used across various pages within the application, such as buttons, forms, or navigation menus.
+### fetchProducts
+- **Parameters**: 
+  - category?: string
+- **Return Value**: 
+  - { products: Array<{ id: number, name: string, price: number }>, status: "success" | "failure" }
+- **Responsibility**:
+  Fetch a list of bakery products from the backend. Optionally filter by category.
 
-### Styles
-- **Parameters**: stylesName (string)
-- **Return Value**: CSS Styles
-- **Description**: Defines the visual appearance of specific components or global application styles.
+### placeOrder
+- **Parameters**: 
+  - items: Array<{ productId: number, quantity: number }>
+- **Return Value**: 
+  - { orderNumber: string, status: "success" | "failure" }
+- **Responsibility**:
+  Place an order for selected products from the cart and update local state.
+
+### fetchUserOrders
+- **Parameters**: 
+  - userId: number
+- **Return Value**: 
+  - { orders: Array<{ id: number, items: Array<{ productId: number, name: string, quantity: number }>, totalAmount: number }>, status: "success" | "failure" }
+- **Responsibility**:
+  Fetch a list of user's past orders from the backend.
+
+### updateUserProfile
+- **Parameters**: 
+  - firstName?: string
+  - lastName?: string
+  - email?: string
+  - password?: string
+- **Return Value**: 
+  - { status: "success" | "failure" }
+- **Responsibility**:
+  Update user profile information by making a PATCH request to the backend.
+
+### logout
+- **Parameters**: 
+  None
+- **Return Value**: 
+  - { status: "success" | "failure" }
+- **Responsibility**:
+  Log out the current user session and clear local storage tokens.
 
 ## Interactions
-
-The `src` folder interacts with other files and folders within the `react_vite` framework, such as:
-
-- `index.jsx`: The entry point for the React application.
-- `App.css`: Global styles applied to the entire application.
-- `pages/`, `components/`: Folders containing specific pages and reusable components.
+- Communicates with the Django backend via RESTful APIs.
+- Utilizes Axios or Fetch for making HTTP requests.
+- Manages state using Redux or Context API to ensure consistency across components.
 
 ## Future Extensibility
-
-To extend the React application, developers can:
-
-1. Add new pages or components by creating a new file in the appropriate folder (i.e., `pages/` or `components/`).
-2. Update global styles by modifying files in the `styles/` folder.
-3. Implement custom hooks if needed to manage state or side-effects across multiple components.
+- Easy integration of new features such as product reviews, payment gateways, and advanced search functionality.
+- Scalable architecture to handle increased traffic through serverless functions or microservices if needed.

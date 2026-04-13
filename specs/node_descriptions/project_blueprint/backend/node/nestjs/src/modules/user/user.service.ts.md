@@ -1,41 +1,56 @@
- # project_blueprint/backend/node/nestjs/src/modules/user/user.service.ts
+# project_blueprint/backend/node/nestjs/src/modules/user/user.service.ts
 
 ## Purpose
-
-The UserService file serves as the primary business logic for handling user-related operations within the online bakery shop backend system.
+The `user.service.ts` file contains business logic for managing user-related operations in the backend. This includes user registration, authentication, profile management, and other user-specific functionalities.
 
 ## Responsibilities
-
-- Authentication: Manages the login and registration of users, verifying their credentials and generating authentication tokens when necessary.
-- Authorization: Enforces access control policies for different user roles.
-- User Management: Provides methods to create, read, update, and delete user accounts.
+- Handle user data validation.
+- Implement user authentication and authorization.
+- Manage user profiles and related data.
+- Provide methods for fetching user information from the database.
 
 ## Key Functions (Conceptual)
 
-### loginUser(username: string, password: string)
+### Function: registerUser
+- **Parameters**:
+  - `username`: string
+  - `email`: string
+  - `password`: string
+- **Return Value**: object containing user details or an error message
+- **Description**: Registers a new user in the system. Validates input, hashes passwords, and saves user data to the database.
 
-- Purpose: Verifies a user's credentials and returns an authentication token upon successful login.
-- Return Value: Authentication token if the provided username and password are valid; null otherwise.
+### Function: authenticateUser
+- **Parameters**:
+  - `email`: string
+  - `password`: string
+- **Return Value**: object containing authentication token or an error message
+- **Description**: Authenticates a user based on their email and password. Returns a JWT token upon successful authentication.
 
-### registerUser(userData: UserCreateDto)
+### Function: getUserById
+- **Parameters**:
+  - `userId`: number
+- **Return Value**: object containing user details or null if not found
+- **Description**: Fetches user information from the database by ID.
 
-- Purpose: Creates a new user account with the provided data, including the user's name, email, password, and role (if specified).
-- Return Value: The newly created user object if registration is successful; null if an error occurs during registration.
+### Function: updateUserProfile
+- **Parameters**:
+  - `userId`: number
+  - `profileData`: object
+- **Return Value**: boolean indicating success or failure
+- **Description**: Updates a user's profile information. Validates and updates fields in the database.
 
-### updateUser(userId: string, updatedUserData: UserUpdateDto)
-
-- Purpose: Updates an existing user's information with the provided data.
-- Return Value: The updated user object if the update operation is successful; null if an error occurs during the update process.
-
-### deleteUser(userId: string)
-
-- Purpose: Removes an existing user account from the database by their unique identifier.
-- Return Value: True if the deletion operation is successful; false if an error occurs during the deletion process.
+### Function: deleteUser
+- **Parameters**:
+  - `userId`: number
+- **Return Value**: boolean indicating success or failure
+- **Description**: Deletes a user from the system, including their associated data.
 
 ## Interactions
-
-The UserService interacts with the `UserRepository` to read and write data related to users in the database. It also communicates with other services such as `AuthStrategy` for authenticating user credentials and `JwtService` for generating and verifying authentication tokens.
+- **Interaction with Database**: Communicates with the PostgreSQL database to perform CRUD operations.
+- **Interaction with Other Services**: May interact with other services for tasks such as sending verification emails or processing payment transactions (if integrated).
 
 ## Future Extensibility
+- **Enhancements**: Can be extended to include additional features like social media login, multi-factor authentication, etc.
+- **Third-party Integrations**: Easily integrate third-party services for functionalities such as password reset emails or push notifications.
 
-In case additional functionality is required, the UserService can be extended by adding new methods or refactoring existing ones to accommodate new business rules or features. The service also interacts with other services and repositories, so it may benefit from further integration with additional modules or external APIs if necessary.
+This service file ensures that user-related operations are handled efficiently and securely within the Django REST API architecture.

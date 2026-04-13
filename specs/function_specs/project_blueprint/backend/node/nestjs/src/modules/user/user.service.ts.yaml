@@ -1,33 +1,65 @@
-file: project_blueprint\backend\node\nestjs\src\modules\user\user.service.ts
+file: project/blueprint/backend/node/nestjs/src/modules/user/user.service.ts
 functions:
-- name: loginUser
+- name: registerUser
   parameters:
   - name: username
     type: string
+    entity: user
+  - name: email
+    type: string
+    entity: user
   - name: password
     type: string
-  return_type: string
-  description: Verifies a user's credentials and returns an authentication token upon
-    successful login.
-- name: registerUser
+    entity: user
+  return_type: object
+  entity: user
+  produces:
+  - user.details
+  description: Registers a new user in the system. Validates input, hashes passwords,
+    and saves user data to the database.
+- name: authenticateUser
   parameters:
-  - name: userData
-    type: UserCreateDto
-  return_type: User
-  description: Creates a new user account with the provided data, including the user's
-    name, email, password, and role (if specified).
-- name: updateUser
+  - name: email
+    type: string
+    entity: user
+  - name: password
+    type: string
+    entity: user
+  return_type: object
+  entity: session
+  produces:
+  - session.token
+  description: Authenticates a user based on their email and password. Returns a JWT
+    token upon successful authentication.
+- name: getUserById
   parameters:
   - name: userId
-    type: string
-  - name: updatedUserData
-    type: UserUpdateDto
-  return_type: User
-  description: Updates an existing user's information with the provided data.
+    type: number
+    entity: user
+  return_type: object
+  entity: user
+  produces:
+  - user.details
+  description: Fetches user information from the database by ID.
+- name: updateUserProfile
+  parameters:
+  - name: userId
+    type: number
+    entity: user
+  - name: profileData
+    type: object
+    entity: user
+  return_type: boolean
+  entity: user
+  produces: []
+  description: Updates a user's profile information. Validates and updates fields
+    in the database.
 - name: deleteUser
   parameters:
   - name: userId
-    type: string
+    type: number
+    entity: user
   return_type: boolean
-  description: Removes an existing user account from the database by their unique
-    identifier.
+  entity: user
+  produces: []
+  description: Deletes a user from the system, including their associated data.

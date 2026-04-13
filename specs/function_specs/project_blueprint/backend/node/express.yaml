@@ -1,25 +1,70 @@
-file: project_blueprint\backend\node\express
+file: project_blueprint/backend/node/express
 functions:
-- name: defineRoutes
-  parameters:
-  - name: app
-    type: Object
-  - name: routesArray
-    type: Array
-  return_type: None
-  description: Defines and registers routes in the Express.js app. Each route should
-    correspond to a specific API endpoint.
-- name: handleRequest
+- name: createProduct
   parameters:
   - name: req
-    type: Object
+    type: object
+    entity: request
   - name: res
-    type: Object
-  return_type: Response Object (JSON)
-  description: Handles incoming requests from the frontend, processes data, and sends
-    responses back as JSON objects.
-- name: getDatabaseConnection
-  parameters: []
-  return_type: Database Connection Object
-  description: Establishes a connection with the database using appropriate configurations
-    defined in the project blueprint's global architecture.
+    type: object
+    entity: response
+  return_type: 'null'
+  entity: product
+  produces:
+  - product.null
+  description: Create a new product in the database and return a success or error
+    response.
+- name: updateProduct
+  parameters:
+  - name: req
+    type: object
+    entity: request
+  - name: res
+    type: object
+    entity: response
+  return_type: 'null'
+  entity: product
+  produces:
+  - product.null
+  description: Update an existing product's details in the database and return a success
+    or error response.
+- name: deleteProduct
+  parameters:
+  - name: req
+    type: object
+    entity: request
+  - name: res
+    type: object
+    entity: response
+  return_type: 'null'
+  entity: product
+  produces:
+  - product.null
+  description: Delete a product from the database by its ID and return a success or
+    error response.
+- name: getProductById
+  parameters:
+  - name: req
+    type: object
+    entity: request
+  - name: res
+    type: object
+    entity: response
+  return_type: '[product]'
+  entity: product
+  produces:
+  - product.data
+  description: Retrieve a product's details by its ID and return them in the response.
+- name: getAllProducts
+  parameters:
+  - name: req
+    type: object
+    entity: request
+  - name: res
+    type: object
+    entity: response
+  return_type: '[product]'
+  entity: product
+  produces:
+  - product.data
+  description: Fetch all products from the database and return them in the response.

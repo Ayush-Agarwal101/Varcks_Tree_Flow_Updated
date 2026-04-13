@@ -1,35 +1,93 @@
-file: project_blueprint\backend\node\nestjs
+file: project_blueprint/backend/node/nestjs
 functions:
-- name: CreateBakeryGood
+- name: registerUser
   parameters:
-  - name: BakeryGoodData
-    type: object
-  return_type: BakeryGood
-  description: Validates and saves a new bakery good to the database.
-- name: UpdateBakeryGood
-  parameters:
-  - name: BakeryGoodId
+  - name: email
     type: string
-  - name: UpdatedBakeryGoodData
-    type: object
-  return_type: BakeryGood
-  description: Retrieves a bakery good by ID and updates it with the provided data.
-- name: GetBakeryGoodById
-  parameters:
-  - name: BakeryGoodId
+    entity: user
+  - name: password
     type: string
-  return_type: BakeryGood
-  description: Fetches a bakery good by its unique ID from the database.
-- name: CreateOrder
+    entity: session
+  - name: firstName
+    type: string
+    entity: user
+  - name: lastName
+    type: string
+    entity: user
+  return_type: void
+  entity: user
+  produces: []
+  description: Registers a new user and saves the details to the database.
+- name: loginUser
   parameters:
-  - name: OrderData
-    type: object
+  - name: email
+    type: string
+    entity: user
+  - name: password
+    type: string
+    entity: session
+  return_type: JwtToken
+  entity: session
+  produces:
+  - jwt.token
+  description: Authenticates a user and returns a JWT token for authentication purposes.
+- name: getProducts
+  parameters: []
+  return_type: Product[]
+  entity: product
+  produces:
+  - product.name
+  - product.description
+  - product.price
+  - product.stockquantity
+  description: Retrieves all products from the database.
+- name: createProduct
+  parameters:
+  - name: name
+    type: string
+    entity: product
+  - name: description
+    type: string
+    entity: product
+  - name: price
+    type: number
+    entity: product
+  - name: stockQuantity
+    type: number
+    entity: product
+  return_type: Product
+  entity: product
+  produces:
+  - product.id
+  - product.name
+  - product.description
+  - product.price
+  - product.stockquantity
+  description: Creates a new product and saves it to the database.
+- name: placeOrder
+  parameters:
+  - name: userId
+    type: number
+    entity: user
+  - name: productIds
+    type: number[]
+    entity: product
   return_type: Order
-  description: Validates and saves an order to the database, associating it with a
-    customer and their chosen bakery goods.
-- name: GetOrderById
+  entity: order
+  produces:
+  - order.id
+  - order.userid
+  - order.productids
+  description: Places an order for specified products by a given user.
+- name: getOrdersByUserId
   parameters:
-  - name: OrderId
-    type: string
-  return_type: Order
-  description: Retrieves an order by its unique ID from the database.
+  - name: userId
+    type: number
+    entity: user
+  return_type: Order[]
+  entity: order
+  produces:
+  - order.id
+  - order.userid
+  - order.productids
+  description: Retrieves all orders placed by a specific user.

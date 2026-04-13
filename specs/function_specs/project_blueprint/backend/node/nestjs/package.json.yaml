@@ -1,18 +1,37 @@
-file: project_blueprint\backend\node\nestjs\src\functions.ts
+file: project_blueprint/backend/node/nestjs/package.json
 functions:
-- name: init
+- name: installDependencies
   parameters: []
   return_type: void
-  description: Initializes the project by creating necessary files and folders, and
-    installing required packages based on the listed dependencies in this file.
-- name: install
+  entity: unknown
+  produces: []
+  description: Installs all necessary dependencies listed in the package.json file
+- name: updatePackages
   parameters:
-  - name: packageName
-    type: string
+  - name: options
+    type: object
+    entity: unknown
   return_type: void
-  description: Installs the specified package and its dependencies using npm.
-- name: update
-  parameters: []
-  return_type: void
-  description: Updates all installed packages in the project to their latest versions,
-    according to the specified versions in the package.json file.
+  entity: unknown
+  produces: []
+  description: Updates package versions and saves the updated dependencies to the
+    package.json file
+- name: runDevServer
+  parameters:
+  - name: envVariables
+    type: object
+    entity: unknown
+  return_type: process.exit_code_or_logs_indicating_success
+  entity: unknown
+  produces: []
+  description: Starts the NestJS application in a development mode, utilizing the
+    specified environment variables
+- name: runTests
+  parameters:
+  - name: testOptions
+    type: object
+    entity: unknown
+  return_type: test_results_and_exit_code
+  entity: unknown
+  produces: []
+  description: Runs unit tests for the NestJS application

@@ -1,52 +1,69 @@
- # project_blueprint/backend/node/nestjs
+# project_blueprint/backend/node/nestjs
 
 ## Purpose
-
-The `nestjs` folder is a template for building the backend portion of our online bakery shop using NestJS, a progressive Node.js framework for building efficient and scalable server-side applications.
+This folder contains a template for a NestJS backend application, providing a modular structure to enhance maintainability and extensibility.
 
 ## Responsibilities
-
-The `nestjs` folder contains all necessary configuration files, modules, controllers, services, middleware, and interfaces required to implement the backend of our online bakery shop application.
+To provide a modular, scalable, and extendable backend service for the online bakery shop using the NestJS framework.
 
 ## Key Functions (Conceptual)
 
-### CreateBakeryGood (Conceptual)
-- Input: BakeryGoodData (name, description, price, imageURL, etc.)
-- Output: Created BakeryGood
-- Responsibility: Validates and saves a new bakery good to the database.
+### UserModule
 
-### UpdateBakeryGood (Conceptual)
-- Input: BakeryGoodId, UpdatedBakeryGoodData (name, description, price, imageURL, etc.)
-- Output: Updated BakeryGood
-- Responsibility: Retrieves a bakery good by ID and updates it with the provided data.
+- **Function Name**: `registerUser`
+- **Parameters**:
+  - `email: string`
+  - `password: string`
+  - `firstName: string`
+  - `lastName: string`
+- **Return Value**: `void`
+- **Responsibility**: Registers a new user and saves the details to the database.
 
-### GetBakeryGoodById (Conceptual)
-- Input: BakeryGoodId
-- Output: Single BakeryGood
-- Responsibility: Fetches a bakery good by its unique ID from the database.
+### AuthModule
 
-### CreateOrder (Conceptual)
-- Input: OrderData (customerId, deliveryAddress, items [BakeryGoodId, quantity], etc.)
-- Output: Created Order
-- Responsibility: Validates and saves an order to the database, associating it with a customer and their chosen bakery goods.
+- **Function Name**: `loginUser`
+- **Parameters**:
+  - `email: string`
+  - `password: string`
+- **Return Value**: `JwtToken`
+- **Responsibility**: Authenticates a user and returns a JWT token for authentication purposes.
 
-### GetOrderById (Conceptual)
-- Input: OrderId
-- Output: Single Order
-- Responsibility: Retrieves an order by its unique ID from the database.
+### ProductModule
+
+- **Function Name**: `getProducts`
+- **Parameters**: None
+- **Return Value**: `Product[]`
+- **Responsibility**: Retrieves all products from the database.
+
+- **Function Name**: `createProduct`
+- **Parameters**:
+  - `name: string`
+  - `description: string`
+  - `price: number`
+  - `stockQuantity: number`
+- **Return Value**: `Product`
+- **Responsibility**: Creates a new product and saves it to the database.
+
+### OrderModule
+
+- **Function Name**: `placeOrder`
+- **Parameters**:
+  - `userId: number`
+  - `productIds: number[]`
+- **Return Value**: `Order`
+- **Responsibility**: Places an order for specified products by a given user.
+
+- **Function Name**: `getOrdersByUserId`
+- **Parameters**:
+  - `userId: number`
+- **Return Value**: `Order[]`
+- **Responsibility**: Retrieves all orders placed by a specific user.
 
 ## Interactions
-
-The `nestjs` folder interacts with other components of our application, such as:
-
-1. The Frontend (via RESTful APIs) to receive and send data.
-2. The Database (using an ORM like TypeORM) for storing and retrieving bakery goods and orders.
+- The AuthModule interacts with the UserModule to handle user authentication.
+- The ProductModule and OrderModule interact with the database module for data storage and retrieval operations.
+- External services (e.g., payment gateway) may be integrated through third-party libraries or APIs.
 
 ## Future Extensibility
-
-The modular architecture of NestJS allows for easy addition or modification of features, such as:
-
-- Implementing user authentication and authorization.
-- Integrating payment gateways for order processing.
-- Adding inventory management functionality.
-- Creating marketing and promotional tools.
+- Integration of additional features such as inventory management, payment processing, and analytics can be achieved by adding new modules and updating existing ones without altering core functionality.
+- The modular nature of NestJS allows for easy scalability and maintenance.

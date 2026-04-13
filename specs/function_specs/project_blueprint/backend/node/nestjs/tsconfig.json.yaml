@@ -1,21 +1,32 @@
-file: project_blueprint\backend\node\nestjs\tsconfig.json
+file: project_blueprint/backend/node/nestjs/tsconfig.json
 functions:
-- name: compile
+- name: applyCompilerOptions
   parameters:
-  - name: inputFiles
-    type: '[string]'
-  return_type: '[string]'
-  description: Transforms TypeScript codebase into JavaScript for execution by the
-    Node.js runtime.
-- name: watch
+  - name: options
+    type: object
+    entity: tsconfig
+  return_type: void
+  entity: tsconfig
+  produces:
+  - tsconfig.compileroptions
+  description: Apply the given compiler options to the TypeScript project.
+- name: setRootDir
   parameters:
-  - name: inputFiles
-    type: '[string]'
+  - name: rootDir
+    type: string
+    entity: project
   return_type: void
-  description: Monitors specified TypeScript files for changes and updates the compiled
-    JavaScript output accordingly.
-- name: clean
-  parameters: []
+  entity: tsconfig
+  produces: []
+  description: Set the root directory for file inclusion, ensuring that TypeScript
+    can resolve modules correctly.
+- name: configurePaths
+  parameters:
+  - name: paths
+    type: array
+    entity: project
   return_type: void
-  description: Removes previously generated JavaScript and type definition files to
-    prepare for a new build or clean up the project directory.
+  entity: tsconfig
+  produces: []
+  description: Configure path mappings to enable aliasing in module imports. This
+    function allows using shorter import paths within the project.

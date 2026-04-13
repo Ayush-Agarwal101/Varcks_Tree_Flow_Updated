@@ -8,24 +8,24 @@ build a backend for online bakery shop
 ### 1. Web Development
 
 ### 2. Backend
-**Why chosen:** The Backend is required to manage and process data related to the online bakery shop such as orders, inventory, user authentication etc.
-**Purpose:** This option enables managing and processing of data for the backend functionality
+**Why chosen:** Needed to manage bakery shop data and operations.
+**Purpose:** Handles server-side logic, databases, API endpoints for the bakery shop.
 
 ### 3. REST
-**Why chosen:** REST (Representational State Transfer) is a well-established and widely-used API design pattern, making it easier for developers to understand and implement the backend for an online bakery shop.
-**Purpose:** Enables easy communication between the frontend and backend using standard HTTP methods such as GET, POST, PUT, DELETE.
+**Why chosen:** Simple and widely used for backend APIs.
+**Purpose:** Enables easy creation of API endpoints for bakery shop functionalities.
 
-### 4. JavaScript/TypeScript
-**Why chosen:** For simplicity, quick development and easy integration with frontend (if using React or Angular), JavaScript/TypeScript is chosen.
-**Purpose:** Enables efficient server-side logic implementation for the online bakery shop.
+### 4. Python
+**Why chosen:** Elegant and easy to use for API development.
+**Purpose:** Enables rapid development of RESTful APIs with frameworks like Flask or Django.
 
-### 5. NestJS
-**Why chosen:** NestJS is built on top of Express and provides additional features like modularity, DI (Dependency Injection), and TypeScript support making it suitable for large-scale projects.
-**Purpose:** Enables the development of a scalable backend for an online bakery shop.
+### 5. Django
+**Why chosen:** Comprehensive framework with built-in features for authentication, content management system, and database migrations.
+**Purpose:** Enables rapid development and maintenance of the backend by leveraging a robust set of tools and conventions.
 
 ### 6. NGINX
-**Why chosen:** Popular choice for handling high traffic applications and reverse proxying in Node.js projects
-**Purpose:** Enables efficient routing and management of requests to the NestJS application
+**Why chosen:** reverse proxy and load balancer
+**Purpose:** to handle static files, SSL termination, and provide a performance boost
 
 ## Technology Stack Summary
-Web Development → Backend → REST → JavaScript/TypeScript → NestJS → NGINX
+Web Development → Backend → REST → Python → Django → NGINX

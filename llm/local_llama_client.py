@@ -13,10 +13,9 @@ from langsmith import traceable
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")
 # options: "ollama" or "nvidia"
 
-
 # Unified call_llm
 @traceable(name="LLM Call")
-def call_llm(prompt: str, model: str = "mistral") -> str:
+def call_llm(prompt: str, model: str = "qwen2.5:7b") -> str:
     """
     Unified LLM call.
     Switch provider using LLM_PROVIDER env variable.

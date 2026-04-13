@@ -4,6 +4,7 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import json
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
 from llm.local_llama_client import call_llm
 
@@ -39,7 +40,6 @@ def extract_all_nodes(tree, parents=None):
 
     return results
 
-
 # Main Builder
 
 def build_node_descriptions(
@@ -67,95 +67,112 @@ def build_node_descriptions(
 
     os.makedirs(output_base_dir, exist_ok=True)
 
-    for node in all_nodes:
+    system_prompt = """You are a senior software architect.
+
+    Write concise, structured documentation for a project node.
+
+    Rules:
+    - Follow the exact section format.
+    - Stay consistent with the given architecture and tech stack.
+    - Do NOT introduce new layers or technologies.
+    - Do NOT write code.
+    - Keep descriptions short and precise.
+
+    Function Rules:
+    - Define clear function names.
+    - Include parameter names only (no types).
+    - Include return value (conceptual).
+    - Keep descriptions 1–2 lines.
+    """
+
+    def process_node(node, user_requirement, tech_stack_summary, global_description, output_base_dir):
 
         parent_text = ""
         for p in node["parents"]:
             parent_text += f"- {p['name']} ({p['type']})\n"
 
-        system_prompt = """
-        You are a senior software architect documenting a project.
+        user_prompt = f"""USER REQUIREMENT:
+        {user_requirement}
 
-        Strict Rules:
-        - Remain fully consistent with the provided global architecture.
-        - Do NOT introduce new architectural layers.
-        - Do NOT change tech stack.
-        - You MAY introduce internal helper functions and utilities
-          if they align with the architecture.
-        - Do NOT implement full code.
-        - Do NOT output raw JSON.
-        - Output must be clean, structured Markdown.
+        TECH STACK:
+        {tech_stack_summary}
 
-        You MUST follow this exact structure:
+        GLOBAL ARCHITECTURE:
+        {global_description}
 
-        # <Full Path>
+        CURRENT NODE:
+        Name: {node['name']}
+        Type: {node['type']}
+        Full Path: {node['full_path']}
+        Description: {node['description']}
+        Mandatory: {node['mandatory']}
+
+        PARENT HIERARCHY:
+        {parent_text}
+
+        Output Format (STRICT):
+
+        # {node['full_path']}
 
         ## Purpose
+        (1–2 lines)
 
         ## Responsibilities
+        - bullet points
 
         ## Key Functions (Conceptual)
-
-        For each function:
-        - Provide a clear function name.
-        - Provide conceptual parameters (names only).
-        - Provide conceptual return value.
-        - Provide short description of responsibility.
-        - Do NOT implement code.
-        - Do NOT invent functions outside architectural scope.
+        - function_name(param1, param2) -> return_value
+          - description
 
         ## Interactions
+        - bullet points
 
         ## Future Extensibility
+        - bullet points
+
+        Constraints:
+        - Every file MUST include "Key Functions (Conceptual)"
+        - Keep output concise
+        - No code
+        - No JSON
         """
-
-        user_prompt = f"""
-USER REQUIREMENT:
-{user_requirement}
-
-TECH STACK:
-{tech_stack_summary}
-
-GLOBAL ARCHITECTURE:
-{global_description}
-
-CURRENT NODE:
-Name: {node['name']}
-Type: {node['type']}
-Full Path: {node['full_path']}
-Description: {node['description']}
-Mandatory: {node['mandatory']}
-
-The top-level heading MUST be:
-# {node['full_path']}
-
-PARENT HIERARCHY:
-{parent_text}
-
-Generate the documentation strictly following the required structure.
-
-Important:
-- Every file must include a "Key Functions (Conceptual)" section.
-- Function names must be explicitly defined.
-- Include conceptual parameters and return values.
-- Do NOT implement code.
-- Do NOT redefine architecture.
-"""
 
         full_prompt = system_prompt + "\n\n" + user_prompt
 
         print(f"Generating description for: {node['full_path']}")
 
-        response = call_llm(full_prompt)
+        try:
+            response = call_llm(full_prompt)
+        except Exception as e:
+            print(f"[ERROR] Failed for {node['full_path']}: {e}")
+            return
 
-        # Build output file path
-        safe_path = node["full_path"].replace("\\", "/")
+        safe_path = node["full_path"].replace("\\", "/").strip("/")
         output_path = os.path.join(output_base_dir, safe_path + ".md")
 
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(response)
+
+    with ThreadPoolExecutor(max_workers=4) as executor:
+        futures = [
+            executor.submit(
+                process_node,
+                node,
+                user_requirement,
+                tech_stack_summary,
+                global_description,
+                output_base_dir
+            )
+            for node in all_nodes
+        ]
+
+        for future in as_completed(futures):
+            try:
+                future.result()
+            except Exception as e:
+                print("[THREAD ERROR]", e)
 
     print("\nAll node descriptions generated successfully.")
 

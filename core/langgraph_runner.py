@@ -7,8 +7,6 @@ import graphviz
 class TraversalNode:
     name: str
     is_leaf: bool = False
-    prompt: str = ""
-
 
 class LangGraphRecorder:
     def __init__(self):

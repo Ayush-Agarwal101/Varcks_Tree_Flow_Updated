@@ -1,45 +1,41 @@
 project_meta:
   name: Online Bakery Shop Backend
   version: 1.0.0
-  language: JavaScript/TypeScript
+  language: Python
   type: Backend
-  description: A modular, scalable and maintainable backend system for an online bakery
-    shop built using NestJS and RESTful APIs.
+  description: A robust backend for an online bakery shop using Django and PostgreSQL
 architecture:
-  pattern: Client-Server with Multi-Layered approach
+  pattern: RESTful API
   entry_points:
-  - name: Frontend
-    type: User Interface
-    description: Handles user interaction and communication with the backend via RESTful
-      APIs.
-  - name: Backend (API layer)
-    type: Data Processing
-    description: Processes incoming requests, validates data, and interacts with the
-      database to retrieve or save data.
+  - name: Django REST API
+    type: HTTP
+    description: Provides endpoints for the frontend to interact with the backend.
   components:
-  - name: Frontend
-    responsibility: Handles user interface components, form validation, state management,
-      and interaction with the backend via RESTful APIs.
-  - name: Backend (API layer)
-    responsibility: Processes incoming requests, validates data, and interacts with
-      the database to retrieve or save data. NestJS is utilized for building modular,
-      scalable, and maintainable APIs.
-  - name: Database
-    responsibility: Stores all necessary bakery shop data such as user accounts, baked
-      goods, orders, and delivery information.
-  data_flow_summary: Frontend sends requests to Backend, which processes the data,
-    queries the Database, and returns a response back to Frontend.
+  - name: Backend (Django)
+    responsibility: Provide a RESTful API for the frontend to interact with.
+  - name: Database (PostgreSQL)
+    responsibility: Store all data related to the bakery shop such as products, orders,
+      users, etc.
+  data_flow_summary: The frontend consumes RESTful APIs provided by the backend to
+    display dynamic content. The database stores necessary data and is accessed through
+    the backend API.
 infrastructure:
-  external_services: []
+  external_services:
+  - name: NGINX
+    role: Web Server and Reverse Proxy
+    purpose: Balances load across multiple instances of the application.
 dependencies:
   internal:
-  - name: NestJS
+  - name: Django
     version: null
-    purpose: Building modular, scalable, and maintainable APIs.
+    purpose: Framework for building the backend API
+  - name: PostgreSQL
+    version: null
+    purpose: Database management system
   external:
-  - name: RESTful APIs
-    version: ''
-    purpose: Communication between Frontend and Backend.
-  - name: Database
-    version: ''
-    purpose: Storing all necessary bakery shop data.
+  - name: Celery
+    version: 5.2.7
+    purpose: Asynchronous task processing for scalability
+  - name: Git
+    version: 2.34.1
+    purpose: Version control system

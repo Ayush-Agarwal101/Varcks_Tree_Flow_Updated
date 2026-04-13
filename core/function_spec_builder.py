@@ -8,9 +8,9 @@ import yaml
 import json
 from dotenv import load_dotenv
 from typing import List
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 from core.llm_structured import StructuredLLM
-
+from core.normalization.entity_normalizer import normalize_entity
 load_dotenv()
 
 
@@ -21,13 +21,60 @@ load_dotenv()
 class ParameterSpec(BaseModel):
     name: str
     type: str
+    entity: str | None = None
+
+    @field_validator("entity", mode="before")
+    def normalize_entity_field(cls, v, info):
+        name = info.data.get("name", "")
+        return normalize_entity(v, name)
 
 
 class FunctionSpec(BaseModel):
     name: str
     parameters: List[ParameterSpec]
     return_type: str
+    entity: str | None = None
+    produces: List[str]
     description: str
+
+    @field_validator("produces", mode="before")
+    def normalize_produces(cls, v, info):
+        entity = info.data.get("entity", "unknown")
+
+        if not isinstance(v, list):
+            return []
+
+        fixed = []
+
+        for item in v:
+            if not item:
+                continue
+
+            item = str(item).strip()
+
+            # already correct
+            if "." in item:
+                fixed.append(item.lower())
+                continue
+
+            # add entity
+            var = item[0].lower() + item[1:] if item else item
+            fixed.append(f"{entity}.{var}")
+
+        return fixed
+
+    @field_validator("entity", mode="before")
+    def normalize_function_entity(cls, v, info):
+        params = info.data.get("parameters", [])
+
+        # try infer from params if missing
+        if not v:
+            for p in params:
+                if p.entity != "unknown":
+                    return p.entity
+            return "unknown"
+
+        return normalize_entity(v)
 
 
 class FileFunctionSpec(BaseModel):
@@ -89,9 +136,7 @@ def build_function_specs(
 
             os.makedirs(os.path.dirname(yaml_output_path), exist_ok=True)
 
-            system_prompt = """
-You are converting conceptual function descriptions
-into strict machine-readable function specifications.
+            system_prompt = """You are converting conceptual function descriptions into strict machine-readable function specifications.
 
 Rules:
 - Only use functions listed.
@@ -117,14 +162,28 @@ Return JSON strictly matching this schema:
       "parameters": [
         {{
           "name": "string",
-          "type": "string"
+          "type": "string",
+          "entity": "string"
         }}
       ],
       "return_type": "string",
+      "entity": "string",
+      "produces": [
+        "entity.variable"
+      ],
       "description": "string"
     }}
   ]
 }}
+
+Rules:
+- Each parameter MUST have an entity (e.g., user, order, session, etc) which represents the domain object the variable belongs to.
+- "produces" must list outputs in format: entity.variable
+- Every function MUST produce at least one output. If no clear output, infer one logically
+- Do NOT invent new functions. Do NOT use double quotes inside string values. If needed, use single quotes instead.
+- Use forward slashes (/) in file paths, NOT backslashes (\\)
+- Example: project/a/b/file.ts
+- NEVER use Windows-style paths
 """
 
             spec: FileFunctionSpec = llm.call(

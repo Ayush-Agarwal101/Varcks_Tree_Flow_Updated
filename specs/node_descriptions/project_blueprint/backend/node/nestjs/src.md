@@ -1,39 +1,160 @@
- # project_blueprint/backend/node/nestjs/src
+# project_blueprint/backend/node/nestjs/src
 
 ## Purpose
-
-The `src` folder in the NestJS subfolder contains the main source code for our online bakery shop backend system, built using TypeScript and NestJS. This directory houses modules, controllers, services, pipes, filters, providers, interfaces, and other essential components of our API layer.
+This folder contains the source code for the NestJS backend implementation of the online bakery shop. It includes various modules, services, controllers, and utilities that form the core functionality of the application.
 
 ## Responsibilities
-
-The `src` folder is responsible for defining the core functionality of our online bakery shop backend system, such as handling incoming requests, processing data, interacting with the database, and providing error handling mechanisms. It also includes configurations specific to NestJS, like global modules, middleware, and decorators.
+- Implement RESTful API endpoints.
+- Handle business logic.
+- Provide data access methods via repositories.
+- Ensure secure and efficient communication between frontend and database.
 
 ## Key Functions (Conceptual)
 
-### AppModule
-- Conceptual Parameters: None
-- Conceptual Return Value: An instance of the `AppModule` class
-- Description: Initializes the main application module for our online bakery shop backend system, setting up global modules and configurations.
+### user.module.ts
 
-### BakeryController
-- Conceptual Parameters: None
-- Conceptual Return Value: An instance of the `BakeryController` class
-- Description: Defines the API endpoints for managing different aspects of our online bakery shop, such as retrieving available goods, placing orders, and updating user accounts.
+**Function Name:** setupUserModule
+**Parameters:**
+- None
 
-### UserService
-- Conceptual Parameters: None
-- Conceptual Return Value: An instance of the `UserService` class
-- Description: Handles user-related operations like authentication, registration, and user profile management for our online bakery shop.
+**Return Value:** None
 
-### OrderService
-- Conceptual Parameters: None
-- Conceptual Return Value: An instance of the `OrderService` class
-- Description: Manages order creation, processing, delivery, and tracking for our online bakery shop.
+**Description:** Initializes the User module, setting up dependencies and configurations required for user-related operations.
+
+---
+
+### user.controller.ts
+
+**Function Name:** createUser
+**Parameters:**
+- username: string
+- password: string
+- email: string
+
+**Return Value:** { userId: number, jwtToken: string }
+
+**Description:** Creates a new user account. Returns the user ID and JWT token upon successful registration.
+
+---
+
+### user.controller.ts
+
+**Function Name:** loginUser
+**Parameters:**
+- usernameOrEmail: string
+- password: string
+
+**Return Value:** { jwtToken: string }
+
+**Description:** Logs in an existing user, returning a JWT token if authentication is successful.
+
+---
+
+### user.service.ts
+
+**Function Name:** findUserById
+**Parameters:**
+- userId: number
+
+**Return Value:** User | null
+
+**Description:** Fetches the user details from the database based on the provided user ID. Returns the user object or null if no user is found.
+
+---
+
+### user.service.ts
+
+**Function Name:** updateUserData
+**Parameters:**
+- userId: number
+- data: Partial<User>
+
+**Return Value:** User | null
+
+**Description:** Updates the user's data in the database based on the provided ID and partial data. Returns the updated user object or null if no changes were made.
+
+---
+
+### product.module.ts
+
+**Function Name:** setupProductModule
+**Parameters:**
+- None
+
+**Return Value:** None
+
+**Description:** Initializes the Product module, setting up dependencies and configurations required for product-related operations.
+
+---
+
+### product.controller.ts
+
+**Function Name:** listProducts
+**Parameters:**
+- category?: string
+
+**Return Value:** { products: Array<Product> }
+
+**Description:** Retrieves a list of products from the database. Optionally filters by category.
+
+---
+
+### product.service.ts
+
+**Function Name:** createProduct
+**Parameters:**
+- name: string
+- description: string
+- price: number
+- image: string
+- categories: Array<string>
+
+**Return Value:** Product | null
+
+**Description:** Creates a new product in the database. Returns the created product object or null if the creation failed.
+
+---
+
+### order.module.ts
+
+**Function Name:** setupOrderModule
+**Parameters:**
+- None
+
+**Return Value:** None
+
+**Description:** Initializes the Order module, setting up dependencies and configurations required for order-related operations.
+
+---
+
+### order.controller.ts
+
+**Function Name:** createOrder
+**Parameters:**
+- userId: number
+- items: Array<OrderItem>
+
+**Return Value:** { orderId: number }
+
+**Description:** Creates a new order in the database based on the provided user ID and list of items. Returns the order ID upon successful creation.
+
+---
+
+### order.service.ts
+
+**Function Name:** processOrder
+**Parameters:**
+- orderId: number
+
+**Return Value:** Order | null
+
+**Description:** Processes an order by updating its status to "shipped" in the database. Returns the updated order object or null if no changes were made.
 
 ## Interactions
-
-The `src` folder interacts with other parts of the project, such as database entities, external APIs, and third-party libraries. It also exposes RESTful APIs that are consumed by the frontend layer.
+- **User Module**: Communicates with the User Service for user-related operations.
+- **Product Module**: Communicates with the Product Service for product-related operations.
+- **Order Module**: Communicates with both the Order and Product Services to handle order creation and processing.
 
 ## Future Extensibility
-
-To extend the functionality of our online bakery shop backend system, developers can add new modules for additional features or technologies, create new services, controllers, and other components as needed, while adhering to the existing architecture guidelines.
+- **Plugins/Third-party Libraries**: Easily integrate third-party libraries or plugins as needed without altering core functionality.
+- **Feature Expansion**: Adding new features such as payment integration, admin panel enhancements, or inventory management is straightforward due to the modular architecture.

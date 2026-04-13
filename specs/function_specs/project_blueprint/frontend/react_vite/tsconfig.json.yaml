@@ -1,27 +1,27 @@
-file: project_blueprint\frontend\react_vite\tsconfig.json
+file: project_blueprint/frontend/react_vite/tsconfig.json
 functions:
-- name: compile
+- name: setTsConfigOptions
   parameters:
-  - name: files
-    type: '[string]'
-  - name: rootDir
-    type: string
-  return_type: string
-  description: Compiles the specified TypeScript files and directories into JavaScript
-    files.
-- name: typeCheck
+  - name: config
+    type: object
+    entity: unknown
+  return_type: none
+  entity: unknown
+  produces: []
+  description: This function sets up the TypeScript compiler options based on provided
+    configurations. It is used during the setup phase of the frontend project to ensure
+    that all files adhere to the defined type and module standards.
+- name: updateTsConfigOption
   parameters:
-  - name: files
-    type: '[string]'
-  - name: rootDir
+  - name: optionName
     type: string
-  return_type: object
-  description: Performs type checking on the specified TypeScript files and directories.
-- name: emitDecoratorMetadata
-  parameters: []
-  return_type: string
-  description: Emits metadata for decorators used in TypeScript classes and functions.
-- name: removeComments
-  parameters: []
-  return_type: string
-  description: Removes comments from the compiled JavaScript files.
+    entity: unknown
+  - name: newValue
+    type: mixed
+    entity: unknown
+  return_type: none
+  entity: unknown
+  produces: []
+  description: Updates a specific TypeScript compiler option with a new value. This
+    function is useful during development when changes need to be made to the TypeScript
+    configurations without restarting the entire application.

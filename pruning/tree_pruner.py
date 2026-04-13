@@ -1,10 +1,9 @@
 # pruning/tree_pruner.py
 
 def prune_tree(node, decisions):
-
     if node.get("is_leaf", False):
         d = decisions.get(node["full_path"])
-        if d and d["decision"] == "PRUNE":      # If a decision exists for this node AND that decision is "PRUNE"
+        if d and d["decision"] == "PRUNE":  # If a decision exists for this node AND that decision is "PRUNE"
             return None
         return node
 

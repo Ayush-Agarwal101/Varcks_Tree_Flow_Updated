@@ -1,57 +1,201 @@
- # project_blueprint/Online_Bakery_Shop_Backend
+# project_blueprint/modules/user
 
 ## Purpose
-
-A subfolder within the `project_blueprint` containing the blueprint for building an online bakery shop backend system using the selected technology stack: **Web Development → Backend → REST → JavaScript/TypeScript → NestJS**. This blueprint follows the global architecture and is modular, scalable, and maintainable.
+To manage user authentication, authorization, and related operations for the online bakery shop.
 
 ## Responsibilities
-
-- Contains a complete backend system for an online bakery shop, including RESTful APIs and data persistence.
-- Implements user authentication, product catalog management, order processing, and delivery tracking features.
+- Handle user registration, login, logout, and session management.
+- Provide API endpoints for password reset and account verification.
+- Ensure data integrity and security of sensitive user information.
 
 ## Key Functions (Conceptual)
 
-### Authentication Controller
+### Function Name: register_user
 
-- Function: `login`
-  - Parameters: `username`, `password`
-  - Return Value: `access_token`, `refresh_token`
-  - Description: Handles user login and returns access and refresh tokens for secure authentication.
+- **Parameters**: 
+  - username: str
+  - email: str
+  - password1: str
+  - password2: str
+- **Return Value**: dict
+- **Responsibility**: Handle the registration of a new user by validating input and saving data to the database.
 
-### Refresh Token Controller
+### Function Name: login_user
 
-- Function: `refreshTokens`
-  - Parameters: `refresh_token`
-  - Return Value: `new access_token`, `new refresh_token`
-  - Description: Refreshes the access and refresh tokens upon user request or expiration.
+- **Parameters**: 
+  - username_or_email: str
+  - password: str
+- **Return Value**: dict
+- **Responsibility**: Authenticate a user based on provided credentials and issue a session token.
 
-### Product Catalog Service
+### Function Name: logout_user
 
-- Function: `getProducts`
-  - Parameters: None
-  - Return Value: Array of products with product details
-  - Description: Retrieves a list of all available baked goods in the shop's catalog.
+- **Parameters**: 
+  - request: HttpRequest
+- **Return Value**: None
+- **Responsibility**: Log out the currently authenticated user by invalidating their session.
 
-### Order Service
+### Function Name: reset_password
 
-- Function: `createOrder`
-  - Parameters: `order_details` (includes customer, products, delivery information)
-  - Return Value: `order_id`
-  - Description: Creates a new order based on provided details and saves it in the database.
+- **Parameters**: 
+  - email: str
+- **Return Value**: dict
+- **Responsibility**: Send a password reset link to the specified email address.
 
-### Delivery Service
+### Function Name: verify_account
 
-- Function: `trackOrder`
-  - Parameters: `order_id`
-  - Return Value: Order status updates (e.g., picked up, in transit, delivered)
-  - Description: Retrieves current order status based on its unique identifier.
+- **Parameters**: 
+  - token: str
+- **Return Value**: None
+- **Responsibility**: Verify an account using a unique verification token sent via email.
 
 ## Interactions
-
-The Online Bakery Shop Backend interacts with the frontend for user requests and data exchange via RESTful APIs. Additionally, it communicates with the database to store and retrieve necessary bakery shop data.
+- Interacts with `user.service.ts` for database operations.
+- Uses Django authentication backends for security checks and session management.
 
 ## Future Extensibility
+- Can be extended to support additional user roles (e.g., staff, admin).
+- Allow integration of social media login options in the future.
 
-1. **Scalability**: The modular design of NestJS enables easy addition or modification of features without affecting other parts of the system.
-2. **Maintainability**: Clear separation of concerns, well-documented code, and a modular architecture promote an easy-to-understand and maintain system.
-3. **Extensibility**: The project blueprint allows for easy extension of new features or technologies as needed. Developers can simply add new modules to the existing `Online_Bakery_Shop_Backend` folder or extend the existing ones.
+---
+
+# project_blueprint/modules/product
+
+## Purpose
+To manage products available in the online bakery shop.
+
+## Responsibilities
+- Handle CRUD operations for product data.
+- Ensure data consistency and validation during updates.
+
+## Key Functions (Conceptual)
+
+### Function Name: create_product
+
+- **Parameters**: 
+  - name: str
+  - description: str
+  - price: float
+  - category_id: int
+- **Return Value**: dict
+- **Responsibility**: Create a new product and save it to the database.
+
+### Function Name: update_product
+
+- **Parameters**: 
+  - product_id: int
+  - name: Optional[str] = None
+  - description: Optional[str] = None
+  - price: Optional[float] = None
+  - category_id: Optional[int] = None
+- **Return Value**: dict
+- **Responsibility**: Update an existing product's details.
+
+### Function Name: delete_product
+
+- **Parameters**: 
+  - product_id: int
+- **Return Value**: None
+- **Responsibility**: Permanently remove a product from the database.
+
+### Function Name: get_products
+
+- **Parameters**: 
+  - category_id: Optional[int] = None
+- **Return Value**: List[dict]
+- **Responsibility**: Retrieve products based on optional category filtering.
+
+## Interactions
+- Interacts with `product.service.ts` for database operations.
+- Uses Django model definitions and validation mechanisms to ensure data integrity.
+
+## Future Extensibility
+- Can be extended to support bulk upload of products using CSV or JSON files.
+- Allow dynamic pricing updates through webhooks from suppliers.
+
+---
+
+# project_blueprint/modules/order
+
+## Purpose
+To manage orders placed by users in the online bakery shop.
+
+## Responsibilities
+- Handle order creation, status changes, and related operations.
+- Ensure transactional integrity during order processing.
+
+## Key Functions (Conceptual)
+
+### Function Name: create_order
+
+- **Parameters**: 
+  - user_id: int
+  - product_ids: List[int]
+- **Return Value**: dict
+- **Responsibility**: Create a new order for the specified user with selected products and save it to the database.
+
+### Function Name: update_order_status
+
+- **Parameters**: 
+  - order_id: int
+  - status: str
+- **Return Value**: None
+- **Responsibility**: Update the status of an existing order (e.g., from 'pending' to 'shipped').
+
+### Function Name: cancel_order
+
+- **Parameters**: 
+  - order_id: int
+- **Return Value**: None
+- **Responsibility**: Cancel a specific order and handle any necessary clean-up or notifications.
+
+### Function Name: get_orders
+
+- **Parameters**: 
+  - user_id: Optional[int] = None
+- **Return Value**: List[dict]
+- **Responsibility**: Retrieve orders based on optional user filtering.
+
+## Interactions
+- Interacts with `order.service.ts` for database operations.
+- Uses Django model definitions and transaction management to ensure data consistency.
+
+## Future Extensibility
+- Can be extended to support order tracking through external APIs or services.
+- Allow integration of payment gateways for online transactions.
+
+---
+
+# project_blueprint/modules/report
+
+## Purpose
+To generate various reports related to sales, inventory, etc., in the online bakery shop.
+
+## Responsibilities
+- Generate and export reports based on different criteria.
+- Ensure data accuracy and timely delivery of reports.
+
+## Key Functions (Conceptual)
+
+### Function Name: generate_sales_report
+
+- **Parameters**: 
+  - start_date: datetime
+  - end_date: datetime
+- **Return Value**: dict
+- **Responsibility**: Generate a sales report for the specified date range, including total revenue and product-wise breakdowns.
+
+### Function Name: export_inventory_report
+
+- **Parameters**: 
+  - category_id: Optional[int] = None
+- **Return Value**: str (file content)
+- **Responsibility**: Export an inventory report as a CSV file, optionally filtered by product category.
+
+## Interactions
+- Interacts with `report.service.ts` for data retrieval and processing.
+- Uses Django model definitions and querysets to fetch necessary data.
+
+## Future Extensibility
+- Can be extended to support real-time reporting using caching mechanisms.
+- Allow integration of external analytics tools for advanced insights.

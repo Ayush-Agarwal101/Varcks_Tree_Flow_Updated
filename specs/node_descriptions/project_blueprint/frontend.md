@@ -1,35 +1,59 @@
- # project_blueprint/frontend
+# project_blueprint/frontend
 
 ## Purpose
-
-The `project_blueprint/frontend` folder serves as a container for various frontend framework templates, allowing developers to choose and quickly set up their preferred user interface technology when working on the online bakery shop application.
+This folder contains the template files for the frontend of the online bakery shop. It serves as a base structure to facilitate quick setup and development using React Vite with TypeScript.
 
 ## Responsibilities
-
-- Provide multiple frontend template options such as React, Next.js, Vue, Angular, etc.
-- Facilitate rapid development of the user interface by providing essential files and configurations for each framework.
+- Provide template files for building the user interface.
+- Support the integration of RESTful APIs provided by the backend.
+- Ensure compatibility with the overall project design and layout.
 
 ## Key Functions (Conceptual)
 
-### AddFrontendTemplate
-- **Parameters:** Frontend technology name (e.g., React, Next.js, Vue, Angular)
-- **Return value:** A new subfolder with the specified frontend template configuration and files.
-- **Description:** Responsible for creating a new subfolder within the `project_blueprint/frontend` containing all necessary files and configurations for a given frontend technology.
+### Function: initializeApp
+- **Parameters**:
+  - `config`: Configuration object containing API endpoints, theme settings, etc.
+- **Return Value**: `void`
+- **Responsibility**: Initialize the React Vite application and set up necessary configurations.
 
-### RemoveFrontendTemplate
-- **Parameters:** Frontend technology name (e.g., React, Next.js, Vue, Angular)
-- **Return value:** Removed subfolder of the specified frontend template from `project_blueprint/frontend`.
-- **Description:** Deletes a given frontend template subfolder, if needed, from within the `project_blueprint/frontend` folder.
+### Function: fetchUserDetails
+- **Parameters**:
+  - `userId`: Unique identifier of the user.
+- **Return Value**: `Promise<UserDetails>`
+- **Responsibility**: Fetch user details from the backend API.
 
-### UpdateFrontendTemplate
-- **Parameters:** Frontend technology name (e.g., React, Next.js, Vue, Angular), new version or update details
-- **Return value:** Updated subfolder of the specified frontend template with the latest configuration and files.
-- **Description:** Updates an existing subfolder within the `project_blueprint/frontend` folder to reflect the latest version or changes in a given frontend technology.
+### Function: createUser
+- **Parameters**:
+  - `username`: User's username.
+  - `email`: User's email address.
+  - `password`: User's password.
+- **Return Value**: `Promise<UserResponse>`
+- **Responsibility**: Create a new user account on the backend and return the created user data.
+
+### Function: fetchProductList
+- **Parameters**:
+  - `category`: Optional category filter for products.
+- **Return Value**: `Promise<ProductList>`
+- **Responsibility**: Fetch a list of products from the backend API, optionally filtered by category.
+
+### Function: addToCart
+- **Parameters**:
+  - `productId`: ID of the product to add to cart.
+  - `quantity`: Quantity of the product to be added.
+- **Return Value**: `Promise<CartResponse>`
+- **Responsibility**: Add a product to the user's cart and update the cart on the backend.
+
+### Function: placeOrder
+- **Parameters**:
+  - `cartItems`: Array of objects containing product IDs and quantities.
+- **Return Value**: `Promise<OrderResponse>`
+- **Responsibility**: Place an order with the selected items from the cart and return the order details.
 
 ## Interactions
-
-The `project_blueprint/frontend` interacts mainly with developers, who use it to set up their preferred frontend technology for building the online bakery shop's user interface. It does not have direct interactions with other components of the global architecture, such as the backend or database layers.
+The frontend interacts with the backend through RESTful APIs to fetch data, perform user actions, and update state. The interactions are primarily handled by HTTP requests using Axios or Fetch API.
 
 ## Future Extensibility
+- Support for additional features such as payment integration can be added without altering the core structure.
+- Modular design allows for easy updates or removal of specific functionalities.
 
-The `project_blueprint/frontend` is designed to be easily extensible by adding support for new frontend technologies or updating existing ones when necessary. As new frameworks emerge or current ones receive updates, developers can easily incorporate them into the project blueprint by adding or modifying the relevant subfolders within this folder.
+This conceptual documentation provides a clear understanding of the key functions required to build and maintain the frontend of the online bakery shop.

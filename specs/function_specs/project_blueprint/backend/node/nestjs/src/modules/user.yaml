@@ -1,32 +1,75 @@
-file: project_blueprint\backend\node\nestjs\src\modules\user
+file: project_blueprint/backend/node/nestjs/src/modules/user
 functions:
-- name: LoginUser
+- name: createUser
   parameters:
   - name: username
     type: string
-  - name: password
-    type: string
-  return_type: JWTToken
-  description: Validates user credentials against the database, generates a JSON Web
-    Token, and returns it to the client for authentication purposes.
-- name: RegisterUser
-  parameters:
-  - name: username
-    type: string
-  - name: password
-    type: string
+    entity: user
   - name: email
     type: string
-  return_type: UserResponse
-  description: Validates input data, creates a new user in the database, and returns
-    detailed user information including an access token for immediate use.
-- name: UpdateUserProfile
-  parameters:
-  - name: userID
+    entity: user
+  - name: password
     type: string
-  - name: updatedData
+    entity: user
+  return_type: User
+  entity: user
+  produces:
+  - user.user_id
+  description: Create a new user account in the database. This function handles validation
+    of input data and secure password hashing.
+- name: login
+  parameters:
+  - name: usernameOrEmail
+    type: string
+    entity: user
+  - name: password
+    type: string
+    entity: user
+  return_type: TokenPair
+  entity: session
+  produces:
+  - tokenpair.access_token
+  - tokenpair.refresh_token
+  description: Authenticate the user using their username or email and password. This
+    function generates authentication tokens upon successful login.
+- name: updateUserProfile
+  parameters:
+  - name: userId
+    type: string
+    entity: user
+  - name: userData
     type: object
-  return_type: UserResponse
-  description: Retrieves the user with the given ID, applies updates to the user's
-    data, and saves changes in the database. The function returns the updated user
-    information, including an access token for immediate use.
+    entity: user
+  return_type: User
+  entity: user
+  produces:
+  - user.user_id
+  description: Update the profile information of a specific user. This function ensures
+    only authorized users can modify their profiles.
+- name: resetPassword
+  parameters:
+  - name: email
+    type: string
+    entity: user
+  return_type: ResetPasswordResult
+  entity: session
+  produces:
+  - resetpasswordresult.confirmation_message
+  description: Initiate a password reset process for a user by sending them an email
+    with a password reset link.
+- name: changePassword
+  parameters:
+  - name: userId
+    type: string
+    entity: user
+  - name: currentPassword
+    type: string
+    entity: user
+  - name: newPassword
+    type: string
+    entity: user
+  return_type: boolean
+  entity: user
+  produces: []
+  description: Allow users to change their passwords. This function verifies the current
+    password before updating it.

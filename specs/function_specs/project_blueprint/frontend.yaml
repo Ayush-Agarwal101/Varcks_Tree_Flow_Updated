@@ -1,25 +1,70 @@
-file: project_blueprint/frontend/utils.js
+file: project_blueprint/frontend
 functions:
-- name: addFrontendTemplate
+- name: initializeApp
+  parameters: []
+  return_type: void
+  entity: unknown
+  produces: []
+  description: Initialize the React Vite application and set up necessary configurations.
+- name: fetchUserDetails
   parameters:
-  - name: technologyName
+  - name: userId
     type: string
-  return_type: string
-  description: Responsible for creating a new subfolder within the project_blueprint/frontend
-    containing all necessary files and configurations for a given frontend technology.
-- name: removeFrontendTemplate
+    entity: user
+  return_type: Promise<UserDetails>
+  entity: user
+  produces:
+  - user.details
+  description: Fetch user details from the backend API.
+- name: createUser
   parameters:
-  - name: technologyName
+  - name: username
     type: string
-  return_type: string
-  description: Deletes a given frontend template subfolder, if needed, from within
-    the project_blueprint/frontend folder.
-- name: updateFrontendTemplate
+    entity: user
+  - name: email
+    type: string
+    entity: user
+  - name: password
+    type: string
+    entity: user
+  return_type: Promise<UserResponse>
+  entity: user
+  produces:
+  - user.response
+  description: Create a new user account on the backend and return the created user
+    data.
+- name: fetchProductList
   parameters:
-  - name: technologyName
+  - name: category
     type: string
-  - name: newVersionOrUpdateDetails
-    type: object
-  return_type: string
-  description: Updates an existing subfolder within the project_blueprint/frontend
-    folder to reflect the latest version or changes in a given frontend technology.
+    entity: product
+  return_type: Promise<ProductList>
+  entity: product
+  produces:
+  - product.list
+  description: Fetch a list of products from the backend API, optionally filtered
+    by category.
+- name: addToCart
+  parameters:
+  - name: productId
+    type: string
+    entity: cart
+  - name: quantity
+    type: number
+    entity: cart
+  return_type: Promise<CartResponse>
+  entity: cart
+  produces:
+  - cart.response
+  description: Add a product to the user's cart and update the cart on the backend.
+- name: placeOrder
+  parameters:
+  - name: cartItems
+    type: array
+    entity: order
+  return_type: Promise<OrderResponse>
+  entity: order
+  produces:
+  - order.response
+  description: Place an order with the selected items from the cart and return the
+    order details.

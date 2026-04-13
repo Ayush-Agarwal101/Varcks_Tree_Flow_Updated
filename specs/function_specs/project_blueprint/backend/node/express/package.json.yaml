@@ -1,26 +1,24 @@
-file: project_blueprint\backend\node\express\package.json
+file: project_blueprint/backend/node/express/package.json
 functions:
-- name: install
+- name: installDependencies
   parameters: []
-  return_type: '[string]'
-  description: Install the required dependencies specified in the package.json file.
-- name: update
+  return_type: void
+  entity: unknown
+  produces: []
+  description: A conceptual function that runs npm install to install all defined
+    dependencies in the package.json file. This is typically handled by a script within
+    the package.json itself.
+- name: startDevelopmentServer
   parameters: []
-  return_type: '{ string : [string] }'
-  description: Update all the dependencies listed in the package.json file to their
-    latest versions.
-- name: devDependencies.add
-  parameters:
-  - name: packageName
-    type: string
-  return_type: None
-  description: Add a new development dependency to the project.
-- name: scripts.add
-  parameters:
-  - name: command
-    type: string
-  - name: function
-    type: string
-  return_type: None
-  description: Define or update a custom script for use within the project's build,
-    test, or development lifecycle.
+  return_type: void
+  entity: unknown
+  produces: []
+  description: A conceptual function to run the Express server in development mode,
+    with hot module replacement and other development tools enabled.
+- name: startProductionServer
+  parameters: []
+  return_type: void
+  entity: unknown
+  produces: []
+  description: A conceptual function to run the Express server in production mode,
+    optimizing for performance and minimizing files.

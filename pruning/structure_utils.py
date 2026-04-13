@@ -2,16 +2,13 @@
 
 from .models import LeafMeta, ParentMeta
 
-
 # Find the shallowest terminal folder depth
-
 def find_shallowest_terminal_folder_depth(tree):
-
-    min_depth = float("inf")            # sets the minimum depth to infinity initially
+    min_depth = float("inf")  # sets the minimum depth to infinity initially
 
     def dfs(node, depth):
 
-        nonlocal min_depth              # Use the min_depth variable from the outer function.
+        nonlocal min_depth  # Use the min_depth variable from the outer function.
 
         if node.get("type") != "folder":
             return
@@ -37,7 +34,6 @@ def find_shallowest_terminal_folder_depth(tree):
 
 
 # Trim tree to certain depth
-
 def trim_tree_to_depth(node, max_depth, current_depth=0):
     """
     Keep everything exactly as it is until depth max_depth.
@@ -69,7 +65,6 @@ def trim_tree_to_depth(node, max_depth, current_depth=0):
 
 
 # Extract prunable nodes (files + terminal folders)
-
 def extract_prunable_nodes(tree):
     """
     Extract:
@@ -138,10 +133,10 @@ def extract_prunable_nodes(tree):
 
     return results
 
+
 # Build System Context
 
 def build_system_context(user_requirement, tech_stack_summary, trimmed_tree_json):
-
     return f"""
 You are an AI architecture pruning engine.
 

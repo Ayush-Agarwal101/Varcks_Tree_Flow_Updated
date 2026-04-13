@@ -1,25 +1,21 @@
-file: project_blueprint\backend\node\nestjs\src\modules
+file: project_blueprint/backend/node/nestjs/src/modules/user.module.ts
 functions:
-- name: defineModule
+- name: configureModule
   parameters:
-  - name: moduleName
-    type: string
   - name: imports
-    type: '[string]'
+    type: Array<Module>
+    entity: unknown
   - name: controllers
-    type: '[object]'
+    type: Array<Controller>
+    entity: unknown
   - name: providers
-    type: '[object]'
-  - name: exports
-    type: '[string]'
-  return_type: Module
-  description: Creates a new module with the provided name, imports, controllers,
-    providers, and exports. The returned module can be imported and used in other
-    modules or the application root.
-- name: initializeModule
-  parameters:
-  - name: module
-    type: Module
+    type: Array<ServiceOrProvider>
+    entity: unknown
+  - name: guards
+    type: Array<Guard>
+    entity: unknown
   return_type: void
-  description: Initializes a new module by registering its controllers, providers,
-    and exports with the NestJS application instance.
+  entity: unknown
+  produces: []
+  description: Configures the user module by defining its imports, controllers, providers,
+    and guards.

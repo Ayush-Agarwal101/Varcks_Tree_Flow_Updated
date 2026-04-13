@@ -1,38 +1,60 @@
- # project_blueprint/backend
+# project_blueprint/backend
 
 ## Purpose
-
-The `backend` folder provides a collection of backend framework templates for the online bakery shop project, supporting various technologies such as Express, NestJS, and more. This modular approach promotes scalability, maintainability, and extensibility of the backend layer.
+This folder contains the Django framework templates for the backend of the online bakery shop, including configuration files, models, views, and utility functions.
 
 ## Responsibilities
-
-- Manage the setup and configuration of different backend frameworks.
-- Offer templates for developers to create new APIs or modify existing ones based on their specific needs.
-- Ensure consistency in design patterns, coding standards, and best practices across all supported technologies.
+The backend is responsible for providing a RESTful API to interact with the frontend, managing data storage through PostgreSQL, and ensuring application scalability and maintainability.
 
 ## Key Functions (Conceptual)
 
-### InitializeBackendFramework
+### Function: `authenticate_user`
+- **Parameters**: `username`, `password`
+- **Return Value**: `User` object or `None`
+- **Description**: Authenticates a user based on provided credentials and returns the user object if successful, otherwise returns None.
 
-- Parameters: `framework` (string: name of the desired backend framework)
-- Return value: `backendTemplate` (object: containing necessary files and configurations for the specified backend framework)
-- Responsibility: Initiate a new backend framework with all essential setup files, configurations, and dependencies based on the provided `framework`.
+### Function: `create_product`
+- **Parameters**: `name`, `description`, `price`, `category`, `image_url`
+- **Return Value**: `Product` object
+- **Description**: Creates a new product in the database with the specified details.
 
-### UpdateBackendFramework
+### Function: `get_product_by_id`
+- **Parameters**: `product_id`
+- **Return Value**: `Product` object or `None`
+- **Description**: Retrieves a product from the database by its ID. Returns the product object if found, otherwise returns None.
 
-- Parameters: `framework` (string: name of the existing backend framework), `changes` (object: updates to be applied to the current backend framework)
-- Return value: `updatedBackendTemplate` (object: updated version of the backend template with incorporated changes)
-- Responsibility: Update an existing backend framework by applying the specified `changes`, ensuring consistency and adherence to design patterns, coding standards, and best practices.
+### Function: `update_product`
+- **Parameters**: `product_id`, `name`, `description`, `price`, `category`, `image_url`
+- **Return Value**: `Product` object
+- **Description**: Updates an existing product in the database with new details. Returns the updated product object.
+
+### Function: `delete_product`
+- **Parameters**: `product_id`
+- **Return Value**: Boolean (True if successful, False otherwise)
+- **Description**: Deletes a product from the database by its ID.
+
+### Function: `create_order`
+- **Parameters**: `user`, `items`, `total_price`
+- **Return Value**: `Order` object
+- **Description**: Creates a new order in the database associated with a user and a list of items. Returns the created order object.
+
+### Function: `get_orders_by_user`
+- **Parameters**: `user_id`
+- **Return Value**: List of `Order` objects
+- **Description**: Retrieves all orders made by a specific user from the database.
+
+### Function: `send_order_confirmation_email`
+- **Parameters**: `order`, `email_to`
+- **Return Value**: Boolean (True if successful, False otherwise)
+- **Description**: Sends an email to the customer confirming their order details.
 
 ## Interactions
-
-The `backend` folder interacts with other parts of the project blueprint as follows:
-
-1. **Frontend**: The frontend communicates with the backend using RESTful APIs created from templates within the `backend` folder.
-2. **Database**: The database is connected via ORM settings defined in the respective backend framework configuration files within the `backend` folder.
-3. **DevOps (optional)**: The DevOps setup may utilize scripts or configurations located within the `backend` folder for deployment and continuous integration purposes.
+The backend interacts with the frontend through RESTful APIs. The database is queried and updated based on these API requests. Additionally, it may interact with external services via third-party libraries for tasks such as sending emails or processing payments.
 
 ## Future Extensibility
+- **Third-Party Integrations**: Integrate payment gateways like Stripe or PayPal.
+- **Admin Panel Enhancements**: Develop a more advanced admin panel using Django’s built-in admin interface.
+- **Inventory Management**: Implement real-time inventory updates and notifications for stock levels.
+- **Mobile Optimization**: Optimize the backend to support mobile devices and improve user experience on various screen sizes.
 
-- Support for additional backend technologies can be added by creating new subfolders within the `backend` folder, following the provided structure and best practices.
-- Further refinement of existing functions can take place to improve flexibility, scalability, or maintainability as needed.
+This extensibility plan ensures that the backend can be easily updated or expanded to meet future requirements without significant changes to existing code.

@@ -1,25 +1,56 @@
-file: project_blueprint\backend\node\nestjs\src\modules\user\user.module.ts
+file: project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts
 functions:
 - name: registerUser
   parameters:
-  - name: userData
-    type: UserInput
-  return_type: string
-  description: Validates and saves the provided user data in the database, generating
-    a unique user ID and authentication token.
+  - name: username
+    type: string
+    entity: user
+  - name: password
+    type: string
+    entity: user
+  - name: email
+    type: string
+    entity: user
+  return_type: Promise<User>
+  entity: user
+  produces:
+  - user.variable
+  description: Registers a new user with the provided credentials and returns a User
+    object.
 - name: loginUser
   parameters:
-  - name: userData
-    type: LoginInput
-  return_type: object
-  description: Validates user credentials, checks if the user exists in the database,
-    and generates an authentication token for secure access to protected resources.
-- name: updateProfile
+  - name: usernameOrEmail
+    type: string
+    entity: session
+  - name: password
+    type: string
+    entity: session
+  return_type: Promise<AuthResponse>
+  entity: auth
+  produces:
+  - auth.response
+  description: Authenticates an existing user and returns an authentication response
+    containing necessary tokens and data.
+- name: getUserProfile
   parameters:
   - name: userId
-    type: string
-  - name: profileData
-    type: ProfileInput
-  return_type: string
-  description: Validates and saves the provided profile data for the specified user
-    in the database.
+    type: number
+    entity: user
+  return_type: Promise<UserProfile>
+  entity: profile
+  produces:
+  - profile.details
+  description: Fetches the profile details of a specific user based on their ID.
+- name: updateUserProfile
+  parameters:
+  - name: userId
+    type: number
+    entity: user
+  - name: userDetails
+    type: Partial<UserUpdateDto>
+    entity: user
+  return_type: Promise<void>
+  entity: profile
+  produces: []
+  description: Updates the profile information for an existing user with provided
+    partial data.

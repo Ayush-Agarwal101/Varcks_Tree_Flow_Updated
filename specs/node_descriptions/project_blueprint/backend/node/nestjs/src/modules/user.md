@@ -1,44 +1,57 @@
- # project_blueprint/backend/node/nestjs/src/modules/user
+# project_blueprint/backend/node/nestjs/src/modules/user
 
 ## Purpose
-
-The `User` feature module is designed to manage user accounts for the online bakery shop, handling tasks such as authentication, authorization, and user profile management.
+The `user` module is responsible for managing user authentication, registration, profile management, and permissions in the backend of an online bakery shop.
 
 ## Responsibilities
-
-- Authentication and Authorization: Manage user login and logout processes, verify credentials, and enforce access control.
-- User Profile Management: Allow users to view, update, and manage their personal information.
-- Password Handling: Implement password encryption and secure storage of user passwords.
+- Provide RESTful API endpoints for user-related operations such as login, registration, password reset, and account information updates.
+- Implement business logic for handling user data and enforcing access control policies.
+- Ensure secure storage and transmission of sensitive user information.
 
 ## Key Functions (Conceptual)
 
-### LoginUser
+### Function Name: `createUser`
+- **Parameters**: 
+  - `username`: string
+  - `email`: string
+  - `password`: string
+- **Return Value**: `User` object
+- **Description**: Create a new user account in the database. This function handles validation of input data and secure password hashing.
 
-- Parameters: `username`, `password`
-- Return Value: `JWTToken` (JSON Web Token)
-- Responsibility: Validate user credentials against the database, generate a JSON Web Token, and return it to the client for authentication purposes.
+### Function Name: `login`
+- **Parameters**:
+  - `usernameOrEmail`: string
+  - `password`: string
+- **Return Value**: `TokenPair` (consisting of an access token and a refresh token)
+- **Description**: Authenticate the user using their username or email and password. This function generates authentication tokens upon successful login.
 
-### RegisterUser
+### Function Name: `updateUserProfile`
+- **Parameters**:
+  - `userId`: string
+  - `userData`: object containing fields like `name`, `address`, etc.
+- **Return Value**: `User` object
+- **Description**: Update the profile information of a specific user. This function ensures only authorized users can modify their profiles.
 
-- Parameters: `username`, `password`, `email`
-- Return Value: `UserResponse` (contains user details)
-- Responsibility: Validate input data, create a new user in the database, and return detailed user information including an access token for immediate use.
+### Function Name: `resetPassword`
+- **Parameters**:
+  - `email`: string
+- **Return Value**: `ResetPasswordResult` (confirmation message)
+- **Description**: Initiate a password reset process for a user by sending them an email with a password reset link.
 
-### UpdateUserProfile
-
-- Parameters: `userID`, `updatedData` (contains updated user details)
-- Return Value: `UserResponse` (updated user details)
-- Responsibility: Retrieve the user with the given ID, apply updates to the user's data, and save changes in the database. The function returns the updated user information, including an access token for immediate use.
+### Function Name: `changePassword`
+- **Parameters**:
+  - `userId`: string
+  - `currentPassword`: string
+  - `newPassword`: string
+- **Return Value**: Boolean indicating success or failure of the operation.
+- **Description**: Allow users to change their passwords. This function verifies the current password before updating it.
 
 ## Interactions
-
-The `User` module interacts with other modules such as `Authentication`, `Authorisation`, and `Database`. It also communicates with external APIs like OAuth providers for social login functionality.
+- The `user` module interacts with the `auth` service for token generation and validation.
+- It also communicates with the database through the repository layer to persist user data.
+- External services such as email providers may be used for sending reset password emails.
 
 ## Future Extensibility
-
-In the future, the `User` module can be extended to include additional features like:
-
-- Social media login integration
-- Two-factor authentication
-- User roles and permissions management
-- User activity tracking and reporting
+- **Social Authentication**: Add support for social media logins (e.g., Google, Facebook).
+- **Multi-factor Authentication**: Integrate additional security measures like SMS verification or TOTP tokens.
+- **Admin Roles and Permissions**: Extend user roles to include administrative privileges.

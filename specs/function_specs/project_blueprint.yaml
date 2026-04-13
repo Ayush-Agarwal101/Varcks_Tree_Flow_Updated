@@ -1,33 +1,65 @@
 file: project_blueprint
 functions:
-- name: login
+- name: register_user
   parameters:
   - name: username
-    type: string
+    type: str
+    entity: user
+  - name: email
+    type: str
+    entity: user
+  - name: password1
+    type: str
+    entity: user
+  - name: password2
+    type: str
+    entity: user
+  return_type: dict
+  entity: user
+  produces:
+  - user.id
+  - user.username
+  - user.email
+  description: Handle the registration of a new user by validating input and saving
+    data to the database.
+- name: login_user
+  parameters:
+  - name: username_or_email
+    type: str
+    entity: user
   - name: password
-    type: string
-  return_type: '["access_token", "refresh_token"]'
-  description: Handles user login and returns access and refresh tokens for secure
-    authentication.
-- name: refreshTokens
+    type: str
+    entity: user
+  return_type: dict
+  entity: session
+  produces:
+  - session.token
+  description: Authenticate a user based on provided credentials and issue a session
+    token.
+- name: logout_user
   parameters:
-  - name: refresh_token
-    type: string
-  return_type: '["new access_token", "new refresh_token"]'
-  description: Refreshes the access and refresh tokens upon user request or expiration.
-- name: getProducts
-  parameters: []
-  return_type: '[object]'
-  description: Retrieves a list of all available baked goods in the shop's catalog.
-- name: createOrder
+  - name: request
+    type: HttpRequest
+    entity: http_request
+  return_type: None
+  entity: session
+  produces: []
+  description: Log out the currently authenticated user by invalidating their session.
+- name: reset_password
   parameters:
-  - name: order_details
-    type: '["customer", "products", "delivery information"]'
-  return_type: string
-  description: Creates a new order based on provided details and saves it in the database.
-- name: trackOrder
+  - name: email
+    type: str
+    entity: user
+  return_type: dict
+  entity: user
+  produces: []
+  description: Send a password reset link to the specified email address.
+- name: verify_account
   parameters:
-  - name: order_id
-    type: string
-  return_type: '["order status updates", e.g., "picked up", "in transit", "delivered"]'
-  description: Retrieves current order status based on its unique identifier.
+  - name: token
+    type: str
+    entity: session
+  return_type: None
+  entity: user
+  produces: []
+  description: Verify an account using a unique verification token sent via email.

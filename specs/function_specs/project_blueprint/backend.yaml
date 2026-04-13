@@ -1,19 +1,122 @@
-file: project_blueprint/backend/index.js
+file: project_blueprint/backend
 functions:
-- name: initializeBackendFramework
+- name: authenticate_user
   parameters:
-  - name: framework
+  - name: username
     type: string
-  return_type: object
-  description: Initiate a new backend framework with all essential setup files, configurations,
-    and dependencies based on the provided framework.
-- name: updateBackendFramework
+    entity: user
+  - name: password
+    type: string
+    entity: user
+  return_type: User
+  entity: user
+  produces:
+  - user.user
+  description: Authenticates a user based on provided credentials and returns the
+    user object if successful, otherwise returns None.
+- name: create_product
   parameters:
-  - name: framework
+  - name: name
     type: string
-  - name: changes
-    type: object
-  return_type: object
-  description: Update an existing backend framework by applying the specified changes,
-    ensuring consistency and adherence to design patterns, coding standards, and best
-    practices.
+    entity: product
+  - name: description
+    type: string
+    entity: product
+  - name: price
+    type: float
+    entity: product
+  - name: category
+    type: string
+    entity: product
+  - name: image_url
+    type: string
+    entity: product
+  return_type: Product
+  entity: product
+  produces:
+  - product.product
+  description: Creates a new product in the database with the specified details.
+- name: get_product_by_id
+  parameters:
+  - name: product_id
+    type: int
+    entity: product
+  return_type: Product
+  entity: product
+  produces:
+  - product.product
+  description: Retrieves a product from the database by its ID. Returns the product
+    object if found, otherwise returns None.
+- name: update_product
+  parameters:
+  - name: product_id
+    type: int
+    entity: product
+  - name: name
+    type: string
+    entity: product
+  - name: description
+    type: string
+    entity: product
+  - name: price
+    type: float
+    entity: product
+  - name: category
+    type: string
+    entity: product
+  - name: image_url
+    type: string
+    entity: product
+  return_type: Product
+  entity: product
+  produces:
+  - product.product
+  description: Updates an existing product in the database with new details. Returns
+    the updated product object.
+- name: delete_product
+  parameters:
+  - name: product_id
+    type: int
+    entity: product
+  return_type: boolean
+  entity: product
+  produces: []
+  description: Deletes a product from the database by its ID.
+- name: create_order
+  parameters:
+  - name: user
+    type: User
+    entity: order
+  - name: items
+    type: list(Product)
+    entity: order
+  - name: total_price
+    type: float
+    entity: order
+  return_type: Order
+  entity: order
+  produces:
+  - order.order
+  description: Creates a new order in the database associated with a user and a list
+    of items. Returns the created order object.
+- name: get_orders_by_user
+  parameters:
+  - name: user_id
+    type: int
+    entity: order
+  return_type: list(Order)
+  entity: order
+  produces: []
+  description: Retrieves all orders made by a specific user from the database.
+- name: send_order_confirmation_email
+  parameters:
+  - name: order
+    type: Order
+    entity: order
+  - name: email_to
+    type: string
+    entity: email
+  return_type: boolean
+  entity: order
+  produces: []
+  description: Sends an email to the customer confirming their order details.

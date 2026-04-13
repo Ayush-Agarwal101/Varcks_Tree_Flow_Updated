@@ -15,9 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 from langsmith import traceable
 
-# ============================================================
 # LLM CLIENT
-# ============================================================
 
 class LLMClient:
     def __init__(self, model: str = None):
@@ -32,27 +30,25 @@ class LLMClient:
 
         formatted_prompt = f"""
         You are navigating a predefined decision tree.
-
         Your task is NOT to generate a project structure.
         Your task is ONLY to select ONE option from the provided list.
 
-        USER REQUIREMENT:
-        {prompt}
-
-        AVAILABLE OPTIONS (choose exactly one):
-
+        ### Context
+        {prompt.strip()}
+        
+        ### Available Options
         {options_text}
-
-        Return ONLY valid JSON in this exact format:
-
+        
+        ### Output Format (STRICT JSON)
         {{
           "choice": "exact_option_from_list",
           "rationale": "short explanation",
           "purpose": "what this option enables"
         }}
-
-        The value of "choice" MUST be a string exactly matching one of the options above.
-        Do NOT return a list.
+        
+        Rules:
+        - choice MUST match one option exactly
+        - DO NOT return multiple choices
         """
 
         # response is a NodeDecision object returned by this function
@@ -90,9 +86,7 @@ class LLMClient:
         return response
 
 
-# ============================================================
 # TREE UTILITIES
-# ============================================================
 
 def load_tree_from_file(filename: str) -> Any:
     with open(filename, "r", encoding="utf-8") as f:
@@ -133,9 +127,7 @@ def extract_children_from_value(value: Any) -> List[Tuple[str, Any]]:
     return children
 
 
-# ============================================================
 # TRAVERSAL
-# ============================================================
 
 @dataclass         # This class is mainly used to store data, so automatically create useful methods like init, repr, eq for it So you don’t need to write them manually.
 class BranchState:
@@ -193,10 +185,15 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
         Current Decision Node:
         {branch.node_name}
 
+        Choose the single best option for the project.
+        """
+
+        # For visualization in recorder
+        display_prompt = f"""
+        {decision_prompt.strip()}
+
         Available Options:
         {", ".join(child_names)}
-
-        Choose the single best option for the project.
         """
 
         decision = llm.choose_option(decision_prompt, child_names)
@@ -210,7 +207,6 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
             purpose=decision.purpose
         )
 
-        recorder.add_prompt_to_node(branch.node_name, decision_prompt)
         recorder.add_choice(branch.node_name, [chosen_name])
 
         matched = next((c for c in children if c[0] == chosen_name), None)
@@ -225,7 +221,7 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
         recorder.add_prompt_to_edge(
             branch.node_name,
             child_name,
-            decision_prompt
+            display_prompt
         )
 
         branch = BranchState(
@@ -237,10 +233,7 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
 
     return completed_path, recorder
 
-
-# ============================================================
 # FINAL PROMPT BUILDER
-# ============================================================
 
 def build_clean_final_prompt(initial_prompt, tech_stack, recorder):
 
@@ -270,10 +263,7 @@ def build_clean_final_prompt(initial_prompt, tech_stack, recorder):
 
     return prompt
 
-
-# ============================================================
 # CLI
-# ============================================================
 
 if __name__ == "__main__":
 

@@ -1,48 +1,51 @@
- # project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts
+# project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts
 
 ## Purpose
-
-Defines the User module for managing user-related operations in the online bakery shop backend system.
+The `user.module` file defines a module in the NestJS framework for handling user-related operations. This module includes controllers, services, and other dependencies necessary to manage user authentication and information within the application.
 
 ## Responsibilities
-
-- Provides a set of controllers, services, and entities for handling user management tasks such as authentication, registration, and profile updates.
+- Define routes for user registration, login, profile management, etc.
+- Implement business logic for user operations.
+- Provide dependency injection for related services.
 
 ## Key Functions (Conceptual)
 
-### registerUser(userData: UserInput)
+### Function: registerUser
+- **Parameters**: 
+  - `username`: string
+  - `password`: string
+  - `email`: string
+- **Return Value**: `Promise<User>`
+- **Responsibility**: Registers a new user with the provided credentials and returns a User object.
 
-- Conceptual Parameters: `userData` - an object containing user registration data like name, email, password, etc.
-- Conceptual Return Value: A successful response message upon a successful registration.
-- Responsibility: Validates and saves the provided user data in the database, generating a unique user ID and authentication token.
+### Function: loginUser
+- **Parameters**:
+  - `usernameOrEmail`: string
+  - `password`: string
+- **Return Value**: `Promise<AuthResponse>`
+- **Responsibility**: Authenticates an existing user and returns an authentication response containing necessary tokens and data.
 
-### loginUser(userData: LoginInput)
+### Function: getUserProfile
+- **Parameters**:
+  - `userId`: number
+- **Return Value**: `Promise<UserProfile>`
+- **Responsibility**: Fetches the profile details of a specific user based on their ID.
 
-- Conceptual Parameters: `userData` - an object containing user login credentials like email or username and password.
-- Conceptual Return Value: An object containing user details and an authentication token upon successful login.
-- Responsibility: Validates user credentials, checks if the user exists in the database, and generates an authentication token for secure access to protected resources.
-
-### updateProfile(userId: string, profileData: ProfileInput)
-
-- Conceptual Parameters: `userId` - a unique identifier of the user; `profileData` - an object containing updated profile data like name, email, or password.
-- Conceptual Return Value: A successful response message upon a successful profile update.
-- Responsibility: Validates and saves the provided profile data for the specified user in the database.
+### Function: updateUserProfile
+- **Parameters**:
+  - `userId`: number
+  - `userDetails`: Partial<UserUpdateDto>
+- **Return Value**: `Promise<void>`
+- **Responsibility**: Updates the profile information for an existing user with provided partial data.
 
 ## Interactions
-
-### Internal Interactions
-
-- Controllers interact with services to manage user operations based on received requests.
-- Services use repositories (or similar data accessors) to communicate with the database.
-
-### External Interactions
-
-- The User module receives requests from the frontend and sends responses back to the client via RESTful APIs.
+- The `user.module` interacts with other modules and services to manage authentication tokens, user data storage, and session management.
+- It is integrated with the main application module via dependency injection.
 
 ## Future Extensibility
+- The `user.module` can be extended by adding more controllers for additional features like password reset, email verification, etc.
+- New services can be introduced to handle complex business logic related to user operations without altering existing structures.
 
-The User module can be extended by adding new functionalities, such as:
+---
 
-- Implementing social media authentication for user registration or login.
-- Adding user roles or permissions for role-based access control (RBAC).
-- Integrating user activity tracking and analytics features.
+This documentation provides a clear understanding of the conceptual functions within the `user.module` file and their responsibilities in managing user-related operations.
