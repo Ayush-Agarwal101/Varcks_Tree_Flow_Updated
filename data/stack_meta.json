@@ -5,74 +5,92 @@
     "Backend",
     "REST",
     "Python",
-    "Django",
-    "NGINX"
+    "FastAPI",
+    "Uvicorn"
   ],
-  "tech_stack_summary": "Web Development \u2192 Backend \u2192 REST \u2192 Python \u2192 Django \u2192 NGINX",
+  "tech_stack_summary": "Web Development \u2192 Backend \u2192 REST \u2192 Python \u2192 FastAPI \u2192 Uvicorn",
   "technology_choices": {
     "Core Application & Web Stacks -> Web Development": {
-      "rationale": "Enables the creation of a dynamic and interactive online bakery shop backend.",
-      "purpose": "Provides the necessary tools to build, deploy, and maintain web applications for the bakery."
+      "rationale": "web development is essential for building a backend for an online bakery shop.",
+      "purpose": "to provide the necessary functionality and interface for an online bakery shop."
     },
     "Web Development -> Backend": {
-      "rationale": "Needed to manage bakery shop data and operations.",
-      "purpose": "Handles server-side logic, databases, API endpoints for the bakery shop."
+      "rationale": "backend",
+      "purpose": "online bakery shop"
     },
     "Backend -> REST": {
-      "rationale": "Simple and widely used for backend APIs.",
-      "purpose": "Enables easy creation of API endpoints for bakery shop functionalities."
+      "rationale": "simple and widely supported",
+      "purpose": "API design for the bakery shop"
     },
     "REST -> Python": {
-      "rationale": "Elegant and easy to use for API development.",
-      "purpose": "Enables rapid development of RESTful APIs with frameworks like Flask or Django."
+      "rationale": "Python has extensive libraries for handling APIs and can be easily integrated with web frameworks like Flask or Django.",
+      "purpose": "To build a RESTful API backend efficiently."
     },
-    "Python -> Django": {
-      "rationale": "Comprehensive framework with built-in features for authentication, content management system, and database migrations.",
-      "purpose": "Enables rapid development and maintenance of the backend by leveraging a robust set of tools and conventions."
+    "Python -> FastAPI": {
+      "rationale": "FastAPI is modern and has a fast development cycle.",
+      "purpose": "To build a backend with high performance and ease of use."
     },
-    "Django -> NGINX": {
-      "rationale": "reverse proxy and load balancer",
-      "purpose": "to handle static files, SSL termination, and provide a performance boost"
+    "FastAPI -> Uvicorn": {
+      "rationale": "lightweight ASGI server",
+      "purpose": "fast startup and shutdown"
     }
   },
   "nodes": {
     "Core Application & Web Stacks": {
       "is_leaf": false,
       "choices": [
-        "Web Development"
+        {
+          "index": 1,
+          "name": "Web Development"
+        }
       ]
     },
     "Web Development": {
       "is_leaf": false,
       "choices": [
-        "Backend"
+        {
+          "index": 2,
+          "name": "Backend"
+        }
       ]
     },
     "Backend": {
       "is_leaf": false,
       "choices": [
-        "REST"
+        {
+          "index": 1,
+          "name": "REST"
+        }
       ]
     },
     "REST": {
       "is_leaf": false,
       "choices": [
-        "Python"
+        {
+          "index": 2,
+          "name": "Python"
+        }
       ]
     },
     "Python": {
       "is_leaf": false,
       "choices": [
-        "Django"
+        {
+          "index": 3,
+          "name": "FastAPI"
+        }
       ]
     },
-    "Django": {
+    "FastAPI": {
       "is_leaf": false,
       "choices": [
-        "NGINX"
+        {
+          "index": 1,
+          "name": "Uvicorn"
+        }
       ]
     },
-    "NGINX": {
+    "Uvicorn": {
       "is_leaf": true,
       "choices": []
     }
@@ -96,11 +114,11 @@
     ],
     [
       "Python",
-      "Django"
+      "FastAPI"
     ],
     [
-      "Django",
-      "NGINX"
+      "FastAPI",
+      "Uvicorn"
     ]
   ]
 }

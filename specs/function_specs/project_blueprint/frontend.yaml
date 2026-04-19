@@ -2,36 +2,32 @@ file: project_blueprint/frontend
 functions:
 - name: render_product_list
   parameters:
-  - name: product_id
-    type: integer
-    entity: product
   - name: category
     type: string
     entity: product
+  - name: page
+    type: number
+    entity: pagination
   return_type: string
-  entity: product
+  entity: product_list
   produces:
-  - product.rendered_list
-  description: Renders the product list based on the provided product ID and category
+  - product_list.rendered_html
+  description: Handles rendering of product list based on category and page number
 - name: handle_add_to_cart
   parameters:
   - name: product_id
-    type: integer
+    type: number
     entity: product
   - name: quantity
-    type: integer
+    type: number
     entity: order
   return_type: string
   entity: cart
   produces:
   - cart.update_status
-  description: Handles the addition of products to the cart and returns the update
-    status
+  description: Handles adding products to the cart and updates the cart status
 - name: process_checkout
   parameters:
-  - name: customer_info
-    type: object
-    entity: user
   - name: order_details
     type: object
     entity: order
@@ -39,4 +35,4 @@ functions:
   entity: order
   produces:
   - order.status
-  description: Processes the checkout and returns the order status
+  description: Handles processing of checkout and returns the order status

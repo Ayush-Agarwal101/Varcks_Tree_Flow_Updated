@@ -1,38 +1,42 @@
 file: project_blueprint/backend/node/express
 functions:
-- name: get_product
+- name: get_baked_goods
   parameters:
-  - name: product_id
-    type: integer
+  - name: category
+    type: string
     entity: product
-  return_type: object
+  - name: limit
+    type: number
+    entity: pagination
+  return_type: array
   entity: product
   produces:
-  - product.info
-  description: Retrieves product information from the database
+  - product.list
+  description: Handles requests to retrieve a list of baked goods based on category
+    and limit
 - name: create_order
   parameters:
   - name: customer_id
-    type: integer
+    type: number
     entity: user
-  - name: product_ids
-    type: array
-    entity: product
-  return_type: integer
+  - name: order_details
+    type: object
+    entity: order
+  return_type: number
   entity: order
   produces:
   - order.id
-  description: Creates a new order and returns the order ID
-- name: authenticate_customer
+  description: Handles requests to create a new order for a customer
+- name: update_product
   parameters:
-  - name: username
-    type: string
-    entity: user
-  - name: password
-    type: string
-    entity: user
-  return_type: integer
-  entity: user
+  - name: product_id
+    type: number
+    entity: product
+  - name: product_details
+    type: object
+    entity: product
+  return_type: boolean
+  entity: product
   produces:
-  - customer.id
-  description: Authenticates a customer and returns the customer ID
+  - product.success
+  description: Handles requests to update a product's details

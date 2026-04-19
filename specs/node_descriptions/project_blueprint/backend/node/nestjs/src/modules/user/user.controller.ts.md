@@ -1,26 +1,26 @@
 # project_blueprint/backend/node/nestjs/src/modules/user/user.controller.ts
 ## Purpose
-Handles user-related operations and provides a RESTful API for user management.
+Handles user-related operations and provides a interface for user interactions.
 
 ## Responsibilities
-* Manages user authentication and authorization
-* Handles user data storage and retrieval
-* Provides API endpoints for user registration, login, and profile management
+* Manages user accounts
+* Handles user authentication
+* Provides user data to other modules
 
 ## Key Functions (Conceptual)
-- get_user(user_id) -> user_data
-  - Retrieves user data by ID.
+- get_user_info(username, password) -> user_data
+  - Retrieves user information based on username and password.
 - create_user(username, email, password) -> user_id
-  - Creates a new user account.
-- update_user(user_id, username, email) -> success_status
-  - Updates an existing user's profile information.
+  - Creates a new user account with the given username, email, and password.
+- update_user_info(user_id, new_info) -> success_status
+  - Updates the information of an existing user.
 
 ## Interactions
-* Communicates with the database to store and retrieve user data
-* Interacts with the authentication service to handle user authentication and authorization
-* Provides API endpoints for the frontend to interact with
+* Interacts with the database to store and retrieve user data
+* Communicates with the authentication module to verify user credentials
+* Provides user data to the order module for purchase processing
 
 ## Future Extensibility
-* Add support for social media login and registration
-* Implement user role-based access control
-* Integrate with other services for enhanced user experience
+* Can be extended to support additional user roles and permissions
+* Can be modified to integrate with external authentication services
+* Can be expanded to include more user-related features and functionality

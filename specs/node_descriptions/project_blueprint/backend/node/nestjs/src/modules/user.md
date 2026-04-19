@@ -1,26 +1,26 @@
 # project_blueprint/backend/node/nestjs/src/modules/user
 ## Purpose
-The user module handles customer authentication and management. It provides functionality for user registration, login, and profile management.
+The user feature module handles user-related functionality, providing a seamless experience for customers to manage their accounts and orders.
 
 ## Responsibilities
-* Manage user accounts and authentication
-* Handle user registration and login
-* Provide user profile management functionality
+* User authentication and authorization
+* User profile management
+* Order history and tracking
 
 ## Key Functions (Conceptual)
-* create_user(username, email) -> user_id
-  - Creates a new user account
-* authenticate_user(username, password) -> auth_token
-  - Authenticates a user and returns an authentication token
-* get_user_profile(user_id) -> user_profile
-  - Retrieves a user's profile information
+- get_user_info(username, password) -> user_data
+  - Retrieves user information based on username and password.
+- update_user_profile(user_id, new_info) -> success_status
+  - Updates user profile information.
+- get_order_history(user_id) -> order_list
+  - Retrieves a list of orders for a given user.
 
 ## Interactions
-* Communicates with the database to store and retrieve user data
-* Interacts with the backend to handle user authentication and authorization
-* Receives requests from the frontend to perform user-related actions
+* Interacts with the database to retrieve and update user information
+* Communicates with the order module to retrieve order history
+* Integrates with the authentication module for user authentication
 
 ## Future Extensibility
-* Add support for social media login and registration
-* Implement password recovery and reset functionality
-* Integrate with other modules to provide personalized recommendations and offers to users
+* Add support for social media login
+* Integrate with a recommendation system to suggest products based on user preferences
+* Implement a loyalty program to reward repeat customers

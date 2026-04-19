@@ -1,32 +1,22 @@
 file: project_blueprint/backend/node/nestjs/tsconfig.json
 functions:
-- name: applyCompilerOptions
+- name: configure_compiler
   parameters:
   - name: options
     type: object
-    entity: tsconfig
-  return_type: void
-  entity: tsconfig
+    entity: compiler
+  return_type: string
+  entity: compiler
   produces:
-  - tsconfig.compileroptions
-  description: Apply the given compiler options to the TypeScript project.
-- name: setRootDir
+  - compiler.config
+  description: Configures the TypeScript compiler
+- name: resolve_modules
   parameters:
-  - name: rootDir
-    type: string
-    entity: project
-  return_type: void
-  entity: tsconfig
-  produces: []
-  description: Set the root directory for file inclusion, ensuring that TypeScript
-    can resolve modules correctly.
-- name: configurePaths
-  parameters:
-  - name: paths
+  - name: module_names
     type: array
-    entity: project
-  return_type: void
-  entity: tsconfig
-  produces: []
-  description: Configure path mappings to enable aliasing in module imports. This
-    function allows using shorter import paths within the project.
+    entity: module
+  return_type: array
+  entity: module
+  produces:
+  - module.paths
+  description: Resolves the given module names to their corresponding file paths

@@ -1,26 +1,26 @@
 # project_blueprint
 ## Purpose
-The project_blueprint folder serves as a global template repository, containing multiple stack blueprints for the online bakery shop project. It provides a centralized location for storing and managing different project templates.
+The project_blueprint node serves as a global template repository, containing multiple stack blueprints for the online bakery shop project. It provides a foundation for creating new projects with consistent architecture and tech stack.
 
 ## Responsibilities
-* Stores multiple stack blueprints for the project
-* Provides a centralized location for template management
-* Enables easy access and reuse of templates across the project
+* Maintaining a collection of stack blueprints
+* Providing a template for new project creation
+* Ensuring consistency across projects
 
 ## Key Functions (Conceptual)
-* get_template(name, version) -> template_data
-  Description: Retrieves a specific template from the repository.
-* create_template(name, data) -> template_id
-  Description: Creates a new template in the repository.
-* update_template(name, version, data) -> success_status
-  Description: Updates an existing template in the repository.
+- create_project_blueprint(project_name, stack_type) -> new_project
+  Creates a new project based on the provided blueprint and stack type.
+- get_blueprint(template_name) -> blueprint_details
+  Retrieves the details of a specific blueprint.
+- update_blueprint(blueprint_name, new_config) -> updated_blueprint
+  Updates the configuration of an existing blueprint.
 
 ## Interactions
-* The frontend uses the project_blueprint to retrieve templates for rendering.
-* The backend uses the project_blueprint to manage template data and updates.
-* The database stores template data and metadata.
+* Interacts with the backend to retrieve and update blueprint configurations
+* Collaborates with the DevOps component to automate deployment and testing
+* Provides templates for the frontend to create new projects
 
 ## Future Extensibility
-* Add support for template versioning and rollback.
-* Integrate with the DevOps pipeline for automated template deployment.
-* Develop a user interface for managing and creating templates.
+* Adding support for new stack types and blueprints
+* Integrating with other systems and services to enhance project creation
+* Expanding the template repository to include more project types and configurations

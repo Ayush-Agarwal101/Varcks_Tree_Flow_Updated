@@ -3,7 +3,7 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 
-def run_batch(tasks, max_workers=3):
+def run_batch(tasks, max_workers=1):
     """
     tasks: list of functions (callables with no args)
     """

@@ -8,24 +8,24 @@ build a backend for online bakery shop
 ### 1. Web Development
 
 ### 2. Backend
-**Why chosen:** Needed to manage bakery shop data and operations.
-**Purpose:** Handles server-side logic, databases, API endpoints for the bakery shop.
+**Why chosen:** backend
+**Purpose:** online bakery shop
 
 ### 3. REST
-**Why chosen:** Simple and widely used for backend APIs.
-**Purpose:** Enables easy creation of API endpoints for bakery shop functionalities.
+**Why chosen:** simple and widely supported
+**Purpose:** API design for the bakery shop
 
 ### 4. Python
-**Why chosen:** Elegant and easy to use for API development.
-**Purpose:** Enables rapid development of RESTful APIs with frameworks like Flask or Django.
+**Why chosen:** Python has extensive libraries for handling APIs and can be easily integrated with web frameworks like Flask or Django.
+**Purpose:** To build a RESTful API backend efficiently.
 
-### 5. Django
-**Why chosen:** Comprehensive framework with built-in features for authentication, content management system, and database migrations.
-**Purpose:** Enables rapid development and maintenance of the backend by leveraging a robust set of tools and conventions.
+### 5. FastAPI
+**Why chosen:** FastAPI is modern and has a fast development cycle.
+**Purpose:** To build a backend with high performance and ease of use.
 
-### 6. NGINX
-**Why chosen:** reverse proxy and load balancer
-**Purpose:** to handle static files, SSL termination, and provide a performance boost
+### 6. Uvicorn
+**Why chosen:** lightweight ASGI server
+**Purpose:** fast startup and shutdown
 
 ## Technology Stack Summary
-Web Development → Backend → REST → Python → Django → NGINX
+Web Development → Backend → REST → Python → FastAPI → Uvicorn

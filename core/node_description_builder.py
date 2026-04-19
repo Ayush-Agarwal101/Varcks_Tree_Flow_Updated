@@ -185,7 +185,7 @@ def build_node_descriptions(
 
         tasks.append(make_task())
 
-    run_batch(tasks, max_workers=2)
+    run_batch(tasks, max_workers=1)
 
     print("\nAll node descriptions generated successfully.")
 

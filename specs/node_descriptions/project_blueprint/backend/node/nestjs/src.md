@@ -1,26 +1,26 @@
 # project_blueprint/backend/node/nestjs/src
 ## Purpose
-This folder contains the source code for the NestJS application, handling backend logic for the online bakery shop.
+This node contains the source code for the backend API, utilizing FastAPI to handle requests and interactions with the database.
 
 ## Responsibilities
-* Contains NestJS controllers, services, and models for managing product inventory and customer orders
-* Handles RESTful API requests from the frontend
-* Interacts with the database to retrieve and update data
+* Handling HTTP requests from the frontend
+* Interacting with the database to retrieve and store data
+* Implementing business logic for the online bakery shop
 
 ## Key Functions (Conceptual)
-- get_product_list(product_id, category) -> product_list
-  Description: Retrieves a list of products based on the provided product ID and category.
-- create_order(customer_id, order_items) -> order_id
-  Description: Creates a new order for the specified customer with the provided order items.
-- update_product_quantity(product_id, quantity) -> update_status
-  Description: Updates the quantity of the specified product in the inventory.
+- get_baked_goods(category, limit) -> list_of_baked_goods
+  Description: Retrieves a list of baked goods based on the provided category and limit.
+- create_order(customer_id, order_details) -> order_id
+  Description: Creates a new order for the specified customer with the provided order details.
+- update_product(product_id, new_details) -> updated_product
+  Description: Updates the details of a product with the specified ID.
 
 ## Interactions
-* Receives RESTful API requests from the frontend
-* Sends responses back to the frontend
-* Interacts with the database to retrieve and update data
+* Receives requests from the frontend to retrieve or update data
+* Sends responses back to the frontend with the requested data
+* Interacts with the database to store and retrieve data
 
 ## Future Extensibility
-* Add new controllers and services to handle additional backend logic
-* Integrate with payment gateways to process transactions
-* Implement authentication and authorization for customer accounts
+* Adding support for new payment gateways
+* Implementing a recommendation system for baked goods
+* Integrating with social media platforms for marketing and promotions

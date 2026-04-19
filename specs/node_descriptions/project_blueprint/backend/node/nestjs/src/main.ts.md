@@ -1,26 +1,27 @@
 # project_blueprint/backend/node/nestjs/src/main.ts
 ## Purpose
-The main application bootstrap file for the online bakery shop backend, responsible for initializing the Django application.
+The main application bootstrap file for the online bakery shop backend, responsible for initializing the FastAPI application.
 
 ## Responsibilities
-* Initializes the Django application
-* Configures the RESTful API endpoints
-* Establishes database connections
+* Initializing the FastAPI application
+* Configuring routes and endpoints
+* Setting up database connections
+* Handling application startup and shutdown
 
-## Key Functions
-- initialize_app(environment, settings) -> app_instance
-  Description: Initializes the Django application with the given environment and settings.
-- configure_api_endpoints(routes, handlers) -> api_endpoints
-  Description: Configures the RESTful API endpoints with the given routes and handlers.
-- establish_database_connection(db_config) -> db_connection
-  Description: Establishes a connection to the database with the given configuration.
+## Key Functions (Conceptual)
+* initialize_app(config, routes) -> app_instance
+  Initializes the FastAPI application with the given configuration and routes.
+* setup_database(connection_string, db_name) -> db_connection
+  Sets up a connection to the database using the provided connection string and database name.
+* start_app(app_instance, host, port) -> server_instance
+  Starts the FastAPI application on the specified host and port.
 
 ## Interactions
 * Interacts with the database to retrieve and store data
-* Communicates with the frontend through RESTful API calls
-* Utilizes the DevOps pipeline for automated testing and deployment
+* Handles requests from the frontend and returns responses
+* Communicates with other microservices to perform tasks
 
 ## Future Extensibility
-* Add support for multiple database connections
-* Integrate with additional third-party services for payment processing and inventory management
-* Implement load balancing and horizontal scaling for improved performance and reliability
+* Adding support for new database systems
+* Implementing authentication and authorization mechanisms
+* Integrating with other services to expand functionality

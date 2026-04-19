@@ -1,27 +1,22 @@
 file: project_blueprint/frontend/react_vite/tsconfig.json
 functions:
-- name: setTsConfigOptions
+- name: configure_compiler
   parameters:
-  - name: config
+  - name: options
     type: object
-    entity: unknown
-  return_type: none
-  entity: unknown
-  produces: []
-  description: This function sets up the TypeScript compiler options based on provided
-    configurations. It is used during the setup phase of the frontend project to ensure
-    that all files adhere to the defined type and module standards.
-- name: updateTsConfigOption
+    entity: compiler
+  return_type: object
+  entity: compiler
+  produces:
+  - compiler.config
+  description: Configures the TypeScript compiler with specified options
+- name: resolve_modules
   parameters:
-  - name: optionName
-    type: string
-    entity: unknown
-  - name: newValue
-    type: mixed
-    entity: unknown
-  return_type: none
-  entity: unknown
-  produces: []
-  description: Updates a specific TypeScript compiler option with a new value. This
-    function is useful during development when changes need to be made to the TypeScript
-    configurations without restarting the entire application.
+  - name: import_paths
+    type: array
+    entity: module
+  return_type: array
+  entity: module
+  produces:
+  - module.resolved_imports
+  description: Resolves module imports based on specified paths

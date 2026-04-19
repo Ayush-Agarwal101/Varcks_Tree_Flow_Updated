@@ -4,25 +4,38 @@ functions:
   parameters:
   - name: package_name
     type: string
-    entity: project
+    entity: package
   - name: version
     type: string
-    entity: project
+    entity: package
   return_type: list
-  entity: project
+  entity: package
   produces:
-  - project.dependencies
-  description: Retrieves the dependencies required by the project.
+  - package.dependencies
+  description: Retrieves a list of dependencies for a given package
+- name: install_dependencies
+  parameters:
+  - name: package_name
+    type: string
+    entity: package
+  - name: version
+    type: string
+    entity: package
+  return_type: boolean
+  entity: package
+  produces:
+  - package.installation_status
+  description: Installs or updates dependencies for the frontend project
 - name: update_dependencies
   parameters:
   - name: package_name
     type: string
-    entity: project
-  - name: new_version
+    entity: package
+  - name: version
     type: string
-    entity: project
-  return_type: list
-  entity: project
+    entity: package
+  return_type: boolean
+  entity: package
   produces:
-  - project.updated_dependencies
-  description: Updates the dependencies to the latest versions.
+  - package.update_status
+  description: Updates existing dependencies to the specified version

@@ -1,6 +1,19 @@
 file: project_blueprint/backend/node/nestjs/src/modules/user/user.controller.ts
 functions:
-- name: registerUser
+- name: get_user_info
+  parameters:
+  - name: username
+    type: string
+    entity: user
+  - name: password
+    type: string
+    entity: user
+  return_type: object
+  entity: user
+  produces:
+  - user.info
+  description: Retrieves user information based on username and password
+- name: create_user
   parameters:
   - name: username
     type: string
@@ -11,76 +24,21 @@ functions:
   - name: password
     type: string
     entity: user
-  - name: firstName
-    type: string
-    entity: user
-  - name: lastName
-    type: string
-    entity: user
-  return_type: object
+  return_type: number
   entity: user
   produces:
   - user.id
-  - user.username
-  - user.success_message
-  description: Process new user registration by validating input data, creating a
-    new user record in the database, and returning a success response.
-- name: loginUser
+  description: Creates a new user account with the given username, email, and password
+- name: update_user_info
   parameters:
-  - name: username
-    type: string
-    entity: user
-  - name: password
-    type: string
-    entity: user
-  return_type: object
-  entity: session
-  produces:
-  - session.token
-  description: Validate user credentials, generate an access token for authentication,
-    and return it to the frontend.
-- name: updateUserProfile
-  parameters:
-  - name: userId
+  - name: user_id
     type: number
     entity: user
-  - name: firstName
-    type: string
-    entity: user
-  - name: lastName
-    type: string
-    entity: user
-  - name: email
-    type: string
-    entity: user
-  return_type: object
-  entity: user
-  produces:
-  - user.firstname
-  - user.lastname
-  - user.email
-  description: Update the user's profile based on provided parameters and return the
-    updated data.
-- name: getUserProfile
-  parameters:
-  - name: userId
-    type: number
-    entity: user
-  return_type: object
-  entity: user
-  produces:
-  - user.firstname
-  - user.lastname
-  - user.email
-  description: Fetch a specific user's profile from the database.
-- name: deleteUser
-  parameters:
-  - name: userId
-    type: number
+  - name: new_info
+    type: object
     entity: user
   return_type: boolean
   entity: user
   produces:
-  - user.deleted
-  description: Delete the specified user record from the database and return a success
-    or failure message.
+  - user.success_status
+  description: Updates the information of an existing user

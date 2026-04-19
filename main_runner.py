@@ -192,7 +192,7 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
 
         decision = llm.choose_option(decision_prompt, child_names)
 
-        chosen_name = decision.choice
+        chosen_name = decision.choice_name
 
         recorder.add_choice_rationale(
             parent_node=branch.node_name,
@@ -206,13 +206,24 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
             branch.node_name,
             [{
                 "index": decision.choice_index,
-                "name": decision.choice
+                "name": decision.choice_name
             }]
         )
 
-        matched = next((c for c in children if c[0] == chosen_name), None)
+        def normalize(s):
+            return s.strip().lower()
+
+        matched = next(
+            (c for c in children if normalize(c[0]) == normalize(chosen_name)),
+            None
+        )
 
         if not matched:
+            print("\nDEBUG ERROR")
+            print("OPTIONS:", child_names)
+            print("CHOICE INDEX:", decision.choice_index)
+            print("CHOICE NAME:", decision.choice_name)
+            print("CHILDREN:", [c[0] for c in children])
             raise RuntimeError("Internal traversal mismatch.")
 
         child_name, child_value = matched

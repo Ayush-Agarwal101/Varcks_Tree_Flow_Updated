@@ -1,41 +1,37 @@
 file: project_blueprint/backend/node
 functions:
-- name: create_product
+- name: create_bakery_item
   parameters:
-  - name: product_name
+  - name: item_name
     type: string
-    entity: product
-  - name: product_description
-    type: string
-    entity: product
-  return_type: integer
-  entity: product
+    entity: bakery_item
+  - name: item_price
+    type: number
+    entity: bakery_item
+  return_type: object
+  entity: bakery_item
   produces:
-  - product.product_id
-  description: Creates a new product in the system
-- name: update_order
+  - bakery_item.id
+  - bakery_item.name
+  - bakery_item.price
+  description: Creates a new bakery item
+- name: get_bakery_items
+  parameters: []
+  return_type: array
+  entity: bakery_item
+  produces:
+  - bakery_item.list
+  description: Retrieves a list of available bakery items
+- name: update_bakery_item
   parameters:
-  - name: order_id
-    type: integer
-    entity: order
-  - name: order_status
-    type: string
-    entity: order
-  return_type: string
-  entity: order
+  - name: item_id
+    type: number
+    entity: bakery_item
+  - name: new_price
+    type: number
+    entity: bakery_item
+  return_type: object
+  entity: bakery_item
   produces:
-  - order.order_status
-  description: Updates the status of an existing order
-- name: authenticate_customer
-  parameters:
-  - name: customer_username
-    type: string
-    entity: user
-  - name: customer_password
-    type: string
-    entity: user
-  return_type: string
-  entity: user
-  produces:
-  - customer.authentication_token
-  description: Authenticates a customer and returns an authentication token
+  - bakery_item.updated_price
+  description: Updates the price of an existing bakery item

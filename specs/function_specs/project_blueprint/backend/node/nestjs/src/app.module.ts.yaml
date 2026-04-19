@@ -1,28 +1,42 @@
 file: project_blueprint/backend/node/nestjs/src/app.module.ts
 functions:
-- name: initializeAppModule
-  parameters: []
-  return_type: void
-  entity: unknown
-  produces: []
-  description: "\u521D\u59CB\u5316\u6839\u5E94\u7528\u7A0B\u5E8F\u6A21\u5757\uFF0C\
-    \u8BBE\u7F6E\u5168\u5C40\u914D\u7F6E\u548C\u4F9D\u8D56\u9879\u3002\u6B64\u51FD\
-    \u6570\u5728\u5E94\u7528\u542F\u52A8\u65F6\u9690\u5F0F\u8C03\u7528\u3002"
-- name: configureGlobalLogger
+- name: initialize_app
   parameters:
-  - name: logger
-    type: Logger
-    entity: unknown
-  return_type: void
-  entity: unknown
-  produces: []
-  description: "\u914D\u7F6E\u5168\u5C40\u65E5\u5FD7\u8BB0\u5F55\u5668\u4EE5\u5728\
-    \u6574\u4E2A\u5E94\u7528\u7A0B\u5E8F\u4E2D\u5904\u7406\u65E5\u5FD7\u3002"
-- name: setupEnvironmentVariables
-  parameters: []
-  return_type: void
-  entity: unknown
-  produces: []
-  description: "\u8BBE\u7F6E\u8DE8\u5E94\u7528\u4F7F\u7528\u7684\u73AF\u5883\u53D8\
-    \u91CF\uFF0C\u786E\u4FDD\u914D\u7F6E\u8BBE\u7F6E\u53EF\u4EE5\u88AB\u8BBF\u95EE\
-    \u548C\u66F4\u65B0\u3002"
+  - name: config
+    type: object
+    entity: application
+  - name: dependencies
+    type: array
+    entity: dependency
+  return_type: object
+  entity: application
+  produces:
+  - application.instance
+  description: Initializes the application instance with the given configuration and
+    dependencies.
+- name: register_routes
+  parameters:
+  - name: routes
+    type: array
+    entity: route
+  - name: app_instance
+    type: object
+    entity: application
+  return_type: object
+  entity: application
+  produces:
+  - application.routes
+  description: Registers API routes with the application instance.
+- name: start_server
+  parameters:
+  - name: app_instance
+    type: object
+    entity: application
+  - name: port
+    type: number
+    entity: server
+  return_type: object
+  entity: server
+  produces:
+  - server.status
+  description: Starts the server with the given application instance and port.

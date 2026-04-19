@@ -1,26 +1,27 @@
 # project_blueprint/backend
 ## Purpose
-The backend folder contains the Django code for the backend application, handling data storage, processing, and retrieval. It provides a RESTful API for the frontend to interact with.
+The backend folder contains the server-side logic and API endpoints for the online bakery shop project, built using Python and FastAPI.
 
 ## Responsibilities
-* Contains Django code for the backend application
-* Handles data storage, processing, and retrieval
-* Provides a RESTful API for the frontend to interact with
+* Handle requests from the frontend
+* Process data and return responses
+* Interact with the database to store and retrieve data
+* Provide a scalable and maintainable API
 
 ## Key Functions (Conceptual)
-- get_product_info(product_id, category) -> product_details
-  - Retrieves product information from the database.
-- process_order(customer_id, order_items) -> order_status
-  - Processes a customer's order and updates the database.
-- authenticate_user(username, password) -> authentication_status
-  - Authenticates a user and returns their status.
+* get_baked_goods(category, limit) -> list of baked goods
+  Description: Retrieves a list of baked goods based on category and limit.
+* create_order(customer_id, items) -> order_id
+  Description: Creates a new order for a customer with the given items.
+* update_product(product_id, new_data) -> success status
+  Description: Updates the data of a product with the given ID.
 
 ## Interactions
-* Receives RESTful API requests from the frontend
-* Interacts with the database to retrieve or update data
-* Returns responses to the frontend
+* Receives requests from the frontend
+* Sends responses to the frontend
+* Interacts with the database to store and retrieve data
 
 ## Future Extensibility
-* Can be extended to support additional payment gateways
-* Can be modified to support new product categories
-* Can be scaled to handle increased traffic and user growth
+* Add new API endpoints for additional features
+* Integrate with other services, such as payment gateways
+* Implement authentication and authorization for secure access to API endpoints

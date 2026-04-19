@@ -3,50 +3,41 @@ project_meta:
   version: '1.0'
   language: Python
   type: Web Application
-  description: A web-based application for customers to browse and purchase baked
-    goods
+  description: A comprehensive web application designed to provide a seamless user
+    experience for customers to browse and purchase baked goods.
 architecture:
   pattern: Microservices
   entry_points:
   - name: Frontend
-    type: Web Interface
-    description: User-friendly interface for customers to browse products and checkout
+    type: React and Vite
+    description: Handles user interactions and provides a responsive interface.
   - name: Backend
-    type: RESTful API
-    description: Handles data storage, processing, and retrieval
+    type: Python and FastAPI
+    description: Handles business logic, data storage, and retrieval.
   components:
   - name: Frontend
-    responsibility: Handles user interactions and communicates with Backend through
-      RESTful API calls
+    responsibility: Handles user interactions and provides a responsive interface.
   - name: Backend
-    responsibility: Manages data storage, processing, and retrieval, and provides
-      RESTful API for Frontend to interact with
+    responsibility: Handles business logic, data storage, and retrieval.
   - name: Database
-    responsibility: Stores product information, customer data, and order history
-  - name: DevOps
-    responsibility: Automates testing, deployment, and monitoring of the application
-  data_flow_summary: Frontend sends RESTful API requests to Backend, which processes
-    requests, interacts with Database, and returns responses to Frontend
+    responsibility: Stores information about baked goods, orders, and customers.
+  data_flow_summary: The frontend sends requests to the backend, which processes the
+    data and returns responses. The backend interacts with the database to store and
+    retrieve data.
 infrastructure:
   external_services:
-  - name: NGINX
-    role: Web Server
-    purpose: Serves static files and routes requests to Backend
-  - name: Database Server
-    role: Data Storage
-    purpose: Stores and retrieves data for the application
+  - name: Uvicorn
+    role: ASGI Server
+    purpose: To serve the FastAPI application.
 dependencies:
   internal:
-  - name: Django
+  - name: FastAPI
     version: null
-    purpose: Backend framework for building RESTful API
-  - name: React
+    purpose: To build the backend API.
+  - name: React and Vite
     version: null
-    purpose: Frontend framework for building user interface
+    purpose: To build the frontend interface.
   external:
-  - name: Python
-    version: '3.9'
-    purpose: Programming language for Backend development
-  - name: Node.js
-    version: '14.17'
-    purpose: Runtime environment for Frontend development
+  - name: Uvicorn
+    version: 0.15.0
+    purpose: To serve the FastAPI application.

@@ -1,44 +1,38 @@
 file: project_blueprint
 functions:
-- name: get_template
+- name: create_project_blueprint
   parameters:
-  - name: name
+  - name: project_name
     type: string
-    entity: template
-  - name: version
+    entity: project
+  - name: stack_type
     type: string
-    entity: template
+    entity: project
   return_type: object
-  entity: template
+  entity: project
   produces:
-  - template.data
-  description: Retrieves a specific template from the repository
-- name: create_template
+  - project.blueprint
+  description: Creates a new project based on the provided blueprint and stack type
+- name: get_blueprint
   parameters:
-  - name: name
+  - name: template_name
     type: string
-    entity: template
-  - name: data
-    type: object
-    entity: template
-  return_type: string
-  entity: template
+    entity: blueprint
+  return_type: object
+  entity: blueprint
   produces:
-  - template.id
-  description: Creates a new template in the repository
-- name: update_template
+  - blueprint.details
+  description: Retrieves the details of a specific blueprint
+- name: update_blueprint
   parameters:
-  - name: name
+  - name: blueprint_name
     type: string
-    entity: template
-  - name: version
-    type: string
-    entity: template
-  - name: data
+    entity: blueprint
+  - name: new_config
     type: object
-    entity: template
-  return_type: boolean
-  entity: template
+    entity: blueprint
+  return_type: object
+  entity: blueprint
   produces:
-  - template.success_status
-  description: Updates an existing template in the repository
+  - blueprint.updated_config
+  description: Updates the configuration of an existing blueprint

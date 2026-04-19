@@ -1,10 +1,43 @@
-file: project_blueprint/backend/node/nestjs/src/user.module.ts
+file: project_blueprint/backend/node/nestjs/src
 functions:
-- name: setupUserModule
-  parameters: []
-  return_type: void
-  entity: unknown
-  produces: []
-  description: "\u521D\u59CB\u5316 User \u6A21\u5757\uFF0C\u8BBE\u7F6E\u4E0E\u7528\
-    \u6237\u76F8\u5173\u64CD\u4F5C\u6240\u9700\u7684\u4F9D\u8D56\u548C\u914D\u7F6E\
-    \u3002"
+- name: get_baked_goods
+  parameters:
+  - name: category
+    type: string
+    entity: product
+  - name: limit
+    type: number
+    entity: query
+  return_type: list
+  entity: product
+  produces:
+  - product.list
+  description: Retrieves a list of baked goods based on the provided category and
+    limit
+- name: create_order
+  parameters:
+  - name: customer_id
+    type: number
+    entity: user
+  - name: order_details
+    type: object
+    entity: order
+  return_type: number
+  entity: order
+  produces:
+  - order.id
+  description: Creates a new order for the specified customer with the provided order
+    details
+- name: update_product
+  parameters:
+  - name: product_id
+    type: number
+    entity: product
+  - name: new_details
+    type: object
+    entity: product
+  return_type: object
+  entity: product
+  produces:
+  - product.details
+  description: Updates the details of a product with the specified ID

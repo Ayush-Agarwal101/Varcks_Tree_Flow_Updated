@@ -1,26 +1,26 @@
 # project_blueprint/backend/node
 ## Purpose
-The node folder contains templates for the backend of the online bakery shop project, utilizing Django as the Python web framework. It provides a foundation for building the RESTful API.
+The node provides a template for backend development using FastAPI and Uvicorn, offering a foundation for building RESTful APIs.
 
 ## Responsibilities
-* Managing product inventory templates
-* Processing order templates
-* Handling customer authentication templates
+* Providing a basic structure for backend development
+* Handling requests and responses
+* Interacting with the database
 
 ## Key Functions (Conceptual)
-- create_product(product_name, product_description) -> product_id
-  Creates a new product in the system.
-- update_order(order_id, order_status) -> order_status
-  Updates the status of an existing order.
-- authenticate_customer(customer_username, customer_password) -> authentication_token
-  Authenticates a customer and returns an authentication token.
+- create_bakery_item(item_name, item_price) -> created_item
+  Handles creation of new bakery items.
+- get_bakery_items() -> list_of_items
+  Retrieves a list of available bakery items.
+- update_bakery_item(item_id, new_price) -> updated_item
+  Updates the price of an existing bakery item.
 
 ## Interactions
-* The node folder interacts with the database to retrieve and update product information and order history.
-* The node folder receives RESTful API requests from the frontend and returns responses.
-* The node folder is used by the DevOps pipeline for automated testing and deployment.
+* Receives requests from the frontend
+* Sends responses to the frontend
+* Interacts with the database to store and retrieve data
 
 ## Future Extensibility
-* Adding new templates for managing product categories
-* Integrating payment gateways for secure payment processing
-* Implementing additional security measures for customer authentication
+* Adding support for user authentication
+* Implementing payment processing
+* Integrating with third-party services for delivery or inventory management

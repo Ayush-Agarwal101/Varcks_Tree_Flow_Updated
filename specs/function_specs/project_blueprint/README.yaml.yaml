@@ -9,11 +9,11 @@ functions:
   entity: project
   produces:
   - project.description
-  description: Returns a brief description of the project and its objectives.
+  description: Returns a brief description of the project and its objectives
 - name: get_tech_stack
   parameters: []
   return_type: object
   entity: project
   produces:
   - project.tech_stack
-  description: Returns information about the tech stack used in the project.
+  description: Returns information about the tech stack used in the project

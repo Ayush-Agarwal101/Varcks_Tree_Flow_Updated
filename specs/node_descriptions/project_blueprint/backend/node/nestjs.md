@@ -1,26 +1,26 @@
 # project_blueprint/backend/node/nestjs
 ## Purpose
-The nestjs node provides a NestJS backend template with a modular architecture for the online bakery shop project. It enables the development of a scalable and maintainable backend.
+The nestjs node provides a modular backend template using NestJS framework, enabling the development of scalable and maintainable APIs.
 
 ## Responsibilities
-* Provides a basic structure for the backend application
-* Includes modules for product management, order processing, and customer authentication
-* Supports RESTful API development
+* Handling HTTP requests and responses
+* Interacting with the database to store and retrieve data
+* Implementing business logic for the online bakery shop
 
 ## Key Functions (Conceptual)
-- get_products(category, limit) -> list_of_products
-  Description: Retrieves a list of products based on the given category and limit.
-- create_order(customer_id, products) -> order_id
-  Description: Creates a new order for the given customer and products.
-- authenticate_user(username, password) -> user_id
-  Description: Authenticates a user based on the given username and password.
+* get_baked_goods(category, limit) -> list_of_baked_goods
+  Description: Retrieves a list of baked goods based on the given category and limit.
+* create_order(customer_id, order_details) -> order_id
+  Description: Creates a new order for the given customer and returns the order ID.
+* update_product(product_id, product_details) -> updated_product
+  Description: Updates the product details for the given product ID and returns the updated product.
 
 ## Interactions
-* Communicates with the frontend through RESTful API calls
-* Interacts with the database to retrieve and update data
-* Collaborates with other backend modules to process orders and manage products
+* Receives requests from the frontend and sends responses
+* Interacts with the database to store and retrieve data
+* Communicates with other backend services for authentication and authorization
 
 ## Future Extensibility
-* Can be extended to support additional payment gateways
-* Can be modified to include more advanced product filtering and sorting
-* Can be integrated with other services to provide more features and functionality
+* Adding new endpoints for handling payments and shipping
+* Integrating with third-party services for inventory management and customer support
+* Implementing caching and queueing mechanisms for improved performance and scalability

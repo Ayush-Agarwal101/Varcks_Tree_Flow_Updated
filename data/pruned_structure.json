@@ -15,17 +15,6 @@
   "is_leaf": false,
   "children": [
     {
-      "type": "file",
-      "name": "README",
-      "extension": ".md",
-      "mandatory": "no",
-      "description": "Explains how to use the blueprint repository",
-      "full_path": "project_blueprint/README.md",
-      "children_names": [],
-      "is_leaf": true,
-      "children": []
-    },
-    {
       "type": "folder",
       "name": "frontend",
       "extension": "NA",
@@ -132,17 +121,6 @@
               "mandatory": "no",
               "description": "Project dependencies",
               "full_path": "project_blueprint/frontend/react_vite/package.json",
-              "children_names": [],
-              "is_leaf": true,
-              "children": []
-            },
-            {
-              "type": "file",
-              "name": "vite.config",
-              "extension": ".ts",
-              "mandatory": "no",
-              "description": "Vite configuration file",
-              "full_path": "project_blueprint/frontend/react_vite/vite.config.ts",
               "children_names": [],
               "is_leaf": true,
               "children": []

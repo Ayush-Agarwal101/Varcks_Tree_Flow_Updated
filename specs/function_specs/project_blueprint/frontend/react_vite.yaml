@@ -1,68 +1,35 @@
 file: project_blueprint/frontend/react_vite
 functions:
-- name: initializeApplication
+- name: render_product_list
   parameters:
-  - name: config
-    type: object
-    entity: unknown
-  return_type: void
-  entity: unknown
-  produces: []
-  description: Initializes the application with provided configuration settings.
-- name: fetchProducts
+  - name: product_ids
+    type: array
+    entity: product
+  return_type: string
+  entity: product
+  produces:
+  - product.rendered_list
+  description: Handles rendering the product list based on provided product IDs
+- name: handle_add_to_cart
   parameters:
-  - name: category
-    type: string
-    entity: category
-  - name: callback
-    type: function
-    entity: unknown
-  return_type: void
-  entity: category
-  produces: []
-  description: Fetches products from the backend based on the specified category and
-    processes the response using the callback function.
-- name: handleUserLogin
-  parameters:
-  - name: username
-    type: string
-    entity: user
-  - name: password
-    type: string
-    entity: unknown
-  - name: onSuccess
-    type: function
-    entity: unknown
-  - name: onFailure
-    type: function
-    entity: unknown
-  return_type: void
-  entity: user
-  produces: []
-  description: Authenticates a user with the backend and handles success or failure
-    callbacks.
-- name: showProductDetails
-  parameters:
-  - name: productId
+  - name: product_id
     type: number
     entity: product
-  return_type: void
-  entity: product
-  produces: []
-  description: Displays details of a specific product to the user.
-- name: placeOrder
-  parameters:
-  - name: orderItems
-    type: array
+  - name: quantity
+    type: number
     entity: order
-  - name: shippingAddress
-    type: object
-    entity: unknown
-  - name: paymentMethod
-    type: string
-    entity: unknown
-  return_type: promise
-  entity: order
+  return_type: string
+  entity: cart
   produces:
-  - order.orderId
-  description: Places an order with the specified items, address, and payment method.
+  - cart.update_status
+  description: Handles adding a product to the cart and returns the update status
+- name: fetch_product_details
+  parameters:
+  - name: product_id
+    type: number
+    entity: product
+  return_type: object
+  entity: product
+  produces:
+  - product.details
+  description: Fetches and returns the details of a specific product

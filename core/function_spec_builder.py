@@ -14,7 +14,6 @@ from core.normalization.entity_normalizer import normalize_entity
 load_dotenv()
 
 # Schema Models
-
 class ParameterSpec(BaseModel):
     name: str
     type: str
@@ -94,7 +93,6 @@ def extract_key_functions_section(markdown_text: str) -> str:
     return section.strip()
 
 # Builder
-
 def build_function_specs(
     node_docs_dir: str,
     output_dir: str = "specs/function_specs"
@@ -193,7 +191,7 @@ Rules:
             tasks.append(make_task())
 
     # Batch run
-    run_batch(tasks, max_workers=2)
+    run_batch(tasks, max_workers=1)
 
     print("\nAll function specs generated successfully.")
 
