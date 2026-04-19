@@ -1,41 +1,52 @@
 project_meta:
-  name: Online Bakery Shop Backend
-  version: 1.0.0
+  name: Online Bakery Shop
+  version: '1.0'
   language: Python
-  type: Backend
-  description: A robust backend for an online bakery shop using Django and PostgreSQL
+  type: Web Application
+  description: A web-based application for customers to browse and purchase baked
+    goods
 architecture:
-  pattern: RESTful API
+  pattern: Microservices
   entry_points:
-  - name: Django REST API
-    type: HTTP
-    description: Provides endpoints for the frontend to interact with the backend.
+  - name: Frontend
+    type: Web Interface
+    description: User-friendly interface for customers to browse products and checkout
+  - name: Backend
+    type: RESTful API
+    description: Handles data storage, processing, and retrieval
   components:
-  - name: Backend (Django)
-    responsibility: Provide a RESTful API for the frontend to interact with.
-  - name: Database (PostgreSQL)
-    responsibility: Store all data related to the bakery shop such as products, orders,
-      users, etc.
-  data_flow_summary: The frontend consumes RESTful APIs provided by the backend to
-    display dynamic content. The database stores necessary data and is accessed through
-    the backend API.
+  - name: Frontend
+    responsibility: Handles user interactions and communicates with Backend through
+      RESTful API calls
+  - name: Backend
+    responsibility: Manages data storage, processing, and retrieval, and provides
+      RESTful API for Frontend to interact with
+  - name: Database
+    responsibility: Stores product information, customer data, and order history
+  - name: DevOps
+    responsibility: Automates testing, deployment, and monitoring of the application
+  data_flow_summary: Frontend sends RESTful API requests to Backend, which processes
+    requests, interacts with Database, and returns responses to Frontend
 infrastructure:
   external_services:
   - name: NGINX
-    role: Web Server and Reverse Proxy
-    purpose: Balances load across multiple instances of the application.
+    role: Web Server
+    purpose: Serves static files and routes requests to Backend
+  - name: Database Server
+    role: Data Storage
+    purpose: Stores and retrieves data for the application
 dependencies:
   internal:
   - name: Django
     version: null
-    purpose: Framework for building the backend API
-  - name: PostgreSQL
+    purpose: Backend framework for building RESTful API
+  - name: React
     version: null
-    purpose: Database management system
+    purpose: Frontend framework for building user interface
   external:
-  - name: Celery
-    version: 5.2.7
-    purpose: Asynchronous task processing for scalability
-  - name: Git
-    version: 2.34.1
-    purpose: Version control system
+  - name: Python
+    version: '3.9'
+    purpose: Programming language for Backend development
+  - name: Node.js
+    version: '14.17'
+    purpose: Runtime environment for Frontend development

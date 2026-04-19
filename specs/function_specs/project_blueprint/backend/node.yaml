@@ -1,75 +1,41 @@
 file: project_blueprint/backend/node
 functions:
-- name: createOrder
+- name: create_product
   parameters:
-  - name: orderId
+  - name: product_name
+    type: string
+    entity: product
+  - name: product_description
+    type: string
+    entity: product
+  return_type: integer
+  entity: product
+  produces:
+  - product.product_id
+  description: Creates a new product in the system
+- name: update_order
+  parameters:
+  - name: order_id
+    type: integer
+    entity: order
+  - name: order_status
     type: string
     entity: order
-  - name: user_id
-    type: int
+  return_type: string
+  entity: order
+  produces:
+  - order.order_status
+  description: Updates the status of an existing order
+- name: authenticate_customer
+  parameters:
+  - name: customer_username
+    type: string
     entity: user
-  - name: product_ids
-    type: list[int]
-    entity: product
-  - name: quantity
-    type: list[int]
-    entity: order
-  - name: delivery_address
-    type: dict[str, str]
-    entity: address
-  return_type: int
-  entity: order
-  produces:
-  - order.order_id
-  description: This function processes a new order by creating an entry in the database
-    and returns the generated order ID.
-- name: updateOrderStatus
-  parameters:
-  - name: order_id
-    type: int
-    entity: order
-  - name: status
-    type: str
-    entity: order
-  return_type: bool
-  entity: order
-  produces:
-  - order.updated
-  description: This function updates the status of an existing order in the database
-    and returns a boolean indicating whether the update was successful.
-- name: getOrderDetails
-  parameters:
-  - name: order_id
-    type: int
-    entity: order
-  return_type: dict
-  entity: order
-  produces:
-  - order.order_details
-  description: This function retrieves detailed information about a specific order
-    from the database.
-- name: searchOrdersByUser
-  parameters:
-  - name: user_id
-    type: int
+  - name: customer_password
+    type: string
     entity: user
-  return_type: list[dict]
-  entity: order
+  return_type: string
+  entity: user
   produces:
-  - order.orders
-  description: This function searches for all orders associated with a given user
-    and returns them as a list of dictionaries containing order details.
-- name: processPayment
-  parameters:
-  - name: order_id
-    type: int
-    entity: order
-  - name: payment_details
-    type: dict[str, str]
-    entity: payment
-  return_type: bool
-  entity: order
-  produces:
-  - order.status
-  description: This function processes payment for an order and returns a boolean
-    indicating the success of the transaction.
+  - customer.authentication_token
+  description: Authenticates a customer and returns an authentication token

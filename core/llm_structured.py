@@ -22,15 +22,15 @@ T = TypeVar("T", bound=BaseModel)
 
 
 class StructuredLLM:
-    def __init__(self, model: str = None):
+    def __init__(self, model: str = None, provider: str = None):
 
-        provider = os.getenv("LLM_PROVIDER", "ollama")
+        self.provider = provider or os.getenv("LLM_PROVIDER", "ollama")
 
         if model:
             self.model = model
         else:
-            if provider == "nvidia":
-                self.model = os.getenv("NVIDIA_DEFAULT_MODEL", "meta/llama3-70b-instruct")
+            if self.provider == "nvidia":
+                self.model = os.getenv("NVIDIA_DEFAULT_MODEL", "meta/llama-3.3-70b-instruct")
             else:
                 self.model = os.getenv("OLLAMA_DEFAULT_MODEL", "qwen2.5:7b")
 
@@ -91,7 +91,7 @@ class StructuredLLM:
         base_prompt = full_prompt
 
         for attempt in range(max_retries + 1):
-            raw_output = call_llm(full_prompt, model=self.model)
+            raw_output = call_llm(full_prompt, model=self.model, provider=self.provider)
 
             try:
                 # Extract first JSON object

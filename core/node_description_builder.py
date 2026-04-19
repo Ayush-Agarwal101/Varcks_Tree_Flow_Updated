@@ -4,11 +4,11 @@ import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import json
-from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
 from llm.local_llama_client import call_llm
-
 load_dotenv()
+from llm.batch_runner import run_batch
+
 
 # Helper: Extract all nodes (folders + files)
 
@@ -39,6 +39,19 @@ def extract_all_nodes(tree, parents=None):
         results.extend(extract_all_nodes(child, new_parents))
 
     return results
+
+def call_with_retry(prompt, retries=2):
+    for i in range(retries + 1):
+        try:
+            response = call_llm(prompt, provider="nvidia", model="meta/llama-3.3-70b-instruct")
+
+            if not response or len(response.strip()) < 50:
+                raise ValueError("Empty or too short response")
+            return response
+
+        except Exception as e:
+            if i == retries:
+                raise e
 
 # Main Builder
 
@@ -142,7 +155,7 @@ def build_node_descriptions(
         print(f"Generating description for: {node['full_path']}")
 
         try:
-            response = call_llm(full_prompt)
+            response = call_with_retry(full_prompt)
         except Exception as e:
             print(f"[ERROR] Failed for {node['full_path']}: {e}")
             return
@@ -155,24 +168,24 @@ def build_node_descriptions(
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(response)
 
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        futures = [
-            executor.submit(
-                process_node,
-                node,
-                user_requirement,
-                tech_stack_summary,
-                global_description,
-                output_base_dir
-            )
-            for node in all_nodes
-        ]
+    tasks = []
 
-        for future in as_completed(futures):
-            try:
-                future.result()
-            except Exception as e:
-                print("[THREAD ERROR]", e)
+    for node in all_nodes:
+        def make_task(node=node):
+            def task():
+                process_node(
+                    node,
+                    user_requirement,
+                    tech_stack_summary,
+                    global_description,
+                    output_base_dir
+                )
+
+            return task
+
+        tasks.append(make_task())
+
+    run_batch(tasks, max_workers=2)
 
     print("\nAll node descriptions generated successfully.")
 

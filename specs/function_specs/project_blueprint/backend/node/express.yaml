@@ -1,70 +1,38 @@
 file: project_blueprint/backend/node/express
 functions:
-- name: createProduct
+- name: get_product
   parameters:
-  - name: req
-    type: object
-    entity: request
-  - name: res
-    type: object
-    entity: response
-  return_type: 'null'
+  - name: product_id
+    type: integer
+    entity: product
+  return_type: object
   entity: product
   produces:
-  - product.null
-  description: Create a new product in the database and return a success or error
-    response.
-- name: updateProduct
+  - product.info
+  description: Retrieves product information from the database
+- name: create_order
   parameters:
-  - name: req
-    type: object
-    entity: request
-  - name: res
-    type: object
-    entity: response
-  return_type: 'null'
-  entity: product
+  - name: customer_id
+    type: integer
+    entity: user
+  - name: product_ids
+    type: array
+    entity: product
+  return_type: integer
+  entity: order
   produces:
-  - product.null
-  description: Update an existing product's details in the database and return a success
-    or error response.
-- name: deleteProduct
+  - order.id
+  description: Creates a new order and returns the order ID
+- name: authenticate_customer
   parameters:
-  - name: req
-    type: object
-    entity: request
-  - name: res
-    type: object
-    entity: response
-  return_type: 'null'
-  entity: product
+  - name: username
+    type: string
+    entity: user
+  - name: password
+    type: string
+    entity: user
+  return_type: integer
+  entity: user
   produces:
-  - product.null
-  description: Delete a product from the database by its ID and return a success or
-    error response.
-- name: getProductById
-  parameters:
-  - name: req
-    type: object
-    entity: request
-  - name: res
-    type: object
-    entity: response
-  return_type: '[product]'
-  entity: product
-  produces:
-  - product.data
-  description: Retrieve a product's details by its ID and return them in the response.
-- name: getAllProducts
-  parameters:
-  - name: req
-    type: object
-    entity: request
-  - name: res
-    type: object
-    entity: response
-  return_type: '[product]'
-  entity: product
-  produces:
-  - product.data
-  description: Fetch all products from the database and return them in the response.
+  - customer.id
+  description: Authenticates a customer and returns the customer ID

@@ -61,11 +61,11 @@ Generate a complete global project description. Format the output in professiona
 
     full_prompt = system_prompt + "\n\n" + user_prompt
 
-    response = call_llm(full_prompt)
+    response = call_llm(full_prompt, provider="nvidia",model="meta/llama-3.3-70b-instruct")
 
     os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-    with open(output_path, "w", encoding="utf-8") as f:
+    with open(output_path, "w", encoding="utf-8") as f: 
         f.write(response)
 
     print(f"\nGlobal project description saved to {output_path}")

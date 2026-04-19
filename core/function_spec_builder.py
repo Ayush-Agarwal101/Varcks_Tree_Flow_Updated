@@ -2,7 +2,6 @@
 
 import os
 import sys
-
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import yaml
 import json
@@ -10,13 +9,11 @@ from dotenv import load_dotenv
 from typing import List
 from pydantic import BaseModel, field_validator
 from core.llm_structured import StructuredLLM
+from llm.batch_runner import run_batch
 from core.normalization.entity_normalizer import normalize_entity
 load_dotenv()
 
-
-# -----------------------------
 # Schema Models
-# -----------------------------
 
 class ParameterSpec(BaseModel):
     name: str
@@ -27,7 +24,6 @@ class ParameterSpec(BaseModel):
     def normalize_entity_field(cls, v, info):
         name = info.data.get("name", "")
         return normalize_entity(v, name)
-
 
 class FunctionSpec(BaseModel):
     name: str
@@ -81,10 +77,7 @@ class FileFunctionSpec(BaseModel):
     file: str
     functions: List[FunctionSpec]
 
-
-# -----------------------------
 # Extract Markdown
-# -----------------------------
 
 def extract_key_functions_section(markdown_text: str) -> str:
     if "## Key Functions" not in markdown_text:
@@ -100,18 +93,17 @@ def extract_key_functions_section(markdown_text: str) -> str:
 
     return section.strip()
 
-
-# -----------------------------
 # Builder
-# -----------------------------
 
 def build_function_specs(
     node_docs_dir: str,
     output_dir: str = "specs/function_specs"
 ):
 
-    llm = StructuredLLM()
+    llm = StructuredLLM(provider="nvidia", model="meta/llama-3.3-70b-instruct")
     os.makedirs(output_dir, exist_ok=True)
+
+    tasks = []
 
     for root, _, files in os.walk(node_docs_dir):
         for file in files:
@@ -120,24 +112,25 @@ def build_function_specs(
 
             file_path = os.path.join(root, file)
 
-            with open(file_path, "r", encoding="utf-8") as f:
-                content = f.read()
+            def make_task(file_path=file_path):
+                def task():
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        content = f.read()
 
-            key_section = extract_key_functions_section(content)
+                    key_section = extract_key_functions_section(content)
 
-            if not key_section.strip():
-                continue  # Skip folders without functions
+                    if not key_section.strip():
+                        return
 
-            relative_path = os.path.relpath(file_path, node_docs_dir)
-            yaml_output_path = os.path.join(
-                output_dir,
-                relative_path.replace(".md", ".yaml")
-            )
+                    relative_path = os.path.relpath(file_path, node_docs_dir)
+                    yaml_output_path = os.path.join(
+                        output_dir,
+                        relative_path.replace(".md", ".yaml")
+                    )
 
-            os.makedirs(os.path.dirname(yaml_output_path), exist_ok=True)
+                    os.makedirs(os.path.dirname(yaml_output_path), exist_ok=True)
 
-            system_prompt = """You are converting conceptual function descriptions into strict machine-readable function specifications.
-
+                    system_prompt = """You are converting conceptual function descriptions into strict machine-readable function specifications.
 Rules:
 - Only use functions listed.
 - Do NOT invent new functions.
@@ -145,9 +138,7 @@ Rules:
 - Output strict JSON only.
 """
 
-            user_prompt = f"""
-File Path:
-{relative_path.replace('.md','')}
+                    user_prompt = f"""File Path:{relative_path.replace('.md','')}
 
 Conceptual Function Section:
 {key_section}
@@ -177,24 +168,32 @@ Return JSON strictly matching this schema:
 }}
 
 Rules:
-- Each parameter MUST have an entity (e.g., user, order, session, etc) which represents the domain object the variable belongs to.
+- Each parameter MUST have entity (eg., user, order, session, etc) which represents the domain object the variable belongs to.
 - "produces" must list outputs in format: entity.variable
 - Every function MUST produce at least one output. If no clear output, infer one logically
-- Do NOT invent new functions. Do NOT use double quotes inside string values. If needed, use single quotes instead.
-- Use forward slashes (/) in file paths, NOT backslashes (\\)
-- Example: project/a/b/file.ts
-- NEVER use Windows-style paths
+- Use forward slashes (/) in file paths, NOT backslashes (\\). Example: project/a/b/file.ts
 """
 
-            spec: FileFunctionSpec = llm.call(
-                prompt=system_prompt + "\n\n" + user_prompt,
-                schema=FileFunctionSpec
-            )
+                    try:
+                        spec: FileFunctionSpec = llm.call(
+                            prompt=system_prompt + "\n\n" + user_prompt,
+                            schema=FileFunctionSpec
+                        )
+                    except Exception as e:
+                        print(f"[ERROR] {relative_path}: {e}")
+                        return
 
-            with open(yaml_output_path, "w", encoding="utf-8") as f:
-                yaml.dump(spec.model_dump(), f, sort_keys=False)
+                    with open(yaml_output_path, "w", encoding="utf-8") as f:
+                        yaml.dump(spec.model_dump(), f, sort_keys=False)
 
-            print(f"Generated YAML for {relative_path}")
+                    print(f"[YAML] {relative_path}")
+
+                return task
+
+            tasks.append(make_task())
+
+    # Batch run
+    run_batch(tasks, max_workers=2)
 
     print("\nAll function specs generated successfully.")
 

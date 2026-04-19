@@ -1,44 +1,26 @@
 # project_blueprint/frontend/react_vite
-
 ## Purpose
-To provide a modern, interactive frontend experience for users of the online bakery shop.
+The react_vite node serves as a template for the online bakery shop's frontend, utilizing React, Vite, and TypeScript to provide a seamless user experience.
 
 ## Responsibilities
-- User interface design and implementation.
-- Real-time data fetching from the backend.
-- Handling user interactions and displaying dynamic content.
+* Contains the React, Vite, and TypeScript code for the frontend application
+* Handles user interactions, such as browsing products and checkout
+* Communicates with the backend through RESTful API calls
 
-## Key Functions (Conceptual)
-
-### Function: `initializeApplication`
-- **Parameters**: `config` (object)
-- **Return Value**: None
-- **Responsibility**: Initializes the application with provided configuration settings.
-
-### Function: `fetchProducts`
-- **Parameters**: `category` (string), `callback` (function)
-- **Return Value**: None
-- **Responsibility**: Fetches products from the backend based on the specified category and processes the response using the callback function.
-
-### Function: `handleUserLogin`
-- **Parameters**: `username` (string), `password` (string), `onSuccess` (function), `onFailure` (function)
-- **Return Value**: None
-- **Responsibility**: Authenticates a user with the backend and handles success or failure callbacks.
-
-### Function: `showProductDetails`
-- **Parameters**: `productId` (number)
-- **Return Value**: None
-- **Responsibility**: Displays details of a specific product to the user.
-
-### Function: `placeOrder`
-- **Parameters**: `orderItems` (array), `shippingAddress` (object), `paymentMethod` (string)
-- **Return Value**: Promise resolving with `orderId` (number) or rejection with error
-- **Responsibility**: Places an order with the specified items, address, and payment method.
+## Key Functions
+- get_product_list(category, limit) -> list_of_products
+  Description: Retrieves a list of products based on the given category and limit.
+- add_to_cart(product_id, quantity) -> cart_update_status
+  Description: Adds a product to the user's cart with the specified quantity.
+- checkout(cart_id) -> order_status
+  Description: Processes the user's checkout request and returns the order status.
 
 ## Interactions
-- Communicates with backend services via RESTful APIs.
-- Receives data from the Django backend for rendering and processing user actions.
+* Sends RESTful API requests to the backend to retrieve data or perform actions
+* Receives responses from the backend and updates the user interface accordingly
+* Interacts with the database indirectly through the backend
 
 ## Future Extensibility
-- Easily integrate additional features or third-party libraries to enhance functionality.
-- Modular structure allows for easy addition of new components without affecting existing ones.
+* Can be extended to include additional features, such as user authentication and order tracking
+* Can be modified to support multiple payment gateways and shipping options
+* Can be optimized for better performance and scalability using caching and content delivery networks (CDNs)

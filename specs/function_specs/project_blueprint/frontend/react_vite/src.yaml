@@ -1,101 +1,38 @@
-file: project_blueprint/frontend/react_vite/src
+file: project_blueprint/frontend/react_vite/src/components.ts
 functions:
-- name: login
+- name: render_component
   parameters:
-  - name: username
-    type: string
-    entity: user
-  - name: password
-    type: string
-    entity: user
-  return_type: '{ status: ''success'' | ''failure'', token?: string }'
-  entity: session
-  produces:
-  - session.token
-  description: Handle user authentication by making a POST request to the backend
-    for login credentials.
-- name: register
-  parameters:
-  - name: firstName
-    type: string
-    entity: user
-  - name: lastName
-    type: string
-    entity: user
-  - name: email
-    type: string
-    entity: user
-  - name: password
-    type: string
-    entity: user
-  return_type: '{ status: ''success'' | ''failure'', token?: string }'
-  entity: session
-  produces:
-  - session.token
-  description: Handle user registration by making a POST request to the backend with
-    new account details.
-- name: fetchProducts
-  parameters:
-  - name: category
-    type: string
+  - name: product_id
+    type: number
     entity: product
-  return_type: '{ products: Array<{ id: number, name: string, price: number }>, status:
-    ''success'' | ''failure'' }'
-  entity: product
-  produces:
-  - products.id
-  - products.name
-  - products.price
-  description: Fetch a list of bakery products from the backend. Optionally filter
-    by category.
-- name: placeOrder
-  parameters:
-  - name: items
-    type: 'Array<{ productId: number, quantity: number }>'
-    entity: order
-  return_type: '{ orderNumber: string, status: ''success'' | ''failure'' }'
-  entity: order
-  produces:
-  - order.orderNumber
-  description: Place an order for selected products from the cart and update local
-    state.
-- name: fetchUserOrders
-  parameters:
-  - name: userId
+  - name: user_id
     type: number
     entity: user
-  return_type: '{ orders: Array<{ id: number, items: Array<{ productId: number, name:
-    string, quantity: number }>, totalAmount: number }>, status: ''success'' | ''failure''
-    }'
-  entity: order
+  return_type: string
+  entity: component
   produces:
-  - orders.id
-  - orders.items.productid
-  - orders.items.name
-  - orders.items.quantity
-  - orders.totalamount
-  description: Fetch a list of user's past orders from the backend.
-- name: updateUserProfile
+  - component.rendered_component
+  description: Renders a product component with user-specific data.
+- name: handle_add_to_cart
   parameters:
-  - name: firstName
-    type: string
-    entity: user
-  - name: lastName
-    type: string
-    entity: user
-  - name: email
-    type: string
-    entity: user
-  - name: password
-    type: string
-    entity: user
-  return_type: '{ status: ''success'' | ''failure'' }'
-  entity: session
-  produces: []
-  description: Update user profile information by making a PATCH request to the backend.
-- name: logout
-  parameters: []
-  return_type: '{ status: ''success'' | ''failure'' }'
-  entity: session
-  produces: []
-  description: Log out the current user session and clear local storage tokens.
+  - name: product_id
+    type: number
+    entity: product
+  - name: quantity
+    type: number
+    entity: order
+  return_type: boolean
+  entity: cart
+  produces:
+  - cart.update_status
+  description: Adds a product to the user's cart and updates the cart status.
+- name: fetch_product_data
+  parameters:
+  - name: product_id
+    type: number
+    entity: product
+  return_type: object
+  entity: product
+  produces:
+  - product.data
+  description: Retrieves product data from the backend API.

@@ -1,12 +1,38 @@
 file: project_blueprint/backend/node/nestjs/src/main.ts
 functions:
-- name: bootstrapApplication
+- name: initialize_app
   parameters:
-  - name: app
-    type: NestApplication
-    entity: unknown
-  return_type: void
-  entity: unknown
-  produces: []
-  description: Initializes the application by loading environment configurations,
-    registering modules, and starting the server.
+  - name: environment
+    type: string
+    entity: app
+  - name: settings
+    type: object
+    entity: app
+  return_type: object
+  entity: app
+  produces:
+  - app.instance
+  description: Initializes the application with the given environment and settings
+- name: configure_api_endpoints
+  parameters:
+  - name: routes
+    type: array
+    entity: api
+  - name: handlers
+    type: object
+    entity: api
+  return_type: array
+  entity: api
+  produces:
+  - api.endpoints
+  description: Configures the RESTful API endpoints with the given routes and handlers
+- name: establish_database_connection
+  parameters:
+  - name: db_config
+    type: object
+    entity: database
+  return_type: object
+  entity: database
+  produces:
+  - database.connection
+  description: Establishes a connection to the database with the given configuration

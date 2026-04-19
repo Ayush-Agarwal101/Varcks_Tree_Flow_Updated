@@ -27,7 +27,7 @@ def build_project_blueprint(
     user_requirement = meta["user_initial_prompt"]
     tech_stack = meta["tech_stack_summary"]
 
-    llm = StructuredLLM()
+    llm = StructuredLLM(provider="nvidia",model="meta/llama-3.3-70b-instruct")
 
     system_prompt = """
     You are generating a structured project blueprint.

@@ -1,55 +1,24 @@
 # project_blueprint/backend/node/nestjs/src/modules
-
 ## Purpose
-The `modules` directory in the Django backend project serves as a container for feature-based modules, allowing for clear separation of concerns and modular development.
+The modules folder contains feature-based modules for the backend application, organizing related functionality and promoting modularity.
 
 ## Responsibilities
-1. **Defining Feature Modules**: Each module represents a specific aspect of the bakery shop functionality.
-2. **Isolating Business Logic**: Ensures that each piece of business logic is encapsulated within its respective module.
-3. **API Endpoint Management**: Manages RESTful API endpoints for different functionalities.
+* Contain feature-specific logic and data models
+* Define API endpoints for each module
+* Handle business logic and validation for each feature
 
 ## Key Functions (Conceptual)
-
-### user.module.ts
-- **Function Name**: `configureModule`
-  - **Parameters**:
-    - `@Inject()` `imports`: Array of imported modules.
-    - `@Inject()` `controllers`: Array of controllers.
-    - `@Inject()` `providers`: Array of services and providers.
-    - `@Inject()` `guards`: Array of guards for authorization.
-  - **Return Value**: `void`
-  - **Responsibility**: Configures the user module by defining its imports, controllers, providers, and guards.
-
-### user.controller.ts
-- **Function Name**: `getUser`
-  - **Parameters**:
-    - `@Param('id') id`: User ID to fetch.
-  - **Return Value**: `User | null`
-  - **Responsibility**: Fetches a user by ID from the database and returns it.
-
-- **Function Name**: `createUser`
-  - **Parameters**:
-    - `@Body() createUserDto`: DTO containing user details.
-  - **Return Value**: `User`
-  - **Responsibility**: Creates a new user in the database using provided details.
-
-### user.service.ts
-- **Function Name**: `findUserById`
-  - **Parameters**:
-    - `id: number`: User ID to fetch.
-  - **Return Value**: `User | null`
-  - **Responsibility**: Finds a user by ID from the database.
-
-- **Function Name**: `createUser`
-  - **Parameters**:
-    - `userDetails: UserDto`: DTO containing user details.
-  - **Return Value**: `User`
-  - **Responsibility**: Creates a new user in the database using provided details.
+* get_product_info(product_id, category) -> product_details
+  Description: Retrieves product information based on product ID and category.
+* process_order(order_data, customer_id) -> order_status
+  Description: Processes an order and returns the order status.
 
 ## Interactions
-- **Interaction with Database**: Each service interacts directly with the PostgreSQL database through Django ORM to perform CRUD operations.
-- **Interaction with Other Modules**: Modules interact with each other via dependencies and services defined within their respective modules.
+* Communicate with the database to retrieve and update data
+* Interact with other modules to share data and functionality
+* Handle requests and responses from the frontend application
 
 ## Future Extensibility
-- **Adding New Modules**: Easily add new feature modules without affecting existing ones, maintaining a clean and modular structure.
-- **Enhancing Existing Modules**: Gradually enhance existing modules by adding more functionalities or optimizing current ones.
+* Add new modules for additional features and functionality
+* Extend existing modules to include new logic and data models
+* Integrate with external services and APIs to enhance functionality

@@ -12,8 +12,10 @@ from core.langgraph_runner import LangGraphRecorder
 from core.llm_structured import StructuredLLM
 from core.schemas import NodeDecision
 from dotenv import load_dotenv
+
 load_dotenv()
 from langsmith import traceable
+
 
 # LLM CLIENT
 
@@ -26,29 +28,32 @@ class LLMClient:
         if not options:
             raise ValueError("No options available for selection.")
 
-        options_text = "\n".join(f"- {opt}" for opt in options)
+        options_text = " | ".join(f"{i + 1} {opt}" for i, opt in enumerate(options))
 
         formatted_prompt = f"""
         You are navigating a predefined decision tree.
+
         Your task is NOT to generate a project structure.
         Your task is ONLY to select ONE option from the provided list.
 
-        ### Context
-        {prompt.strip()}
-        
-        ### Available Options
+        USER REQUIREMENT:
+        {prompt}
+
+        AVAILABLE OPTIONS (choose exactly one):
         {options_text}
-        
-        ### Output Format (STRICT JSON)
-        {{
-          "choice": "exact_option_from_list",
-          "rationale": "short explanation",
-          "purpose": "what this option enables"
-        }}
-        
+
         Rules:
-        - choice MUST match one option exactly
-        - DO NOT return multiple choices
+        - Choose choice ONLY by index (number)
+        - Do NOT return option text or a list
+        - Do NOT output anything except JSON
+
+        Return ONLY valid JSON in this exact format:
+
+        {{
+          "choice": 1,
+          "rationale": "short",
+          "purpose": "short"
+        }}
         """
 
         # response is a NodeDecision object returned by this function
@@ -57,31 +62,24 @@ class LLMClient:
             schema=NodeDecision
         )
 
-        # Robust semantic validation (case-insensitive match)
+        # --------- HARD DETERMINISTIC VALIDATION ---------
+        choice_index = response.choice
 
-        choice_value = response.choice
+        # Try converting to int (handles cases like "2", [2], etc.)
+        try:
+            if isinstance(choice_index, list):
+                choice_index = choice_index[0]
+            choice_index = int(choice_index)
+        except Exception:
+            # fallback (never break traversal)
+            choice_index = 1
 
-        # If model returned list instead of string
-        if isinstance(choice_value, list):
-            if len(choice_value) == 1:
-                choice_value = choice_value[0]
-            else:
-                raise ValueError(
-                    f"Model returned multiple choices {choice_value}. Only one allowed."
-                )
+        # Clamp to valid range
+        choice_index = max(1, min(choice_index, len(options)))
 
-        choice_value = str(choice_value).strip()
-
-        # Create lowercase lookup map
-        option_lookup = {opt.lower(): opt for opt in options}
-
-        if choice_value.lower() not in option_lookup:
-            raise ValueError(
-                f"Invalid choice '{choice_value}'. Must be one of {options}"
-            )
-
-        # Replace with canonical tree value
-        response.choice = option_lookup[choice_value.lower()]
+        # --------- STORE BOTH INDEX + VALUE ---------
+        response.choice_index = choice_index
+        response.choice_name = options[choice_index - 1]
 
         return response
 
@@ -129,21 +127,21 @@ def extract_children_from_value(value: Any) -> List[Tuple[str, Any]]:
 
 # TRAVERSAL
 
-@dataclass         # This class is mainly used to store data, so automatically create useful methods like init, repr, eq for it So you don’t need to write them manually.
+@dataclass  # This class is mainly used to store data, so automatically create useful methods like init, repr, eq for it So you don’t need to write them manually.
 class BranchState:
-    path: List[str]         # technology stack selected so far
-    node_name: str          # current node name in the decision tree
-    node_value: Any         # The subtree under the current node
-    prompt: str             # original user prompt
+    path: List[str]  # technology stack selected so far
+    node_name: str  # current node name in the decision tree
+    node_value: Any  # The subtree under the current node
+    prompt: str  # original user prompt
+
 
 @traceable(name="Decision Traversal")
 def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
-
     found = find_key_recursive(tree, start_node_name)
     if not found:
         raise ValueError(f"Start node '{start_node_name}' not found.")
 
-    start_name, start_value = found         # tuple unpacking
+    start_name, start_value = found  # tuple unpacking
 
     recorder = LangGraphRecorder()
 
@@ -166,6 +164,7 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
             break
 
         child_names = [c[0] for c in children]
+        options_text = " | ".join(f"{i + 1} {name}" for i, name in enumerate(child_names))
 
         # Build contextual prompt for this decision
 
@@ -185,15 +184,10 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
         Current Decision Node:
         {branch.node_name}
 
-        Choose the single best option for the project.
-        """
-
-        # For visualization in recorder
-        display_prompt = f"""
-        {decision_prompt.strip()}
-
         Available Options:
-        {", ".join(child_names)}
+        {options_text}
+
+        Choose the single best option for the project.
         """
 
         decision = llm.choose_option(decision_prompt, child_names)
@@ -207,7 +201,14 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
             purpose=decision.purpose
         )
 
-        recorder.add_choice(branch.node_name, [chosen_name])
+        recorder.add_prompt_to_node(branch.node_name, decision_prompt)
+        recorder.add_choice(
+            branch.node_name,
+            [{
+                "index": decision.choice_index,
+                "name": decision.choice
+            }]
+        )
 
         matched = next((c for c in children if c[0] == chosen_name), None)
 
@@ -221,7 +222,7 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
         recorder.add_prompt_to_edge(
             branch.node_name,
             child_name,
-            display_prompt
+            decision_prompt
         )
 
         branch = BranchState(
@@ -233,10 +234,10 @@ def traverse(tree: Any, start_node_name: str, llm: LLMClient, base_prompt: str):
 
     return completed_path, recorder
 
+
 # FINAL PROMPT BUILDER
 
 def build_clean_final_prompt(initial_prompt, tech_stack, recorder):
-
     prompt = f"""# Project Specification
 
 ## User Requirement
@@ -247,9 +248,9 @@ def build_clean_final_prompt(initial_prompt, tech_stack, recorder):
 """
 
     for i, tech in enumerate(tech_stack):
-        prompt += f"### {i+1}. {tech}\n"
+        prompt += f"### {i + 1}. {tech}\n"
 
-        parent = tech_stack[i-1] if i > 0 else None
+        parent = tech_stack[i - 1] if i > 0 else None
         data = recorder.choice_rationales.get((parent, tech))
 
         if data:
@@ -262,6 +263,7 @@ def build_clean_final_prompt(initial_prompt, tech_stack, recorder):
     prompt += " → ".join(tech_stack)
 
     return prompt
+
 
 # CLI
 

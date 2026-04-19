@@ -15,6 +15,17 @@
   "is_leaf": false,
   "children": [
     {
+      "type": "file",
+      "name": "README",
+      "extension": ".md",
+      "mandatory": "no",
+      "description": "Explains how to use the blueprint repository",
+      "full_path": "project_blueprint/README.md",
+      "children_names": [],
+      "is_leaf": true,
+      "children": []
+    },
+    {
       "type": "folder",
       "name": "frontend",
       "extension": "NA",
@@ -346,17 +357,6 @@
                   "mandatory": "no",
                   "description": "TypeScript configuration",
                   "full_path": "project_blueprint/backend/node/nestjs/tsconfig.json",
-                  "children_names": [],
-                  "is_leaf": true,
-                  "children": []
-                },
-                {
-                  "type": "file",
-                  "name": "nest-cli",
-                  "extension": ".json",
-                  "mandatory": "no",
-                  "description": "Nest CLI configuration",
-                  "full_path": "project_blueprint/backend/node/nestjs/nest-cli.json",
                   "children_names": [],
                   "is_leaf": true,
                   "children": []

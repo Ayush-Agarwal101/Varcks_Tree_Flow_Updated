@@ -1,70 +1,42 @@
 file: project_blueprint/frontend
 functions:
-- name: initializeApp
-  parameters: []
-  return_type: void
-  entity: unknown
-  produces: []
-  description: Initialize the React Vite application and set up necessary configurations.
-- name: fetchUserDetails
+- name: render_product_list
   parameters:
-  - name: userId
-    type: string
-    entity: user
-  return_type: Promise<UserDetails>
-  entity: user
-  produces:
-  - user.details
-  description: Fetch user details from the backend API.
-- name: createUser
-  parameters:
-  - name: username
-    type: string
-    entity: user
-  - name: email
-    type: string
-    entity: user
-  - name: password
-    type: string
-    entity: user
-  return_type: Promise<UserResponse>
-  entity: user
-  produces:
-  - user.response
-  description: Create a new user account on the backend and return the created user
-    data.
-- name: fetchProductList
-  parameters:
+  - name: product_id
+    type: integer
+    entity: product
   - name: category
     type: string
     entity: product
-  return_type: Promise<ProductList>
+  return_type: string
   entity: product
   produces:
-  - product.list
-  description: Fetch a list of products from the backend API, optionally filtered
-    by category.
-- name: addToCart
+  - product.rendered_list
+  description: Renders the product list based on the provided product ID and category
+- name: handle_add_to_cart
   parameters:
-  - name: productId
-    type: string
-    entity: cart
+  - name: product_id
+    type: integer
+    entity: product
   - name: quantity
-    type: number
-    entity: cart
-  return_type: Promise<CartResponse>
+    type: integer
+    entity: order
+  return_type: string
   entity: cart
   produces:
-  - cart.response
-  description: Add a product to the user's cart and update the cart on the backend.
-- name: placeOrder
+  - cart.update_status
+  description: Handles the addition of products to the cart and returns the update
+    status
+- name: process_checkout
   parameters:
-  - name: cartItems
-    type: array
+  - name: customer_info
+    type: object
+    entity: user
+  - name: order_details
+    type: object
     entity: order
-  return_type: Promise<OrderResponse>
+  return_type: string
   entity: order
   produces:
-  - order.response
-  description: Place an order with the selected items from the cart and return the
-    order details.
+  - order.status
+  description: Processes the checkout and returns the order status

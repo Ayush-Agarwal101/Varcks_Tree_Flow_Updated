@@ -3,5 +3,5 @@ python-dotenv
 graphviz
 langsmith
 ollama
-langchain-nvidia-ai-endpoints
 pyyaml
+openai

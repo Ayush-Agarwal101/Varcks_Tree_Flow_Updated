@@ -1,93 +1,41 @@
 file: project_blueprint/backend/node/nestjs
 functions:
-- name: registerUser
+- name: get_products
   parameters:
-  - name: email
+  - name: category
+    type: string
+    entity: product
+  - name: limit
+    type: number
+    entity: product
+  return_type: list
+  entity: product
+  produces:
+  - product.list
+  description: Retrieves a list of products based on the given category and limit
+- name: create_order
+  parameters:
+  - name: customer_id
+    type: number
+    entity: user
+  - name: products
+    type: list
+    entity: order
+  return_type: number
+  entity: order
+  produces:
+  - order.id
+  description: Creates a new order for the given customer and products
+- name: authenticate_user
+  parameters:
+  - name: username
     type: string
     entity: user
   - name: password
     type: string
-    entity: session
-  - name: firstName
-    type: string
     entity: user
-  - name: lastName
-    type: string
-    entity: user
-  return_type: void
+  return_type: number
   entity: user
-  produces: []
-  description: Registers a new user and saves the details to the database.
-- name: loginUser
-  parameters:
-  - name: email
-    type: string
-    entity: user
-  - name: password
-    type: string
-    entity: session
-  return_type: JwtToken
-  entity: session
   produces:
-  - jwt.token
-  description: Authenticates a user and returns a JWT token for authentication purposes.
-- name: getProducts
-  parameters: []
-  return_type: Product[]
-  entity: product
-  produces:
-  - product.name
-  - product.description
-  - product.price
-  - product.stockquantity
-  description: Retrieves all products from the database.
-- name: createProduct
-  parameters:
-  - name: name
-    type: string
-    entity: product
-  - name: description
-    type: string
-    entity: product
-  - name: price
-    type: number
-    entity: product
-  - name: stockQuantity
-    type: number
-    entity: product
-  return_type: Product
-  entity: product
-  produces:
-  - product.id
-  - product.name
-  - product.description
-  - product.price
-  - product.stockquantity
-  description: Creates a new product and saves it to the database.
-- name: placeOrder
-  parameters:
-  - name: userId
-    type: number
-    entity: user
-  - name: productIds
-    type: number[]
-    entity: product
-  return_type: Order
-  entity: order
-  produces:
-  - order.id
-  - order.userid
-  - order.productids
-  description: Places an order for specified products by a given user.
-- name: getOrdersByUserId
-  parameters:
-  - name: userId
-    type: number
-    entity: user
-  return_type: Order[]
-  entity: order
-  produces:
-  - order.id
-  - order.userid
-  - order.productids
-  description: Retrieves all orders placed by a specific user.
+  - user.id
+  description: Authenticates a user based on the given username and password

@@ -1,49 +1,26 @@
 # project_blueprint/backend/node/nestjs/src/main.ts
-
 ## Purpose
-The `main.ts` file serves as the bootstrap entry point for a NestJS application, initiating the server and ensuring that all components are properly set up before starting.
+The main application bootstrap file for the online bakery shop backend, responsible for initializing the Django application.
 
 ## Responsibilities
-- Initialize the NestJS application context.
-- Load environment configurations from `.env` files or other sources.
-- Register modules and providers.
-- Start the HTTP server to listen on the specified port.
-- Handle uncaught exceptions and errors.
+* Initializes the Django application
+* Configures the RESTful API endpoints
+* Establishes database connections
 
-## Key Functions (Conceptual)
-
-### Function: bootstrapApplication
-- **Parameters**: 
-  - `app`: The NestJS application instance.
-- **Return Value**: `void`
-- **Description**: Initializes the application by loading environment configurations, registering modules, and starting the server.
-
-```markdown
-```typescript
-function bootstrapApplication(app) {
-    // Load environment configurations
-    app.config.loadEnv();
-
-    // Register all required modules and providers
-    app.moduleRegistry.registerModules();
-
-    // Start the HTTP server to listen on the specified port
-    app.httpServer.listen(app.config.port, () => {
-        console.log(`Nest application is running on: ${app.config.port}`);
-    });
-
-    // Handle uncaught exceptions and errors
-    process.on('unhandledRejection', (err) => {
-        console.error('Unhandled Rejection:', err);
-    });
-}
-```
-```
+## Key Functions
+- initialize_app(environment, settings) -> app_instance
+  Description: Initializes the Django application with the given environment and settings.
+- configure_api_endpoints(routes, handlers) -> api_endpoints
+  Description: Configures the RESTful API endpoints with the given routes and handlers.
+- establish_database_connection(db_config) -> db_connection
+  Description: Establishes a connection to the database with the given configuration.
 
 ## Interactions
-- `main.ts` interacts with other files in the `src` directory such as configuration files (`config`) and modules (`modules`).
-- It does not directly interact with external components like frontend or database but is responsible for initializing them via dependencies.
+* Interacts with the database to retrieve and store data
+* Communicates with the frontend through RESTful API calls
+* Utilizes the DevOps pipeline for automated testing and deployment
 
 ## Future Extensibility
-- The function can be extended to include additional error handling strategies, logging mechanisms, or custom configurations.
-- New modules or providers can be easily added by registering them in the `bootstrapApplication` function.
+* Add support for multiple database connections
+* Integrate with additional third-party services for payment processing and inventory management
+* Implement load balancing and horizontal scaling for improved performance and reliability

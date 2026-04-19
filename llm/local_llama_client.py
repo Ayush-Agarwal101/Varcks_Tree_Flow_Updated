@@ -5,32 +5,31 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import ollama
-from langchain_nvidia_ai_endpoints import ChatNVIDIA
+from openai import OpenAI
+from llm.rate_limiter import RateLimiter
 from langsmith import traceable
 
+_nvidia_limiter = RateLimiter(40)
+
 # Global Config
-
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")
-# options: "ollama" or "nvidia"
 
-# Unified call_llm
+# Unified call_llm. Switch provider using LLM_PROVIDER env variable.
 @traceable(name="LLM Call")
-def call_llm(prompt: str, model: str = "qwen2.5:7b") -> str:
+def call_llm(prompt: str, model: str = "qwen2.5:7b", provider: str = None) -> str:
     """
-    Unified LLM call.
-    Switch provider using LLM_PROVIDER env variable.
-    Returns plain string output.
-    No streaming.
+    Returns plain string output. No streaming.
     """
+    provider = provider or LLM_PROVIDER
 
-    if LLM_PROVIDER == "ollama":
+    if provider == "ollama":
         return _call_ollama(prompt, model)
 
-    elif LLM_PROVIDER == "nvidia":
+    elif provider == "nvidia":
         return _call_nvidia(prompt, model)
 
     else:
-        raise ValueError(f"Unknown LLM_PROVIDER: {LLM_PROVIDER}")
+        raise ValueError(f"Unknown provider: {provider}")
 
 # Ollama (Non-streaming)
 
@@ -46,17 +45,21 @@ def _call_ollama(prompt: str, model: str) -> str:
 # NVIDIA (Non-streaming)
 
 def _call_nvidia(prompt: str, model: str) -> str:
+    _nvidia_limiter.wait()
+
     api_key = os.getenv("NVIDIA_API_KEY")
+
     if not api_key:
         raise ValueError("NVIDIA_API_KEY missing in .env")
 
-    llm = ChatNVIDIA(
-        model=model,
-        api_key=api_key,
-        temperature=0.0,
-        max_tokens=4096,
+    client = OpenAI(
+        base_url="https://integrate.api.nvidia.com/v1",
+        api_key=api_key
     )
+    try:
+        completion = client.chat.completions.create(model=model,messages=[{"role": "user", "content": prompt}],temperature=0.0,top_p=0.7,max_tokens=4096, stream=False)
 
-    response = llm.invoke(prompt)
+        return completion.choices[0].message.content
 
-    return response.content
+    except Exception as e:
+        raise RuntimeError(f"NVIDIA call failed: {str(e)}")
