@@ -2,7 +2,6 @@
 
 import re
 
-
 def to_snake_case(name: str) -> str:
     name = name.replace("-", "_").replace(" ", "_")
 
@@ -13,27 +12,48 @@ def to_snake_case(name: str) -> str:
 
 
 def normalize_variable(var: str) -> str:
+    if not var or "." not in var:
+        return var
+
+    entity, name = var.split(".", 1)
+
+    entity = entity.lower().strip()
+    name = name.strip()
+
+    # Convert camelCase → snake_case
+    name = to_snake_case(name)
+
+    # Remove entity prefix duplication
+    if name.startswith(entity + "_"):
+        name = name[len(entity) + 1:]
+
+    # Normalize common suffixes
+    name = _normalize_suffix(name)
+
+    return f"{entity}.{name}"
+
+
+def _normalize_suffix(name: str) -> str:
     """
-    Input: userId OR user.userId OR user_id
-    Output: user.id
+    Generic suffix normalization (SAFE version)
     """
 
-    if "." in var:
-        entity, attr = var.split(".", 1)
-    else:
-        entity, attr = "unknown", var
+    # remove prefixes like new_, old_, temp_
+    name = re.sub(r"^(new|old|temp|updated)_", "", name)
 
-    entity = to_snake_case(entity)
-    attr = to_snake_case(attr)
+    # unify id patterns safely
+    if name.endswith("_id"):
+        return "id"
 
-    # common canonicalizations
-    if attr in ["userid", "user_id", "user_id_"]:
-        attr = "id"
+    # unify list patterns
+    if name.endswith("_list") or name.endswith("_array"):
+        return "list"
 
-    if attr in ["usernameoremail", "username_or_email"]:
-        attr = "username_or_email"
+    # DO NOT collapse semantic words
+    # keep them as-is:
+    # details, data, info, success, status, result
 
-    return f"{entity}.{attr}"
+    return name
 
 
 def normalize_function_name(name: str) -> str:

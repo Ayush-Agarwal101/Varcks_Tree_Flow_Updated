@@ -1,65 +1,44 @@
-file: project/blueprint/backend/node/nestjs/src/modules/user/user.service.ts
+file: project_blueprint/backend/node/nestjs/src/modules/user/user.service.ts
 functions:
-- name: registerUser
+- name: get_user_info
   parameters:
   - name: username
     type: string
     entity: user
-  - name: email
-    type: string
-    entity: user
   - name: password
     type: string
     entity: user
   return_type: object
   entity: user
   produces:
-  - user.details
-  description: Registers a new user in the system. Validates input, hashes passwords,
-    and saves user data to the database.
-- name: authenticateUser
+  - user.info
+  description: Retrieves user information based on username and password.
+- name: create_user_account
   parameters:
+  - name: name
+    type: string
+    entity: user
   - name: email
     type: string
     entity: user
   - name: password
     type: string
     entity: user
-  return_type: object
-  entity: session
-  produces:
-  - session.token
-  description: Authenticates a user based on their email and password. Returns a JWT
-    token upon successful authentication.
-- name: getUserById
-  parameters:
-  - name: userId
-    type: number
-    entity: user
-  return_type: object
+  return_type: number
   entity: user
   produces:
-  - user.details
-  description: Fetches user information from the database by ID.
-- name: updateUserProfile
+  - user.id
+  description: Creates a new user account with the given details.
+- name: update_user_profile
   parameters:
-  - name: userId
+  - name: user_id
     type: number
     entity: user
-  - name: profileData
+  - name: new_info
     type: object
     entity: user
   return_type: boolean
   entity: user
-  produces: []
-  description: Updates a user's profile information. Validates and updates fields
-    in the database.
-- name: deleteUser
-  parameters:
-  - name: userId
-    type: number
-    entity: user
-  return_type: boolean
-  entity: user
-  produces: []
-  description: Deletes a user from the system, including their associated data.
+  produces:
+  - user.success_status
+  description: Updates the user profile with the given information.

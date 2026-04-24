@@ -8,7 +8,7 @@ functions:
   return_type: string
   entity: product
   produces:
-  - product.rendered_list
+  - html.rendered.or.list
   description: Handles rendering the product list based on provided product IDs
 - name: handle_add_to_cart
   parameters:

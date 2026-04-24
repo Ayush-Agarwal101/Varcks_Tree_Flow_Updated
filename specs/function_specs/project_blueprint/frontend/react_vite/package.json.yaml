@@ -21,10 +21,10 @@ functions:
   - name: version
     type: string
     entity: package
-  return_type: boolean
-  entity: package
+  return_type: status
+  entity: installation
   produces:
-  - package.installation_status
+  - installation.status
   description: Installs or updates dependencies for the frontend project
 - name: update_dependencies
   parameters:
@@ -34,8 +34,8 @@ functions:
   - name: version
     type: string
     entity: package
-  return_type: boolean
-  entity: package
+  return_type: status
+  entity: update
   produces:
-  - package.update_status
+  - update.status
   description: Updates existing dependencies to the specified version

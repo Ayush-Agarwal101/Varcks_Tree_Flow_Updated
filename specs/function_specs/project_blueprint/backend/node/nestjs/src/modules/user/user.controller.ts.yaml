@@ -12,7 +12,7 @@ functions:
   entity: user
   produces:
   - user.info
-  description: Retrieves user information based on username and password
+  description: Retrieves user information based on username and password.
 - name: create_user
   parameters:
   - name: username
@@ -28,7 +28,7 @@ functions:
   entity: user
   produces:
   - user.id
-  description: Creates a new user account with the given username, email, and password
+  description: Creates a new user account with the given username, email, and password.
 - name: update_user_info
   parameters:
   - name: user_id
@@ -41,4 +41,4 @@ functions:
   entity: user
   produces:
   - user.success_status
-  description: Updates the information of an existing user
+  description: Updates the information of an existing user.

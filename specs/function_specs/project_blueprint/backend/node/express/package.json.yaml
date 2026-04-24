@@ -21,7 +21,7 @@ functions:
   - name: version
     type: string
     entity: package
-  return_type: status
+  return_type: string
   entity: package
   produces:
   - package.installation_status

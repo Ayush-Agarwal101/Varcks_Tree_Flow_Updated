@@ -18,5 +18,5 @@ functions:
   return_type: array
   entity: module
   produces:
-  - module.resolved_imports
+  - module.imports
   description: Resolves module imports based on specified paths

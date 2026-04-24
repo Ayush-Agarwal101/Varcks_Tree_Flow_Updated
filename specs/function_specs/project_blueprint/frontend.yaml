@@ -11,7 +11,7 @@ functions:
   return_type: string
   entity: product_list
   produces:
-  - product_list.rendered_html
+  - html.rendered.or.list
   description: Handles rendering of product list based on category and page number
 - name: handle_add_to_cart
   parameters:

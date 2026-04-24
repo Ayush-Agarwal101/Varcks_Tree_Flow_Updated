@@ -3,13 +3,14 @@
 import os
 from dotenv import load_dotenv
 load_dotenv()
-
+import time
+import random
 import ollama
 from openai import OpenAI
-from llm.rate_limiter import RateLimiter
+from llm.rate_limiter import TokenBucket
 from langsmith import traceable
 
-_nvidia_limiter = RateLimiter(40)
+_nvidia_limiter = TokenBucket(rate=12, capacity=2)
 
 # Global Config
 LLM_PROVIDER = os.getenv("LLM_PROVIDER", "ollama")
@@ -44,22 +45,54 @@ def _call_ollama(prompt: str, model: str) -> str:
 
 # NVIDIA (Non-streaming)
 
+_client = None  # global reuse
+
+def _get_client():
+    global _client
+    if _client is None:
+        api_key = os.getenv("NVIDIA_API_KEY")
+        if not api_key:
+            raise ValueError("NVIDIA_API_KEY missing in .env")
+
+        _client = OpenAI(
+            base_url="https://integrate.api.nvidia.com/v1",
+            api_key=api_key
+        )
+    return _client
+
 def _call_nvidia(prompt: str, model: str) -> str:
-    _nvidia_limiter.wait()
+    client = _get_client()
 
-    api_key = os.getenv("NVIDIA_API_KEY")
+    for attempt in range(5):
+        _nvidia_limiter.wait()
 
-    if not api_key:
-        raise ValueError("NVIDIA_API_KEY missing in .env")
+        try:
+            completion = client.chat.completions.create(
+                model=model,
+                messages=[{"role": "user", "content": prompt}],
+                temperature=0.0,
+                top_p=0.7,
+                max_tokens=2048,
+                stream=False
+            )
 
-    client = OpenAI(
-        base_url="https://integrate.api.nvidia.com/v1",
-        api_key=api_key
-    )
-    try:
-        completion = client.chat.completions.create(model=model,messages=[{"role": "user", "content": prompt}],temperature=0.0,top_p=0.7,max_tokens=4096, stream=False)
+            result = completion.choices[0].message.content
+            time.sleep(0.2)
+            return result
 
-        return completion.choices[0].message.content
+        except Exception as e:
+            print(f"[NVIDIA ERROR] Attempt {attempt}: {str(e)}")
+            if "429" in str(e) or "Too Many Requests" in str(e):
+                sleep_time = (2 ** attempt) + random.uniform(0.5, 1.5)
+                print(f"⚠️ 429 hit. Backing off for {sleep_time:.2f}s")
 
-    except Exception as e:
-        raise RuntimeError(f"NVIDIA call failed: {str(e)}")
+                time.sleep(sleep_time)
+
+                # GLOBAL COOLDOWN (prevents cascade)
+                if attempt >= 2:
+                    print("🛑 Triggering global cooldown...")
+                    time.sleep(8)
+            else:
+                raise
+
+    raise RuntimeError("NVIDIA call failed after retries")

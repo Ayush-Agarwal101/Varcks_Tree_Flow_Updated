@@ -1,75 +1,38 @@
 file: project_blueprint/backend/node/nestjs/src/modules/user
 functions:
-- name: createUser
+- name: get_user_info
   parameters:
   - name: username
     type: string
     entity: user
-  - name: email
-    type: string
-    entity: user
   - name: password
     type: string
     entity: user
-  return_type: User
+  return_type: object
   entity: user
   produces:
-  - user.user_id
-  description: Create a new user account in the database. This function handles validation
-    of input data and secure password hashing.
-- name: login
+  - user.info
+  description: Retrieves user information based on username and password
+- name: update_user_profile
   parameters:
-  - name: usernameOrEmail
-    type: string
+  - name: user_id
+    type: number
     entity: user
-  - name: password
-    type: string
-    entity: user
-  return_type: TokenPair
-  entity: session
-  produces:
-  - tokenpair.access_token
-  - tokenpair.refresh_token
-  description: Authenticate the user using their username or email and password. This
-    function generates authentication tokens upon successful login.
-- name: updateUserProfile
-  parameters:
-  - name: userId
-    type: string
-    entity: user
-  - name: userData
+  - name: new_info
     type: object
-    entity: user
-  return_type: User
-  entity: user
-  produces:
-  - user.user_id
-  description: Update the profile information of a specific user. This function ensures
-    only authorized users can modify their profiles.
-- name: resetPassword
-  parameters:
-  - name: email
-    type: string
-    entity: user
-  return_type: ResetPasswordResult
-  entity: session
-  produces:
-  - resetpasswordresult.confirmation_message
-  description: Initiate a password reset process for a user by sending them an email
-    with a password reset link.
-- name: changePassword
-  parameters:
-  - name: userId
-    type: string
-    entity: user
-  - name: currentPassword
-    type: string
-    entity: user
-  - name: newPassword
-    type: string
     entity: user
   return_type: boolean
   entity: user
-  produces: []
-  description: Allow users to change their passwords. This function verifies the current
-    password before updating it.
+  produces:
+  - user.profile
+  description: Updates user profile information
+- name: get_order_history
+  parameters:
+  - name: user_id
+    type: number
+    entity: user
+  return_type: array
+  entity: order
+  produces:
+  - order.list
+  description: Retrieves a list of orders for a given user

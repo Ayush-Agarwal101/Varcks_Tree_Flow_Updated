@@ -4,6 +4,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 import yaml
+import time
 import json
 from dotenv import load_dotenv
 from typing import List
@@ -180,6 +181,8 @@ Rules:
                     except Exception as e:
                         print(f"[ERROR] {relative_path}: {e}")
                         return
+
+                    time.sleep(0.4)
 
                     with open(yaml_output_path, "w", encoding="utf-8") as f:
                         yaml.dump(spec.model_dump(), f, sort_keys=False)

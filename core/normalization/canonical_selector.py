@@ -27,7 +27,7 @@ class CanonicalDecision(BaseModel):
 class CanonicalSelector:
 
     def __init__(self, model=None):
-        self.llm = StructuredLLM(model=model)
+        self.llm = StructuredLLM(provider="nvidia", model="meta/llama-3.3-70b-instruct")
 
     def build_prompt(self, cluster):
 

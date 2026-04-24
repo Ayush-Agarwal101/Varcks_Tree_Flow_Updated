@@ -1,4 +1,4 @@
-file: project_blueprint/backend/node/nestjs/src/modules
+file: project_blueprint/backend/node/nestjs/src/modules/module.service.ts
 functions:
 - name: get_module_config
   parameters:

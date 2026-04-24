@@ -9,8 +9,7 @@ functions:
   entity: project
   produces:
   - project.name
-  - project.config
-  description: Initializes a new NestJS project with specified name and configurations
+  description: Initializes a new NestJS project with specified name and configurations.
 - name: configureDependencies
   parameters:
   - name: dependenciesArray
@@ -21,7 +20,7 @@ functions:
   produces:
   - project.dependencies
   description: Adds the provided dependencies to the project's package.json file and
-    installs them
+    installs them.
 - name: setupModules
   parameters:
   - name: modulesArray
@@ -32,4 +31,4 @@ functions:
   produces:
   - project.modules
   description: Sets up the specified modules in the NestJS application, defining their
-    structure and relationships
+    structure and relationships.

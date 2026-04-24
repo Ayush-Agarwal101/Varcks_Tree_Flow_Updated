@@ -2,7 +2,7 @@
 
 from typing import Dict, List
 from .models import Variable
-
+from core.normalization.basic_normalizer import normalize_variable
 
 class IntegrationLinker:
     """
@@ -24,8 +24,10 @@ class IntegrationLinker:
         for var in self.variables.values():
             for producer in var.produced_by:
                 for consumer in var.used_by:
+                    var_key = normalize_variable(f"{var.entity}.{var.name}")
+
                     links.append({
-                        "variable": var.key,
+                        "variable": var_key,
                         "from": producer,
                         "to": consumer
                     })
@@ -42,11 +44,13 @@ class IntegrationLinker:
         graph: Dict[str, List[str]] = {}
 
         for var in self.variables.values():
+            var_key = normalize_variable(f"{var.entity}.{var.name}")
+
             for producer in var.produced_by:
                 graph.setdefault(producer, [])
 
                 for consumer in var.used_by:
-                    if consumer not in graph[producer]:
+                    if consumer != producer and consumer not in graph[producer]:
                         graph[producer].append(consumer)
 
         return graph
@@ -65,7 +69,7 @@ class IntegrationLinker:
                 reverse_graph.setdefault(consumer, [])
 
                 for producer in var.produced_by:
-                    if producer not in reverse_graph[consumer]:
+                    if producer != consumer and producer not in reverse_graph[consumer]:
                         reverse_graph[consumer].append(producer)
 
         return reverse_graph

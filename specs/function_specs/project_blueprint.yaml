@@ -11,7 +11,8 @@ functions:
   return_type: object
   entity: project
   produces:
-  - project.blueprint
+  - project.id
+  - project.name
   description: Creates a new project based on the provided blueprint and stack type
 - name: get_blueprint
   parameters:
@@ -22,6 +23,7 @@ functions:
   entity: blueprint
   produces:
   - blueprint.details
+  - blueprint.template
   description: Retrieves the details of a specific blueprint
 - name: update_blueprint
   parameters:
@@ -34,5 +36,6 @@ functions:
   return_type: object
   entity: blueprint
   produces:
-  - blueprint.updated_config
+  - blueprint.updated
+  - blueprint.config
   description: Updates the configuration of an existing blueprint

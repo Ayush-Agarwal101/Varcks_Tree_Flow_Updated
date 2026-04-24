@@ -7,8 +7,8 @@ functions:
     entity: product
   - name: limit
     type: number
-    entity: pagination
-  return_type: array
+    entity: query
+  return_type: list
   entity: product
   produces:
   - product.list
@@ -38,5 +38,5 @@ functions:
   return_type: boolean
   entity: product
   produces:
-  - product.success
+  - product.details
   description: Handles requests to update a product's details

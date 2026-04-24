@@ -7,7 +7,7 @@ functions:
     entity: product
   - name: limit
     type: number
-    entity: query
+    entity: product
   return_type: list
   entity: product
   produces:

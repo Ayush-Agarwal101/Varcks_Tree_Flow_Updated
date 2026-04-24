@@ -25,7 +25,7 @@ class RepairPlan(BaseModel):
 class RepairEngine:
 
     def __init__(self):
-        self.llm = StructuredLLM()
+        self.llm = StructuredLLM(provider="nvidia", model="meta/llama-3.3-70b-instruct")
 
     # ---------------------------
     # MAIN ENTRY
