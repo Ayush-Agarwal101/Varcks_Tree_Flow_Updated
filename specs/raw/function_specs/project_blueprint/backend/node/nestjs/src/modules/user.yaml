@@ -1,0 +1,38 @@
+file: project_blueprint/backend/node/nestjs/src/modules/user
+functions:
+- name: get_user_info
+  parameters:
+  - name: username
+    type: string
+    entity: user
+  - name: password
+    type: string
+    entity: user
+  return_type: object
+  entity: user
+  produces:
+  - user.data
+  description: Retrieves user information based on username and password
+- name: update_user_profile
+  parameters:
+  - name: user_id
+    type: number
+    entity: user
+  - name: new_info
+    type: object
+    entity: user
+  return_type: boolean
+  entity: user
+  produces:
+  - user.profile
+  description: Updates user profile information
+- name: get_order_history
+  parameters:
+  - name: user_id
+    type: number
+    entity: user
+  return_type: array
+  entity: order
+  produces:
+  - order.list
+  description: Retrieves a list of orders for a given user

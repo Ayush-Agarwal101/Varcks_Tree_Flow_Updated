@@ -1,0 +1,41 @@
+file: project_blueprint/backend
+functions:
+- name: get_baked_goods
+  parameters:
+  - name: category
+    type: string
+    entity: product
+  - name: limit
+    type: integer
+    entity: query
+  return_type: list
+  entity: product
+  produces:
+  - product.list
+  description: Retrieves a list of baked goods based on category and limit
+- name: create_order
+  parameters:
+  - name: customer_id
+    type: integer
+    entity: user
+  - name: items
+    type: list
+    entity: order
+  return_type: integer
+  entity: order
+  produces:
+  - order.id
+  description: Creates a new order for a customer with the given items
+- name: update_product
+  parameters:
+  - name: product_id
+    type: integer
+    entity: product
+  - name: new_data
+    type: object
+    entity: product
+  return_type: boolean
+  entity: product
+  produces:
+  - product.success
+  description: Updates the data of a product with the given ID

@@ -1,0 +1,43 @@
+file: project_blueprint/backend/node/nestjs/src
+functions:
+- name: get_baked_goods
+  parameters:
+  - name: category
+    type: string
+    entity: product
+  - name: limit
+    type: number
+    entity: pagination
+  return_type: list
+  entity: product
+  produces:
+  - product.list
+  description: Retrieves a list of baked goods based on the provided category and
+    limit
+- name: create_order
+  parameters:
+  - name: id
+    type: number
+    entity: user
+  - name: items
+    type: object
+    entity: cart
+  return_type: number
+  entity: order
+  produces:
+  - order.id
+  description: Creates a new order for the specified customer with the provided order
+    details
+- name: update_product
+  parameters:
+  - name: id
+    type: number
+    entity: product
+  - name: details
+    type: object
+    entity: product
+  return_type: object
+  entity: product
+  produces:
+  - product.details
+  description: Updates the details of a product with the specified ID

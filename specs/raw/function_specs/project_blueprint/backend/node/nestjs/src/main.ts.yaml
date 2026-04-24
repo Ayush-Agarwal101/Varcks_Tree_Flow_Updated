@@ -1,0 +1,46 @@
+file: project_blueprint/backend/node/nestjs/src/main.ts
+functions:
+- name: initialize_app
+  parameters:
+  - name: config
+    type: object
+    entity: application
+  - name: routes
+    type: array
+    entity: route
+  return_type: object
+  entity: application
+  produces:
+  - application.instance
+  description: Initializes the FastAPI application with the given configuration and
+    routes.
+- name: setup_database
+  parameters:
+  - name: connection_string
+    type: string
+    entity: database
+  - name: db_name
+    type: string
+    entity: database
+  return_type: object
+  entity: database
+  produces:
+  - database.connection
+  description: Sets up a connection to the database using the provided connection
+    string and database name.
+- name: start_app
+  parameters:
+  - name: app_instance
+    type: object
+    entity: application
+  - name: host
+    type: string
+    entity: server
+  - name: port
+    type: number
+    entity: server
+  return_type: object
+  entity: server
+  produces:
+  - server.instance
+  description: Starts the FastAPI application on the specified host and port.

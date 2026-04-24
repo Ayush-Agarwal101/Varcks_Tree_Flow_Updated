@@ -1,0 +1,17 @@
+file: project_blueprint/backend/node
+functions:
+- name: create_bakery_item
+  parameters:
+  - name: item_name
+    type: string
+    entity: bakery_item
+  - name: item_price
+    type: number
+    entity: bakery_item
+  return_type: object
+  entity: bakery_item
+  produces:
+  - bakery_item.id
+  - bakery_item.name
+  - bakery_item.price
+  description: Creates a new bakery item

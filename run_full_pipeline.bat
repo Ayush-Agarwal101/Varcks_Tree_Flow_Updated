@@ -144,7 +144,7 @@ if /I "%START_PHASE%"=="functions" (
 
     python core/function_spec_builder.py ^
      --node-docs specs/node_descriptions ^
-     --output specs/function_specs
+     --output specs/raw/function_specs
     if %errorlevel% neq 0 exit /b %errorlevel%
 
     echo.

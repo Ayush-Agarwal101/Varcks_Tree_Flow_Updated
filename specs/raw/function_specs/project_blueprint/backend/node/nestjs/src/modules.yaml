@@ -1,0 +1,28 @@
+file: project_blueprint/backend/node/nestjs/src/modules
+functions:
+- name: get_module_config
+  parameters:
+  - name: module_name
+    type: string
+    entity: module
+  - name: config_name
+    type: string
+    entity: config
+  return_type: object
+  entity: module
+  produces:
+  - module.config
+  description: Retrieves configuration for a specific module
+- name: register_module
+  parameters:
+  - name: module_name
+    type: string
+    entity: module
+  - name: module_config
+    type: object
+    entity: module
+  return_type: boolean
+  entity: module
+  produces:
+  - module.registration_status
+  description: Registers a new module with the backend

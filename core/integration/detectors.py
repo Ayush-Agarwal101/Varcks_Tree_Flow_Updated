@@ -15,15 +15,49 @@ class IntegrationDetectors:
 
     def detect_missing_producers(self) -> List[str]:
         """
-        Variable is used but never produced.
+        Variable is used but never produced, AND is not likely an external input.
         """
         missing = []
 
         for var in self.variables.values():
-            if var.used_by and not var.produced_by:
-                missing.append(var.key)
+
+            # must be used but not produced
+            if not (var.used_by and not var.produced_by):
+                continue
+
+            # ignore likely input variables
+            if self._is_likely_input(var):
+                continue
+
+            missing.append(var.key)
 
         return missing
+
+    def _is_likely_input(self, var: Variable) -> bool:
+        """
+        Heuristic to filter out external inputs
+        """
+
+        name = var.name.lower()
+
+        input_keywords = {
+            "id", "ids",
+            "name", "username", "email", "password",
+            "query", "limit", "page", "offset",
+            "filter", "sort",
+            "category", "type",
+            "data", "details"
+        }
+
+        # common input-style variables
+        if name in input_keywords:
+            return True
+
+        # used but never produced anywhere → likely input
+        if not var.produced_by and len(var.used_by) >= 1:
+            return True
+
+        return False
 
     # 2. Multiple Producers
 

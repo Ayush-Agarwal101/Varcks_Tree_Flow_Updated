@@ -1,11 +1,12 @@
+# run_canonical_selector.py
+
 from core.normalization.registry_builder import build_registry
 from core.normalization.clusterer import cluster_functions
 from core.normalization.canonical_selector import CanonicalSelector
 
-
 if __name__ == "__main__":
 
-    registry = build_registry("specs/function_specs")
+    registry = build_registry("specs/raw/function_specs")
     clusters = cluster_functions(registry.functions)
 
     selector = CanonicalSelector()

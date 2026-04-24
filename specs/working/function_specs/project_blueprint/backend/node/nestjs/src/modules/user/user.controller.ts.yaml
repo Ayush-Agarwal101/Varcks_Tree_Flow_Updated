@@ -1,0 +1,44 @@
+file: project_blueprint/backend/node/nestjs/src/modules/user/user.controller.ts
+functions:
+- name: get_user_info
+  parameters:
+  - name: username
+    type: string
+    entity: user
+  - name: password
+    type: string
+    entity: user
+  return_type: object
+  entity: user
+  produces:
+  - user.info
+  description: Retrieves user information based on username and password
+- name: create_user
+  parameters:
+  - name: username
+    type: string
+    entity: user
+  - name: email
+    type: string
+    entity: user
+  - name: password
+    type: string
+    entity: user
+  return_type: number
+  entity: user
+  produces:
+  - user.id
+  description: Creates a new user account with the given username, email, and password
+- name: update_user_info
+  parameters:
+  - name: id
+    type: number
+    entity: user
+  - name: info
+    type: object
+    entity: user
+  return_type: boolean
+  entity: user
+  produces:
+  - user.success_status
+  description: Updates the information of an existing user

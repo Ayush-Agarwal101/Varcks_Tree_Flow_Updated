@@ -1,7 +1,8 @@
+# core/normalization/canonical_mapper.py
+
 from typing import Dict, List
 from core.normalization.models import FunctionMeta
 from core.normalization.basic_normalizer import normalize_variable
-
 
 class CanonicalMapper:
     """

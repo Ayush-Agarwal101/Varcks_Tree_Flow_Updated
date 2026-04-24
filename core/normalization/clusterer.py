@@ -41,7 +41,60 @@ def is_safe_duplicate(cluster, desc_threshold=0.75):
 
     return True
 
-def cluster_functions(functions, threshold=0.80):
+def get_context(file_path: str) -> str:
+    path = file_path.lower()
+
+    # backend roles (highest priority)
+    if "controller" in path:
+        return "backend_controller"
+
+    if "service" in path:
+        return "backend_service"
+
+    if "module" in path:
+        return "backend_module"
+
+    # frontend roles
+    if any(k in path for k in ["component", "view", "page"]):
+        return "frontend_ui"
+
+    # framework hints
+    if any(k in path for k in ["react", "vite"]):
+        return "frontend"
+
+    if any(k in path for k in ["express", "nestjs"]):
+        return "backend_api"
+
+    # fallback
+    if "frontend" in path:
+        return "frontend"
+
+    if "backend" in path:
+        return "backend"
+
+    return "unknown"
+
+def is_compatible_context(ctx1: str, ctx2: str) -> bool:
+
+    # exact match → always OK
+    if ctx1 == ctx2:
+        return True
+
+    # allow backend framework mixing
+    backend_family = {
+        "backend_api"
+    }
+
+    if ctx1 in backend_family and ctx2 in backend_family:
+        return True
+
+    # allow frontend grouping
+    if ctx1.startswith("frontend") and ctx1 == ctx2:
+        return True
+
+    return False
+
+def cluster_functions(functions, threshold=0.70):
     clusters = []
     used = set()
 
@@ -61,9 +114,12 @@ def cluster_functions(functions, threshold=0.80):
             name_score = similarity(fn1.name, fn2.name)
             desc_score = similarity(fn1.description, fn2.description)
 
-            score = 0.7 * name_score + 0.3 * desc_score
+            score = 0.75 * name_score + 0.25 * desc_score
 
-            if score > threshold:
+            ctx1 = get_context(fn1.file)
+            ctx2 = get_context(fn2.file)
+
+            if score > threshold and is_compatible_context(ctx1, ctx2):
                 cluster.append(fn2)
                 used.add(j)
 

@@ -1,0 +1,26 @@
+file: project_blueprint/frontend/react_vite/public/index.html
+functions:
+- name: render_template
+  parameters:
+  - name: title
+    type: string
+    entity: page
+  - name: meta_tags
+    type: array
+    entity: page
+  return_type: string
+  entity: html
+  produces:
+  - html.content
+  description: Renders the initial HTML template with the provided page title and
+    meta tags.
+- name: load_javascript_files
+  parameters:
+  - name: file_names
+    type: array
+    entity: application
+  return_type: array
+  entity: script
+  produces:
+  - script.files
+  description: Loads the necessary JavaScript files for the React application.

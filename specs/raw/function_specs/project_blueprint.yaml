@@ -1,0 +1,38 @@
+file: project_blueprint
+functions:
+- name: create_project_blueprint
+  parameters:
+  - name: project_name
+    type: string
+    entity: project
+  - name: stack_type
+    type: string
+    entity: project
+  return_type: object
+  entity: project
+  produces:
+  - project.blueprint
+  description: Creates a new project based on the provided blueprint and stack type
+- name: get_blueprint
+  parameters:
+  - name: template_name
+    type: string
+    entity: blueprint
+  return_type: object
+  entity: blueprint
+  produces:
+  - blueprint.details
+  description: Retrieves the details of a specific blueprint
+- name: update_blueprint
+  parameters:
+  - name: blueprint_name
+    type: string
+    entity: blueprint
+  - name: new_config
+    type: object
+    entity: blueprint
+  return_type: object
+  entity: blueprint
+  produces:
+  - blueprint.updated_config
+  description: Updates the configuration of an existing blueprint

@@ -1,0 +1,22 @@
+file: project_blueprint/frontend/react_vite/tsconfig.json
+functions:
+- name: configure_compiler
+  parameters:
+  - name: options
+    type: object
+    entity: compiler
+  return_type: object
+  entity: compiler
+  produces:
+  - compiler.config
+  description: Configures the TypeScript compiler with specified options
+- name: resolve_modules
+  parameters:
+  - name: import_paths
+    type: array
+    entity: module
+  return_type: array
+  entity: module
+  produces:
+  - module.imports
+  description: Resolves module imports based on specified paths

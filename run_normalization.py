@@ -3,9 +3,8 @@
 from core.normalization.registry_builder import build_registry
 from core.normalization.clusterer import cluster_functions
 
-
 if __name__ == "__main__":
-    registry = build_registry("specs/function_specs")
+    registry = build_registry("specs/raw/function_specs")
 
     print("\n=== FUNCTIONS ===")
     for fn in registry.functions[:5]:

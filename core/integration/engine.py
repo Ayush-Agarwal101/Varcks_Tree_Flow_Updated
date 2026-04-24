@@ -1,3 +1,5 @@
+# core/integration/engine.py
+
 from typing import Dict
 
 from .loader import YAMLLoader
@@ -61,6 +63,9 @@ class IntegrationEngine:
         loader = YAMLLoader()
         self.variables = loader.load_directory(self.yaml_directory)
 
+        for k, v in list(self.variables.items())[:10]:
+            print(k, v.produced_by, v.used_by)
+
     # STEP 2 —  Detect Issues
 
     def detect(self):
@@ -95,6 +100,8 @@ class IntegrationEngine:
         print("\n=== INTEGRATION ENGINE START ===\n")
 
         self.apply_canonical_pipeline()
+
+        print("RUNNING ON:", self.yaml_directory)
 
         self.load()
         print(type(next(iter(self.variables.values()))))

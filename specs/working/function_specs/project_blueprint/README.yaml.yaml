@@ -1,0 +1,19 @@
+file: project_blueprint/README
+functions:
+- name: get_project_overview
+  parameters:
+  - name: instance
+    type: string
+    entity: entity
+  return_type: string
+  entity: project
+  produces:
+  - project.description
+  description: Returns a brief description of the project and its objectives.
+- name: get_tech_stack
+  parameters: []
+  return_type: object
+  entity: project
+  produces:
+  - project.tech_stack
+  description: Returns information about the tech stack used in the project.

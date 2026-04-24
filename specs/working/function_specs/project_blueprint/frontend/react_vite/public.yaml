@@ -1,0 +1,22 @@
+file: project_blueprint/frontend/react_vite/public/index.ts
+functions:
+- name: get_static_asset
+  parameters:
+  - name: name
+    type: string
+    entity: asset
+  - name: file_type
+    type: string
+    entity: asset
+  return_type: string
+  entity: asset
+  produces:
+  - asset.content
+  description: Returns the content of a static asset.
+- name: serve_index_html
+  parameters: []
+  return_type: string
+  entity: application
+  produces:
+  - application.index_html
+  description: Serves the index.html file as the entry point of the application.

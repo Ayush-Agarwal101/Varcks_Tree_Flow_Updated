@@ -408,7 +408,7 @@ Generates structured YAML specifications for functions and variables in each fil
 
 ### Outputs
 
-`specs/function_specs/*.yaml`
+`specs/raw/function_specs/*.yaml`
 
 ---
 
@@ -458,7 +458,7 @@ Markdown documentation for every file/folder.
 
 ---
 
-## specs/function_specs/
+## specs/raw/function_specs/
 
 YAML specifications of functions.
 

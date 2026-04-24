@@ -4,25 +4,18 @@ from typing import List, Dict
 from core.llm_structured import StructuredLLM
 from pydantic import BaseModel
 
-
-# -----------------------------
 # Schema
-# -----------------------------
 
 class CanonicalFunction(BaseModel):
     name: str
     parameters: List[str]
     produces: List[str]
 
-
 class CanonicalDecision(BaseModel):
     canonical: CanonicalFunction
     mappings: Dict[str, str]   # old_var → new_var
 
-
-# -----------------------------
 # Selector
-# -----------------------------
 
 class CanonicalSelector:
 
@@ -63,7 +56,6 @@ Return JSON:
   }
 }
 """
-
         return text
 
     def select(self, cluster):

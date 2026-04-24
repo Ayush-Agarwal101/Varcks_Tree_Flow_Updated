@@ -174,7 +174,7 @@ These are deterministic and schema-validated.
 
 ### 📤 Outputs
 
-* `specs/function_specs/`
+* `specs/raw/function_specs/`
 
   * One `.yaml` file per file
 

@@ -96,7 +96,7 @@ def extract_key_functions_section(markdown_text: str) -> str:
 # Builder
 def build_function_specs(
     node_docs_dir: str,
-    output_dir: str = "specs/function_specs"
+    output_dir: str = "specs/raw/function_specs"
 ):
 
     llm = StructuredLLM(provider="nvidia", model="meta/llama-3.3-70b-instruct")
@@ -203,7 +203,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--node-docs", required=True)
-    parser.add_argument("--output", default="specs/function_specs")
+    parser.add_argument("--output", default="specs/raw/function_specs")
     args = parser.parse_args()
 
     build_function_specs(

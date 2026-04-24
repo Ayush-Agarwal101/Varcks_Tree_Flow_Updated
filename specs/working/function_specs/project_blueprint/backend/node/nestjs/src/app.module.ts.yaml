@@ -1,0 +1,42 @@
+file: project_blueprint/backend/node/nestjs/src/app.module.ts
+functions:
+- name: initialize_app
+  parameters:
+  - name: config
+    type: object
+    entity: entity
+  - name: dependencies
+    type: array
+    entity: dependency
+  return_type: object
+  entity: application
+  produces:
+  - entity.instance
+  description: Initializes the application instance with the given configuration and
+    dependencies.
+- name: register
+  parameters:
+  - name: name
+    type: array
+    entity: entity
+  - name: config
+    type: object
+    entity: entity
+  return_type: object
+  entity: application
+  produces:
+  - entity.registration_status
+  description: Registers API routes with the application instance.
+- name: start_server
+  parameters:
+  - name: config
+    type: object
+    entity: entity
+  - name: port
+    type: number
+    entity: server
+  return_type: object
+  entity: server
+  produces:
+  - server.status
+  description: Starts the server with the given application instance and port.

@@ -26,6 +26,9 @@ class IntegrationLinker:
                 for consumer in var.used_by:
                     var_key = normalize_variable(f"{var.entity}.{var.name}")
 
+                    if producer == consumer:
+                        continue
+
                     links.append({
                         "variable": var_key,
                         "from": producer,
@@ -50,7 +53,7 @@ class IntegrationLinker:
                 graph.setdefault(producer, [])
 
                 for consumer in var.used_by:
-                    if consumer != producer and consumer not in graph[producer]:
+                    if producer != consumer and consumer not in graph[producer]:
                         graph[producer].append(consumer)
 
         return graph

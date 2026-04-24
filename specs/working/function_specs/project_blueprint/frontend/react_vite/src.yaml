@@ -1,0 +1,38 @@
+file: project_blueprint/frontend/react_vite/src/functions.ts
+functions:
+- name: get_baked_goods
+  parameters:
+  - name: category
+    type: string
+    entity: product
+  - name: limit
+    type: number
+    entity: pagination
+  return_type: array
+  entity: product
+  produces:
+  - product.list
+  description: Retrieves a list of baked goods based on category and limit
+- name: add_to_cart
+  parameters:
+  - name: id
+    type: number
+    entity: product
+  - name: quantity
+    type: number
+    entity: order
+  return_type: object
+  entity: cart
+  produces:
+  - cart.update_status
+  description: Adds an item to the user's cart and returns the update status
+- name: checkout
+  parameters:
+  - name: items
+    type: array
+    entity: cart
+  return_type: object
+  entity: order
+  produces:
+  - order.status
+  description: Processes the checkout and returns the order status

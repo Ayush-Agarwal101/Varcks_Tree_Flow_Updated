@@ -1,0 +1,15 @@
+file: project_blueprint/frontend/react_vite/package.json
+functions:
+- name: install_dependencies
+  parameters:
+  - name: name
+    type: string
+    entity: package
+  - name: version
+    type: string
+    entity: package
+  return_type: list
+  entity: package
+  produces:
+  - package.dependencies
+  description: Retrieves a list of dependencies for a given package

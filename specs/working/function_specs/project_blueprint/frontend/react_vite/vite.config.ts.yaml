@@ -1,0 +1,28 @@
+file: project_blueprint/frontend/react_vite/vite.config.ts
+functions:
+- name: configure_build
+  parameters:
+  - name: env
+    type: string
+    entity: environment
+  - name: options
+    type: object
+    entity: build
+  return_type: object
+  entity: build_config
+  produces:
+  - build_config.settings
+  description: Configures the build process based on environment and options
+- name: setup_dev_server
+  parameters:
+  - name: port
+    type: number
+    entity: server
+  - name: host
+    type: string
+    entity: server
+  return_type: object
+  entity: server_instance
+  produces:
+  - server_instance.url
+  description: Sets up the development server with specified port and host

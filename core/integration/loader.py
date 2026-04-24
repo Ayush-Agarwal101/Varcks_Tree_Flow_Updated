@@ -4,6 +4,20 @@ import os
 import yaml
 from typing import Dict
 from .models import Variable
+from core.normalization.basic_normalizer import normalize_variable
+
+
+def get_backend_role(fn_name: str) -> str:
+    name = fn_name.lower()
+
+    if "controller" in name:
+        return "controller"
+    if "service" in name:
+        return "service"
+    if "module" in name:
+        return "module"
+
+    return "other"
 
 class YAMLLoader:
     """
@@ -31,6 +45,14 @@ class YAMLLoader:
     # INTERNAL LOGIC
 
     def _get_or_create_variable(self, name: str, entity: str, var_type: str) -> Variable:
+        raw_key = f"{entity}.{name}"
+        norm_key = normalize_variable(raw_key)
+
+        try:
+            entity, name = norm_key.split(".")
+        except ValueError:
+            entity, name = "unknown", raw_key
+
         key = f"{entity}.{name}"
 
         if key not in self.variables:
@@ -42,7 +64,8 @@ class YAMLLoader:
         with open(filepath, "r", encoding="utf-8") as f:
             data = yaml.safe_load(f)
 
-        file_name = data.get("file", filepath)
+        file_name = data.get("file") or os.path.relpath(filepath)
+        file_name = file_name.replace("\\", "/").replace(".yaml", "").replace(".yml", "")
 
         functions = data.get("functions", [])
 
@@ -59,6 +82,13 @@ class YAMLLoader:
                 if not name:
                     continue
 
+                norm_key = normalize_variable(f"{entity}.{name}")
+
+                try:
+                    entity, name = norm_key.split(".")
+                except ValueError:
+                    continue
+
                 var = self._get_or_create_variable(name, entity, var_type)
                 var.add_consumer(full_fn_name)
 
@@ -66,13 +96,38 @@ class YAMLLoader:
             produces = fn.get("produces", [])
 
             for prod in produces:
+                norm_key = normalize_variable(prod)
+
                 try:
-                    entity, name = prod.split(".")
+                    entity, name = norm_key.split(".")
                 except ValueError:
-                    # skip malformed entries
                     continue
 
                 var_type = fn.get("return_type", "unknown")
 
                 var = self._get_or_create_variable(name, entity, var_type)
-                var.add_producer(full_fn_name)
+                role = get_backend_role(full_fn_name)
+
+                existing_roles = [
+                    get_backend_role(p) for p in var.produced_by
+                ]
+
+                # PRIORITY: module > service > other
+
+                if role == "module":
+                    # module overrides everything
+                    var.produced_by = [full_fn_name]
+
+                elif role == "service":
+                    if "module" not in existing_roles:
+                        # replace lower priority
+                        var.produced_by = [full_fn_name]
+
+                elif role == "controller":
+                    # never a final producer
+                    pass
+
+                else:
+                    if not var.produced_by:
+                        var.add_producer(full_fn_name)
+
