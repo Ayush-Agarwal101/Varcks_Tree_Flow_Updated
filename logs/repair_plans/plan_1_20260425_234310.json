@@ -1,0 +1,53 @@
+{
+  "actions": [
+    {
+      "action": "suggest_improvement",
+      "target": "project_blueprint/frontend/react_vite/src/App.tsx.render_layout",
+      "details": {
+        "variable": "product.list",
+        "reason": "Unused output, should be consumed by render_products function"
+      }
+    },
+    {
+      "action": "suggest_improvement",
+      "target": "project_blueprint/backend/node/nestjs/src/modules/user/user",
+      "details": {
+        "fields": [
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts.create_user",
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.service.ts.update_user_profile",
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts.get_user"
+        ],
+        "field_reasons": {
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts.create_user": "Improve flow by connecting output to correct consumer",
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.service.ts.update_user_profile": "Improve flow by connecting output to correct consumer",
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts.get_user": "Missing producer, should be produced by get_user_info function"
+        },
+        "suggestion": "Connect or create function consuming full entity"
+      }
+    },
+    {
+      "action": "change_type",
+      "target": "product.details",
+      "details": {
+        "old_type": "object",
+        "new_type": "string"
+      }
+    },
+    {
+      "action": "map_variable",
+      "target": "order.status",
+      "details": {
+        "old_name": "order.status",
+        "new_name": "order_status"
+      }
+    },
+    {
+      "action": "suggest_improvement",
+      "target": "project_blueprint/frontend/react_vite/src/functions.ts.checkout",
+      "details": {
+        "variable": "order.id",
+        "reason": "Should be passed to checkout function"
+      }
+    }
+  ]
+}

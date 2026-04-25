@@ -1,7 +1,7 @@
 # core/integration/engine.py
 
 from typing import Dict
-
+import os
 from .loader import YAMLLoader
 from .detectors import IntegrationDetectors
 from .linker import IntegrationLinker
@@ -9,18 +9,15 @@ from .reporter import IntegrationReporter
 from core.normalization.build_canonical_map import build_canonical_maps
 from core.integration.canonical_rewriter import CanonicalRewriter
 from core.integration.canonical_injector import CanonicalInjector
+from core.integration.repair_engine import RepairEngine
+from core.integration.yaml_patcher import YAMLPatcher
+from core.integration.graph_visualizer import GraphVisualizer
+from core.integration.repair_logger import RepairLogger
+from core.integration.suggestion_parser import SuggestionParser
+from core.integration.validator import ActionValidator
+from core.integration.system_registry import SystemRegistryBuilder
 
 class IntegrationEngine:
-    """
-    Full integration pipeline:
-    - canonical mapping
-    - injection
-    - rewriting
-    - adaptation
-    - validation
-    - linking
-    """
-
     def __init__(self, yaml_directory: str):
         self.yaml_directory = yaml_directory
 
@@ -96,7 +93,7 @@ class IntegrationEngine:
 
     # FULL PIPELINE
 
-    def run(self):
+    def run(self, iteration = 0):
         print("\n=== INTEGRATION ENGINE START ===\n")
 
         self.apply_canonical_pipeline()
@@ -104,17 +101,61 @@ class IntegrationEngine:
         print("RUNNING ON:", self.yaml_directory)
 
         self.load()
-        print(type(next(iter(self.variables.values()))))
-        print(vars(next(iter(self.variables.values()))))
+        self.detect()
+        self.build_links()
+        pre_registry = SystemRegistryBuilder(self.variables)
+        pre_registry.save(f"outputs/registry_pre_iter_{iteration}.json")
         print("YAMLs loaded.")
 
-        self.detect()
         print("Detection complete.")
 
-        self.build_links()
+        # ITERATIVE REPAIR LOOP
+
+        repair_engine = RepairEngine(self.variables)
+        patcher = YAMLPatcher(self.yaml_directory)
+        logger = RepairLogger()
+
+        repair_engine.variables = self.variables
+        registry_builder = SystemRegistryBuilder(self.variables)
+        system_registry = registry_builder.build()
+        plan = repair_engine.generate_plan(self.report, self.variables, system_registry)
+        parser = SuggestionParser()
+        validator = ActionValidator(self.variables)
+
+        parsed_actions = parser.parse(plan.actions)
+        validated_actions = validator.validate(parsed_actions)
+
+        plan.actions = validated_actions
+
+        if not plan.actions:
+            print("[REPAIR] No actions suggested by LLM.")
+        else:
+            logger.save(plan, iteration=1)
+
+            print("Repair Plan:")
+            for action in plan.actions:
+                print(f"  - {action.action} → {action.target}")
+
+            patcher.apply_plan(plan)
+            print("Repair applied.")
+
+            # RELOAD updated YAMLs
+            self.load()
+            self.detect()
+            self.build_links()
+
+        # SAVE POST-REPAIR REGISTRY
+        post_registry = SystemRegistryBuilder(self.variables)
+        post_registry.save(f"outputs/registry_post_iter_{iteration}.json")
+        print("Repair complete.")
         print("Linking complete.")
 
         self.report_results()
+        print("Generating graph visualization...")
+
+        viz = GraphVisualizer(self.graph)
+        os.makedirs("outputs", exist_ok=True)
+        viz.render("outputs/integration_graph")
 
         print("\n=== INTEGRATION ENGINE END ===\n")
 

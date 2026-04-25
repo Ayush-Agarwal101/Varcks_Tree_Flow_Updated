@@ -1,0 +1,52 @@
+{
+  "actions": [
+    {
+      "action": "connect_variable",
+      "target": "order.id",
+      "details": {
+        "to_function": "checkout"
+      }
+    },
+    {
+      "action": "suggest_improvement",
+      "target": "project_blueprint/backend/node/nestjs/src/modules/user/user",
+      "details": {
+        "fields": [
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts.get_user",
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.service.ts.update_user_profile",
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts.update_user",
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts.create_user"
+        ],
+        "field_reasons": {
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts.get_user": "user.data should be used in render_layout to display user information",
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.service.ts.update_user_profile": "user.profile should be used in render_layout to display user profile information",
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts.update_user": "user.info should be passed to update_user_profile to update user information",
+          "project_blueprint/backend/node/nestjs/src/modules/user/user.module.ts.create_user": "user.id should be passed to create_order to create a new order for the user"
+        },
+        "suggestion": "Connect or create function consuming full entity"
+      }
+    },
+    {
+      "action": "suggest_improvement",
+      "target": "product",
+      "details": {
+        "fields": [
+          "product.list",
+          "product.details"
+        ],
+        "field_reasons": {
+          "product.list": "product.list should be renamed to product_list for consistency",
+          "product.details": "product.details should be changed to string type for consistency"
+        },
+        "suggestion": "Connect or create function consuming full entity"
+      }
+    },
+    {
+      "action": "add_producer",
+      "target": "project.name",
+      "details": {
+        "function": "project_blueprint/backend/node/nestjs/est-cli.json.initializeProject"
+      }
+    }
+  ]
+}

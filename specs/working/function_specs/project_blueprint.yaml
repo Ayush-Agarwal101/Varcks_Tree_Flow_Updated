@@ -2,9 +2,9 @@ file: project_blueprint
 functions:
 - name: create_project_blueprint
   parameters:
-  - name: instance
+  - name: name
     type: string
-    entity: entity
+    entity: project
   - name: stack_type
     type: string
     entity: project

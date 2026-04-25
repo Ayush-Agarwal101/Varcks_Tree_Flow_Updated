@@ -4,6 +4,13 @@ import shutil
 import os
 from core.integration.engine import IntegrationEngine
 
+def has_real_issues(report):
+    return (
+        report.get("missing_producers") or
+        report.get("multiple_producers") or
+        report.get("type_conflicts")
+    )
+
 def prepare_working_dir(raw_dir: str, working_dir: str):
     """
     Reset working directory from raw YAMLs
@@ -23,9 +30,21 @@ if __name__ == "__main__":
     RAW_DIR = "specs/raw/function_specs"
     WORKING_DIR = "specs/working/function_specs"
 
-    # Step 0: Reset working dir
-    prepare_working_dir(RAW_DIR, WORKING_DIR)
+    # ALWAYS reset at start of run
+    RESET = True
+    if RESET:
+        prepare_working_dir(RAW_DIR, WORKING_DIR)
 
-    # Step 1: Run integration on working copy
-    engine = IntegrationEngine(WORKING_DIR)
-    engine.run()
+    MAX_ITER = 3
+
+    for i in range(MAX_ITER):
+        print(f"\n====== ITERATION {i+1} ======\n")
+
+        engine = IntegrationEngine(WORKING_DIR)
+        engine.run(iteration = i)
+
+        report = engine.get_results()["report"]
+
+        if not has_real_issues(report):
+            print("[STOP] System stabilized.")
+            break

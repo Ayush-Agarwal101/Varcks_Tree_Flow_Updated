@@ -13,7 +13,7 @@ functions:
   produces:
   - user.data
   description: Retrieves user information based on username and password
-- name: update_user_profile
+- name: update_user
   parameters:
   - name: id
     type: number

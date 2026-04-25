@@ -108,26 +108,6 @@ class YAMLLoader:
                 var = self._get_or_create_variable(name, entity, var_type)
                 role = get_backend_role(full_fn_name)
 
-                existing_roles = [
-                    get_backend_role(p) for p in var.produced_by
-                ]
-
-                # PRIORITY: module > service > other
-
-                if role == "module":
-                    # module overrides everything
-                    var.produced_by = [full_fn_name]
-
-                elif role == "service":
-                    if "module" not in existing_roles:
-                        # replace lower priority
-                        var.produced_by = [full_fn_name]
-
-                elif role == "controller":
-                    # never a final producer
-                    pass
-
-                else:
-                    if not var.produced_by:
-                        var.add_producer(full_fn_name)
+                if role != "controller":
+                    var.add_producer(full_fn_name)
 

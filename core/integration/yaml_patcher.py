@@ -25,10 +25,75 @@ class YAMLPatcher:
             elif action.action == "change_type":
                 self._handle_change_type(action)
 
+            if action.action == "connect_variable":
+                self._handle_connect_variable(action)
+
+            elif action.action == "create_function":
+                self._handle_create_function(action)
+
     # ---------------------------
     # ACTION HANDLERS
     # ---------------------------
 
+    def _handle_connect_variable(self, action):
+        var = action.target
+        fn_name = action.details.get("to_function")
+
+        if not fn_name:
+            return
+
+        # find function
+        for root, _, files in os.walk(self.yaml_dir):
+            for file in files:
+                if not file.endswith(".yaml"):
+                    continue
+
+                path = os.path.join(root, file)
+                data = self._load_yaml(path)
+
+                for fn in data.get("functions", []):
+                    if fn["name"] == fn_name:
+
+                        params = fn.setdefault("parameters", [])
+
+                        entity, name = var.split(".")
+
+                        if not any(p["name"] == name for p in params):
+                            params.append({
+                                "name": name,
+                                "type": "unknown",
+                                "entity": entity
+                            })
+
+                self._save_yaml(path, data)
+
+    def _handle_create_function(self, action):
+        """
+        Minimal safe function creation
+        """
+        entity = action.target.split(".")[0]
+
+        new_fn = {
+            "name": f"process_{entity}",
+            "parameters": [],
+            "return_type": "unknown",
+            "entity": entity,
+            "produces": [action.target],
+            "description": action.details.get("description", "")
+        }
+
+        # put in first YAML file (safe fallback)
+        for root, _, files in os.walk(self.yaml_dir):
+            for file in files:
+                if file.endswith(".yaml"):
+                    path = os.path.join(root, file)
+                    data = self._load_yaml(path)
+
+                    data.setdefault("functions", []).append(new_fn)
+
+                    self._save_yaml(path, data)
+                    return
+                
     def _handle_add_producer(self, action):
         """
         Add produces entry to a function
@@ -88,11 +153,13 @@ class YAMLPatcher:
     # ---------------------------
 
     def _find_yaml_file(self, file_name):
+        target = file_name.replace("\\", "/")
         for root, _, files in os.walk(self.yaml_dir):
             for file in files:
                 if file.endswith(".yaml"):
                     path = os.path.join(root, file)
-                    if file_name in path:
+                    rel = path.replace("\\", "/")
+                    if rel.endswith(target + ".yaml"):
                         return path
         return None
 

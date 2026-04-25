@@ -29,6 +29,12 @@ class IntegrationLinker:
                     if producer == consumer:
                         continue
 
+                    seen = set()
+                    key_tuple = (producer, consumer, var_key)
+                    if key_tuple in seen:
+                        continue
+
+                    seen.add(key_tuple)
                     links.append({
                         "variable": var_key,
                         "from": producer,

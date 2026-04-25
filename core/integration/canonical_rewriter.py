@@ -53,9 +53,9 @@ class CanonicalRewriter:
             fn["name"] = canonical_name
 
             # avoid duplicate canonical definitions in same file
-            if canonical_name in seen:
+            if canonical_id in seen:
                 continue
-            seen.add(canonical_name)
+            seen.add(canonical_id)
 
             rewritten_fn = self._rewrite_function(fn)
             new_functions.append(rewritten_fn)

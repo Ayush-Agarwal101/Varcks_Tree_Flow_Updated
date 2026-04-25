@@ -31,6 +31,9 @@ functions:
   - name: items
     type: object
     entity: cart
+  - name: id
+    type: unknown
+    entity: order
   return_type: string
   entity: order
   produces:

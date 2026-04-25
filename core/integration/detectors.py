@@ -11,6 +11,37 @@ class IntegrationDetectors:
     def __init__(self, variables: Dict[str, Variable]):
         self.variables = variables
 
+    def detect_producer_priority_conflicts(self):
+        """
+        Detect cases where multiple producers exist,
+        but some are lower quality (controller > service > module)
+        """
+        conflicts = []
+
+        def get_role(fn):
+            fn = fn.lower()
+            if "module" in fn:
+                return 3
+            if "service" in fn:
+                return 2
+            if "controller" in fn:
+                return 1
+            return 0
+
+        for var in self.variables.values():
+            if len(var.produced_by) <= 1:
+                continue
+
+            ranked = sorted(var.produced_by, key=get_role, reverse=True)
+
+            conflicts.append({
+                "variable": var.key,
+                "producers": var.produced_by,
+                "preferred": ranked[0]
+            })
+
+        return conflicts
+
     # 1. Missing Producers
 
     def detect_missing_producers(self) -> List[str]:
@@ -99,15 +130,48 @@ class IntegrationDetectors:
 
     # 4. Unused Outputs
 
+    def _is_terminal_output(self, var: Variable) -> bool:
+        name = var.name.lower()
+
+        terminal_keywords = {
+            "html", "content", "rendered",
+            "result", "response", "output",
+            "view", "page",
+            "profile", "list", "data",
+            "status"
+        }
+
+        # obvious terminal names
+        if any(k in name for k in terminal_keywords):
+            return True
+
+        # produced but only used by frontend or nowhere
+        if var.produced_by:
+            for fn in var.produced_by:
+                fn_lower = fn.lower()
+
+                if any(k in fn_lower for k in ["frontend", "render", "view"]):
+                    return True
+
+        return False
+
     def detect_unused_outputs(self) -> List[str]:
         """
-        Variable is produced but never used.
+        Variable is produced but never used,
+        AND is not a terminal/output variable.
         """
         unused = []
 
         for var in self.variables.values():
-            if var.produced_by and not var.used_by:
-                unused.append(var.key)
+
+            if not (var.produced_by and not var.used_by):
+                continue
+
+            # ignore valid terminal outputs
+            if self._is_terminal_output(var):
+                continue
+
+            unused.append(var.key)
 
         return unused
 
@@ -121,5 +185,6 @@ class IntegrationDetectors:
             "missing_producers": self.detect_missing_producers(),
             "multiple_producers": self.detect_multiple_producers(),
             "type_conflicts": self.detect_type_conflicts(),
-            "unused_outputs": self.detect_unused_outputs()
+            "unused_outputs": self.detect_unused_outputs(),
+            "producer_priority_conflicts": self.detect_producer_priority_conflicts()
         }

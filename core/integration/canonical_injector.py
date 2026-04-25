@@ -3,7 +3,6 @@
 import os
 import yaml
 
-
 class CanonicalInjector:
     """
     Injects new canonical functions into correct YAML files
@@ -21,6 +20,7 @@ class CanonicalInjector:
             yaml_path = os.path.join(self.yaml_dir, file_path + ".yaml")
 
             if not os.path.exists(yaml_path):
+                print(f"[WARN] Missing file for canonical function: {canonical_id}")
                 continue
 
             with open(yaml_path, "r", encoding="utf-8") as f:

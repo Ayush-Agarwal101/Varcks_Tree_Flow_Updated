@@ -27,9 +27,6 @@ def is_safe_duplicate(cluster, desc_threshold=0.75):
             if set(fn.produces) != set(base.produces):
                 return False
 
-        if set(fn.produces) != set(base.produces):
-            return False
-
         # Pairwise description similarity (better)
         desc_scores = [
             similarity(fn.description, other.description)

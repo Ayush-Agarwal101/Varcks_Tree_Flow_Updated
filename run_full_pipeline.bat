@@ -151,6 +151,32 @@ if /I "%START_PHASE%"=="functions" (
     set START_PHASE=code
 )
 
+:: ==========================================
+:: INTEGRATION + GRAPH
+:: ==========================================
+if /I "%START_PHASE%"=="code" (
+
+    echo.
+    set START_PHASE=integration
+)
+
+if /I "%START_PHASE%"=="integration" (
+
+    echo ================================
+    echo Running Integration Engine
+    echo ================================
+
+    python run_integration.py
+    if %errorlevel% neq 0 exit /b %errorlevel%
+
+    echo.
+    echo ================================
+    echo Integration Graph Generated
+    echo ================================
+
+    echo Output: integration_graph.png
+)
+
 echo ==========================================
 echo FULL PIPELINE COMPLETE
 echo ==========================================

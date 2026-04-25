@@ -26,7 +26,7 @@ functions:
   produces:
   - user.id
   description: Creates a new user account
-- name: update_user_profile
+- name: update_user
   parameters:
   - name: id
     type: number
