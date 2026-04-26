@@ -1,17 +1,16 @@
 file: project_blueprint/backend/node/nestjs/src/main.ts
 functions:
-- name: initialize_project
+- name: initialize
   parameters:
   - name: config
     type: object
-    entity: entity
+    entity: application
   - name: name
     type: array
     entity: entity
   return_type: object
   entity: application
-  produces:
-  - entity.instance
+  produces: []
   description: Initializes the FastAPI application with the given configuration and
     routes.
 - name: setup_database

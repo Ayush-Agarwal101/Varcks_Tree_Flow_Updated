@@ -26,13 +26,11 @@ class FlowReasoner:
 
             best = self._choose_best_producer(producers)
 
-            for p in producers:
-                if p != best:
-                    decisions.append({
-                        "action": "remove_producer",
-                        "target": var,
-                        "details": {"function": p}
-                    })
+            decisions.append({
+                "action": "keep_only_producer",
+                "target": var,
+                "details": {"function": best}
+            })
 
         return decisions
 

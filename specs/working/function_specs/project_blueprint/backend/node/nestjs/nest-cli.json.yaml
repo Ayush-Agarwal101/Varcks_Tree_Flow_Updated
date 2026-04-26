@@ -2,9 +2,9 @@ file: project_blueprint/backend/node/nestjs/est-cli.json
 functions:
 - name: initializeProject
   parameters:
-  - name: config
+  - name: app_name
     type: string
-    entity: entity
+    entity: project
   return_type: None
   entity: project
   produces:

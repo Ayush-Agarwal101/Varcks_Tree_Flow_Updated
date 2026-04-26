@@ -10,8 +10,7 @@ functions:
     entity: pagination
   return_type: list
   entity: product
-  produces:
-  - product.list
+  produces: []
   description: Retrieves a list of baked goods based on the provided category and
     limit
 - name: create_order
@@ -24,8 +23,7 @@ functions:
     entity: cart
   return_type: number
   entity: order
-  produces:
-  - order.id
+  produces: []
   description: Creates a new order for the specified customer with the provided order
     details
 - name: update_product
@@ -38,6 +36,5 @@ functions:
     entity: product
   return_type: object
   entity: product
-  produces:
-  - product.details
+  produces: []
   description: Updates the details of a product with the specified ID

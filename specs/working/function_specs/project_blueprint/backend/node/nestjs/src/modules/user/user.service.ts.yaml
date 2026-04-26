@@ -26,8 +26,7 @@ functions:
     entity: user
   return_type: number
   entity: user
-  produces:
-  - user.id
+  produces: []
   description: Creates a new user account with the given details.
 - name: update_user_profile
   parameters:
@@ -39,6 +38,5 @@ functions:
     entity: user
   return_type: boolean
   entity: user
-  produces:
-  - user.profile
+  produces: []
   description: Updates the user profile with the given information.

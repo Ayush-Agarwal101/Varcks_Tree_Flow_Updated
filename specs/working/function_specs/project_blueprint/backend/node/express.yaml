@@ -10,8 +10,7 @@ functions:
     entity: query
   return_type: list
   entity: product
-  produces:
-  - product.list
+  produces: []
   description: Handles requests to retrieve a list of baked goods based on category
     and limit
 - name: create_order
@@ -24,8 +23,7 @@ functions:
     entity: cart
   return_type: number
   entity: order
-  produces:
-  - order.id
+  produces: []
   description: Handles requests to create a new order for a customer
 - name: update_product
   parameters:
@@ -37,6 +35,5 @@ functions:
     entity: product
   return_type: boolean
   entity: product
-  produces:
-  - product.success
+  produces: []
   description: Handles requests to update a product's details

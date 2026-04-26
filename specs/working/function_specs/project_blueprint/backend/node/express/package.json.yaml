@@ -10,8 +10,7 @@ functions:
     entity: package
   return_type: list
   entity: package
-  produces:
-  - package.dependencies
+  produces: []
   description: Retrieves a list of dependencies for a given package
 - name: install_package
   parameters:

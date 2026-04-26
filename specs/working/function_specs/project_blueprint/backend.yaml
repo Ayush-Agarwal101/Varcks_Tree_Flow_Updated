@@ -10,8 +10,7 @@ functions:
     entity: query
   return_type: list
   entity: product
-  produces:
-  - product.list
+  produces: []
   description: Retrieves a list of baked goods based on category and limit
 - name: create_order
   parameters:

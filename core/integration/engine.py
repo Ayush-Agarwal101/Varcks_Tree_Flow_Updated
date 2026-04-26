@@ -176,12 +176,18 @@ class IntegrationEngine:
         # Step 1: Parse ONLY LLM actions
         parser = SuggestionParser()
         parsed_llm_actions = parser.parse(plan.actions)
+        print("\n[DEBUG] LLM ACTIONS AFTER PARSE:")
+        for a in parsed_llm_actions[:10]:
+            print(a.action, a.target)
         registry_builder = SystemRegistryBuilder(self.variables)
         system_registry = registry_builder.build()
 
         # Step 2: Add flow actions AFTER parsing
         flow_reasoner = FlowReasoner(system_registry)
         flow_actions = flow_reasoner.generate_actions()
+        print("\n[DEBUG] FLOW ACTIONS:")
+        for a in flow_actions[:10]:
+            print(a)
         flow_repair_actions = [
             RepairAction(
                 action=act["action"],
@@ -192,10 +198,16 @@ class IntegrationEngine:
         ]
 
         all_actions = deduplicate(parsed_llm_actions + flow_repair_actions)
+        print("\n[DEBUG] ALL ACTIONS (BEFORE VALIDATION):")
+        for a in all_actions[:15]:
+            print(a.action, a.target)
 
         # Step 3: Validate all
         validator = ActionValidator(self.variables)
         validated_actions = validator.validate(all_actions)
+        print("\n[DEBUG] VALIDATED ACTIONS:")
+        for a in validated_actions[:15]:
+            print(a.action, a.target)
 
         plan.actions = validated_actions
 

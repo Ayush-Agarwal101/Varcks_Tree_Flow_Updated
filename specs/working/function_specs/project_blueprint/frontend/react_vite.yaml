@@ -23,8 +23,7 @@ functions:
     entity: order
   return_type: string
   entity: cart
-  produces:
-  - cart.update_status
+  produces: []
   description: Handles adding a product to the cart and returns the update status
 - name: fetch_product_details
   parameters:

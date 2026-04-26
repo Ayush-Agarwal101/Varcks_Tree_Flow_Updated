@@ -7,8 +7,7 @@ functions:
     entity: user
   return_type: object
   entity: user
-  produces:
-  - user.data
+  produces: []
   description: Retrieves user data by ID
 - name: create_user
   parameters:

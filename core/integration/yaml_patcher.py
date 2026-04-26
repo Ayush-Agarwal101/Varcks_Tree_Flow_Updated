@@ -31,6 +31,12 @@ class YAMLPatcher:
             elif action.action == "create_function":
                 self._handle_create_function(action)
 
+            elif action.action == "remove_producer":
+                self._handle_remove_producer(action)
+
+            elif action.action == "keep_only_producer":
+                self._handle_keep_only_producer(action)
+
     # ---------------------------
     # ACTION HANDLERS
     # ---------------------------
@@ -57,7 +63,10 @@ class YAMLPatcher:
 
                         params = fn.setdefault("parameters", [])
 
-                        entity, name = var.split(".")
+                        if "." not in var:
+                            return
+
+                        entity, name = var.split(".", 1)
 
                         if not any(p["name"] == name for p in params):
                             params.append({
@@ -92,10 +101,73 @@ class YAMLPatcher:
                     path = os.path.join(root, file)
                     data = self._load_yaml(path)
 
-                    data.setdefault("functions", []).append(new_fn)
+                    functions = data.setdefault("functions", [])
+
+                    if not any(f["name"] == new_fn["name"] for f in functions):
+                        functions.append(new_fn)
 
                     self._save_yaml(path, data)
                     return
+
+    def _handle_remove_producer(self, action):
+        var = action.target
+        fn = action.details.get("function")
+
+        if not var or not fn or "." not in fn:
+            return
+
+        file_name, fn_name = fn.rsplit(".", 1)
+
+        filepath = self._find_yaml_file(file_name)
+        if not filepath:
+            return
+
+        data = self._load_yaml(filepath)
+
+        modified = False
+
+        for f in data.get("functions", []):
+            if f["name"] == fn_name:
+                produces = f.get("produces", [])
+
+                if var in produces:
+                    produces.remove(var)
+                    modified = True
+
+        if modified:
+            self._save_yaml(filepath, data)
+
+    def _handle_keep_only_producer(self, action):
+        var = action.target
+        keep_fn = action.details.get("function")
+
+        if not var or not keep_fn:
+            return
+
+        keep_fn_name = keep_fn.split(".")[-1]
+
+        for root, _, files in os.walk(self.yaml_dir):
+            for file in files:
+                if not file.endswith(".yaml"):
+                    continue
+
+                path = os.path.join(root, file)
+                data = self._load_yaml(path)
+
+                modified = False
+
+                for f in data.get("functions", []):
+                    fn_name = f.get("name")
+                    produces = f.get("produces", [])
+
+                    if var in produces:
+                        # remove from ALL except the chosen one
+                        if fn_name != keep_fn_name:
+                            produces.remove(var)
+                            modified = True
+
+                if modified:
+                    self._save_yaml(path, data)
                 
     def _handle_add_producer(self, action):
         """

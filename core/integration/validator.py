@@ -8,6 +8,9 @@ class ActionValidator:
 
         for a in actions:
 
+            # -------------------------
+            # ADD PRODUCER
+            # -------------------------
             if a.action == "add_producer":
                 function = a.details.get("function")
 
@@ -17,29 +20,73 @@ class ActionValidator:
                 valid.append(a)
                 continue
 
-            if a.action == "connect_variable":
+            # -------------------------
+            # CONNECT VARIABLE
+            # -------------------------
+            elif a.action == "connect_variable":
                 var = a.target
                 fn = a.details.get("to_function")
 
                 if not var:
                     continue
+
                 if var not in self.variables:
                     continue
 
-                if not any(fn in existing for existing in all_functions):
-                    # mark for creation instead
-                    a.action = "create_function"
-                    valid.append(a)
+                if not fn:
+                    continue
+                # strict match
+                if fn not in all_functions:
                     continue
 
                 valid.append(a)
                 continue
 
-            if a.action == "create_function":
+            # -------------------------
+            # CREATE FUNCTION
+            # -------------------------
+            elif a.action == "create_function":
+                # prevent duplicate creation
+                if a.target in self.variables:
+                    continue
+
                 valid.append(a)
                 continue
 
-            valid.append(a)
+            # -------------------------
+            # KEEP ONLY PRODUCER (NEW)
+            # -------------------------
+            elif a.action == "keep_only_producer":
+                var = a.target
+                fn = a.details.get("function")
+
+                if not var or not fn:
+                    continue
+
+                if var not in self.variables:
+                    continue
+
+                valid.append(a)
+                continue
+
+            # -------------------------
+            # REMOVE PRODUCER (NEW)
+            # -------------------------
+            elif a.action == "remove_producer":
+                var = a.target
+                fn = a.details.get("function")
+
+                if not var or not fn or "." not in fn:
+                    continue
+
+                valid.append(a)
+                continue
+
+            # -------------------------
+            # DEFAULT
+            # -------------------------
+            else:
+                valid.append(a)
 
         return valid
 

@@ -23,6 +23,5 @@ functions:
     entity: entity
   return_type: boolean
   entity: module
-  produces:
-  - entity.registration_status
+  produces: []
   description: Registers a new module with the backend
