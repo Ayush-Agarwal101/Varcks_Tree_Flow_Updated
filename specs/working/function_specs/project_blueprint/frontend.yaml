@@ -29,20 +29,14 @@ functions:
   produces:
   - cart.update_status
   description: Handles adding products to the cart and updates the cart status
-- name: checkout
+- name: process_checkout
   parameters:
-  - name: items
+  - name: details
     type: object
+    entity: order
+  - name: update_status
+    type: unknown
     entity: cart
-  - name: id
-    type: unknown
-    entity: order
-  - name: list
-    type: unknown
-    entity: order
-  - name: status
-    type: unknown
-    entity: order
   return_type: string
   entity: order
   produces:

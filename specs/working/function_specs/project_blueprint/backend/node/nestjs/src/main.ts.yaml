@@ -1,10 +1,10 @@
 file: project_blueprint/backend/node/nestjs/src/main.ts
 functions:
-- name: initialize
+- name: initialize_project
   parameters:
   - name: config
     type: object
-    entity: application
+    entity: entity
   - name: name
     type: array
     entity: entity

@@ -1,0 +1,67 @@
+{
+  "actions": [
+    {
+      "action": "map_variable",
+      "target": "product.list",
+      "details": {
+        "new_name": "product_ids"
+      }
+    },
+    {
+      "action": "change_type",
+      "target": "order.status",
+      "details": {
+        "new_type": "string"
+      }
+    },
+    {
+      "action": "keep_only_producer",
+      "target": "order.id",
+      "details": {
+        "function": "project_blueprint/backend.create_order"
+      }
+    },
+    {
+      "action": "keep_only_producer",
+      "target": "product.success",
+      "details": {
+        "function": "project_blueprint/backend.update_product"
+      }
+    },
+    {
+      "action": "keep_only_producer",
+      "target": "cart.update_status",
+      "details": {
+        "function": "project_blueprint/frontend.add_to_cart"
+      }
+    },
+    {
+      "action": "keep_only_producer",
+      "target": "order.status",
+      "details": {
+        "function": "project_blueprint/frontend.checkout"
+      }
+    },
+    {
+      "action": "keep_only_producer",
+      "target": "package.installation_status",
+      "details": {
+        "function": "project_blueprint/backend/node/express/package.json.install_package"
+      }
+    },
+    {
+      "action": "keep_only_producer",
+      "target": "compiler.config",
+      "details": {
+        "function": "project_blueprint/frontend/react_vite/tsconfig.json.configure_compiler"
+      }
+    },
+    {
+      "action": "keep_only_producer",
+      "target": "entity.registration_status",
+      "details": {
+        "function": "project_blueprint/backend/node/nestjs/src/app.module.ts.register"
+      }
+    }
+  ]
+}

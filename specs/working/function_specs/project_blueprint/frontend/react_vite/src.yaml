@@ -10,8 +10,7 @@ functions:
     entity: pagination
   return_type: array
   entity: product
-  produces:
-  - product.list
+  produces: []
   description: Retrieves a list of baked goods based on category and limit
 - name: add_to_cart
   parameters:
@@ -23,25 +22,17 @@ functions:
     entity: order
   return_type: object
   entity: cart
-  produces:
-  - cart.update_status
+  produces: []
   description: Adds an item to the user's cart and returns the update status
-- name: checkout
+- name: process_checkout
   parameters:
   - name: items
     type: array
     entity: cart
-  - name: id
+  - name: update_status
     type: unknown
-    entity: order
-  - name: list
-    type: unknown
-    entity: order
-  - name: status
-    type: unknown
-    entity: order
+    entity: cart
   return_type: object
   entity: order
-  produces:
-  - order.status
+  produces: []
   description: Processes the checkout and returns the order status

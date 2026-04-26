@@ -4,7 +4,7 @@ functions:
   parameters:
   - name: config
     type: object
-    entity: application
+    entity: entity
   - name: dependencies
     type: array
     entity: dependency

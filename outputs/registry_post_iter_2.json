@@ -1,23 +1,16 @@
 {
   "functions": {
-    "project_blueprint/backend/node/nestjs/est-cli.json.initializeProject": {
-      "produces": [
-        "entity.instance"
-      ],
-      "consumes": [
-        "project.app_name"
-      ],
-      "depends_on": []
-    },
     "project_blueprint/backend/node/nestjs/src/app.module.ts.initialize_app": {
       "produces": [
         "entity.instance"
       ],
       "consumes": [
-        "application.config",
+        "entity.config",
         "dependency.dependencies"
       ],
-      "depends_on": []
+      "depends_on": [
+        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
+      ]
     },
     "project_blueprint.create_project_blueprint": {
       "produces": [
@@ -28,7 +21,6 @@
         "project.stack_type"
       ],
       "depends_on": [
-        "project_blueprint/backend/node/nestjs/est-cli.json.initializeProject",
         "project_blueprint/backend/node/nestjs/src/app.module.ts.initialize_app"
       ]
     },
@@ -40,7 +32,6 @@
         "entity.instance"
       ],
       "depends_on": [
-        "project_blueprint/backend/node/nestjs/est-cli.json.initializeProject",
         "project_blueprint/backend/node/nestjs/src/app.module.ts.initialize_app"
       ]
     },
@@ -71,8 +62,7 @@
         "product.list"
       ],
       "depends_on": [
-        "project_blueprint/frontend/react_vite.render_product_list",
-        "project_blueprint/frontend/react_vite/src/functions.ts.get_baked_goods"
+        "project_blueprint/frontend/react_vite.render_product_list"
       ]
     },
     "project_blueprint/backend/node/express.get_baked_goods": {
@@ -100,9 +90,7 @@
       "depends_on": []
     },
     "project_blueprint/frontend/react_vite/src/functions.ts.get_baked_goods": {
-      "produces": [
-        "product.list"
-      ],
+      "produces": [],
       "consumes": [
         "product.category",
         "pagination.limit"
@@ -133,7 +121,9 @@
       ]
     },
     "project_blueprint/backend/node/express.create_order": {
-      "produces": [],
+      "produces": [
+        "order.id"
+      ],
       "consumes": [
         "user.id",
         "cart.items"
@@ -143,7 +133,9 @@
       ]
     },
     "project_blueprint/backend/node/nestjs.create_order": {
-      "produces": [],
+      "produces": [
+        "order.id"
+      ],
       "consumes": [
         "user.id",
         "cart.items"
@@ -153,7 +145,9 @@
       ]
     },
     "project_blueprint/backend/node/nestjs/src.create_order": {
-      "produces": [],
+      "produces": [
+        "order.id"
+      ],
       "consumes": [
         "user.id",
         "cart.items"
@@ -241,9 +235,12 @@
         "order.status"
       ],
       "depends_on": [
-        "project_blueprint/frontend/react_vite/src/functions.ts.checkout",
         "project_blueprint/backend.create_order",
-        "project_blueprint/backend/node/nestjs/src/modules/user.get_order_history"
+        "project_blueprint/backend/node/nestjs/src.create_order",
+        "project_blueprint/backend/node/nestjs.create_order",
+        "project_blueprint/backend/node/nestjs/src/modules/user.get_order_history",
+        "project_blueprint/backend/node/express.create_order",
+        "project_blueprint/frontend/react_vite/src/functions.ts.checkout"
       ]
     },
     "project_blueprint/frontend/react_vite/src/functions.ts.checkout": {
@@ -257,9 +254,12 @@
         "order.status"
       ],
       "depends_on": [
-        "project_blueprint/frontend.checkout",
         "project_blueprint/backend.create_order",
-        "project_blueprint/backend/node/nestjs/src/modules/user.get_order_history"
+        "project_blueprint/backend/node/nestjs/src.create_order",
+        "project_blueprint/frontend.checkout",
+        "project_blueprint/backend/node/nestjs.create_order",
+        "project_blueprint/backend/node/nestjs/src/modules/user.get_order_history",
+        "project_blueprint/backend/node/express.create_order"
       ]
     },
     "project_blueprint/backend.update_product": {
@@ -283,7 +283,9 @@
       "depends_on": []
     },
     "project_blueprint/backend/node/express.update_product": {
-      "produces": [],
+      "produces": [
+        "product.success"
+      ],
       "consumes": [
         "product.id",
         "product.details"
@@ -313,7 +315,9 @@
       ]
     },
     "project_blueprint/frontend/react_vite.add_to_cart": {
-      "produces": [],
+      "produces": [
+        "cart.update_status"
+      ],
       "consumes": [
         "product.id",
         "order.quantity"
@@ -347,9 +351,7 @@
         "product.list",
         "product.ids"
       ],
-      "depends_on": [
-        "project_blueprint/frontend/react_vite/src/functions.ts.get_baked_goods"
-      ]
+      "depends_on": []
     },
     "project_blueprint/README.get_tech_stack": {
       "produces": [
@@ -397,22 +399,102 @@
       "depends_on": []
     },
     "project_blueprint/backend/node/nestjs/package.json.install_package": {
-      "produces": [],
+      "produces": [
+        "package.installation_status"
+      ],
       "consumes": [
         "package.name",
         "package.version"
       ],
       "depends_on": []
     },
-    "project_blueprint/frontend/react_vite/package.json.install_dependencies": {
+    "project_blueprint/frontend/react_vite/package.json.manage_dependencies": {
       "produces": [
-        "package.dependencies"
+        "entity.dependencies"
       ],
       "consumes": [
         "package.name",
         "package.version"
       ],
       "depends_on": []
+    },
+    "project_blueprint/backend/node/nestjs/src/modules.get_module_config": {
+      "produces": [
+        "entity.config"
+      ],
+      "consumes": [
+        "entity.name",
+        "config.name"
+      ],
+      "depends_on": []
+    },
+    "project_blueprint/backend/node/nestjs/est-cli.json.initializeProject": {
+      "produces": [],
+      "consumes": [
+        "entity.config"
+      ],
+      "depends_on": [
+        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
+      ]
+    },
+    "project_blueprint/backend/node/nestjs/src/app.module.ts.register": {
+      "produces": [
+        "entity.registration_status"
+      ],
+      "consumes": [
+        "entity.config",
+        "entity.name"
+      ],
+      "depends_on": [
+        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
+      ]
+    },
+    "project_blueprint/backend/node/nestjs/src/app.module.ts.start_server": {
+      "produces": [
+        "server.status"
+      ],
+      "consumes": [
+        "entity.config",
+        "server.port"
+      ],
+      "depends_on": [
+        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
+      ]
+    },
+    "project_blueprint/backend/node/nestjs/src/main.ts.initialize_project": {
+      "produces": [],
+      "consumes": [
+        "entity.config",
+        "entity.name"
+      ],
+      "depends_on": [
+        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
+      ]
+    },
+    "project_blueprint/backend/node/nestjs/src/main.ts.start_app": {
+      "produces": [
+        "server.instance"
+      ],
+      "consumes": [
+        "entity.config",
+        "server.port",
+        "server.host"
+      ],
+      "depends_on": [
+        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
+      ]
+    },
+    "project_blueprint/backend/node/nestjs/src/modules.register": {
+      "produces": [
+        "entity.registration_status"
+      ],
+      "consumes": [
+        "entity.config",
+        "entity.name"
+      ],
+      "depends_on": [
+        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
+      ]
     },
     "project_blueprint/backend/node/nestjs/est-cli.json.configureDependencies": {
       "produces": [
@@ -433,7 +515,9 @@
       "depends_on": []
     },
     "project_blueprint/backend/node/nestjs/tsconfig.json.configure_compiler": {
-      "produces": [],
+      "produces": [
+        "compiler.config"
+      ],
       "consumes": [
         "compiler.options"
       ],
@@ -456,71 +540,6 @@
         "module.names"
       ],
       "depends_on": []
-    },
-    "project_blueprint/backend/node/nestjs/src/main.ts.initialize": {
-      "produces": [],
-      "consumes": [
-        "application.config",
-        "entity.name"
-      ],
-      "depends_on": []
-    },
-    "project_blueprint/backend/node/nestjs/src/app.module.ts.register": {
-      "produces": [
-        "entity.registration_status"
-      ],
-      "consumes": [
-        "entity.name",
-        "entity.config"
-      ],
-      "depends_on": [
-        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
-      ]
-    },
-    "project_blueprint/backend/node/nestjs/src/modules.get_module_config": {
-      "produces": [
-        "entity.config"
-      ],
-      "consumes": [
-        "entity.name",
-        "config.name"
-      ],
-      "depends_on": []
-    },
-    "project_blueprint/backend/node/nestjs/src/modules.register": {
-      "produces": [],
-      "consumes": [
-        "entity.name",
-        "entity.config"
-      ],
-      "depends_on": [
-        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
-      ]
-    },
-    "project_blueprint/backend/node/nestjs/src/app.module.ts.start_server": {
-      "produces": [
-        "server.status"
-      ],
-      "consumes": [
-        "entity.config",
-        "server.port"
-      ],
-      "depends_on": [
-        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
-      ]
-    },
-    "project_blueprint/backend/node/nestjs/src/main.ts.start_app": {
-      "produces": [
-        "server.instance"
-      ],
-      "consumes": [
-        "entity.config",
-        "server.port",
-        "server.host"
-      ],
-      "depends_on": [
-        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
-      ]
     },
     "project_blueprint/frontend/react_vite/vite.config.ts.setup_dev_server": {
       "produces": [
@@ -667,7 +686,6 @@
   "variables": {
     "entity.instance": {
       "produced_by": [
-        "project_blueprint/backend/node/nestjs/est-cli.json.initializeProject",
         "project_blueprint/backend/node/nestjs/src/app.module.ts.initialize_app"
       ],
       "used_by": [
@@ -751,7 +769,10 @@
     },
     "order.id": {
       "produced_by": [
-        "project_blueprint/backend.create_order"
+        "project_blueprint/backend.create_order",
+        "project_blueprint/backend/node/express.create_order",
+        "project_blueprint/backend/node/nestjs.create_order",
+        "project_blueprint/backend/node/nestjs/src.create_order"
       ],
       "used_by": [
         "project_blueprint/frontend.checkout",
@@ -782,7 +803,8 @@
     },
     "product.success": {
       "produced_by": [
-        "project_blueprint/backend.update_product"
+        "project_blueprint/backend.update_product",
+        "project_blueprint/backend/node/express.update_product"
       ],
       "used_by": [],
       "type": "boolean"
@@ -796,8 +818,7 @@
     },
     "product.list": {
       "produced_by": [
-        "project_blueprint/frontend/react_vite.render_product_list",
-        "project_blueprint/frontend/react_vite/src/functions.ts.get_baked_goods"
+        "project_blueprint/frontend/react_vite.render_product_list"
       ],
       "used_by": [
         "project_blueprint/frontend.render_product_list",
@@ -824,6 +845,7 @@
     "cart.update_status": {
       "produced_by": [
         "project_blueprint/frontend.add_to_cart",
+        "project_blueprint/frontend/react_vite.add_to_cart",
         "project_blueprint/frontend/react_vite/src/functions.ts.add_to_cart"
       ],
       "used_by": [],
@@ -937,7 +959,7 @@
         "project_blueprint/backend/node/express/package.json.install_package",
         "project_blueprint/backend/node/nestjs/package.json.get_dependencies",
         "project_blueprint/backend/node/nestjs/package.json.install_package",
-        "project_blueprint/frontend/react_vite/package.json.install_dependencies"
+        "project_blueprint/frontend/react_vite/package.json.manage_dependencies"
       ],
       "type": "string"
     },
@@ -948,21 +970,30 @@
         "project_blueprint/backend/node/express/package.json.install_package",
         "project_blueprint/backend/node/nestjs/package.json.get_dependencies",
         "project_blueprint/backend/node/nestjs/package.json.install_package",
-        "project_blueprint/frontend/react_vite/package.json.install_dependencies"
+        "project_blueprint/frontend/react_vite/package.json.manage_dependencies"
       ],
       "type": "string"
     },
     "package.installation_status": {
       "produced_by": [
-        "project_blueprint/backend/node/express/package.json.install_package"
+        "project_blueprint/backend/node/express/package.json.install_package",
+        "project_blueprint/backend/node/nestjs/package.json.install_package"
       ],
       "used_by": [],
       "type": "status"
     },
-    "project.app_name": {
-      "produced_by": [],
+    "entity.config": {
+      "produced_by": [
+        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
+      ],
       "used_by": [
-        "project_blueprint/backend/node/nestjs/est-cli.json.initializeProject"
+        "project_blueprint/backend/node/nestjs/est-cli.json.initializeProject",
+        "project_blueprint/backend/node/nestjs/src/app.module.ts.initialize_app",
+        "project_blueprint/backend/node/nestjs/src/app.module.ts.register",
+        "project_blueprint/backend/node/nestjs/src/app.module.ts.start_server",
+        "project_blueprint/backend/node/nestjs/src/main.ts.initialize_project",
+        "project_blueprint/backend/node/nestjs/src/main.ts.start_app",
+        "project_blueprint/backend/node/nestjs/src/modules.register"
       ],
       "type": "string"
     },
@@ -1002,6 +1033,14 @@
       ],
       "type": "object"
     },
+    "compiler.config": {
+      "produced_by": [
+        "project_blueprint/backend/node/nestjs/tsconfig.json.configure_compiler",
+        "project_blueprint/frontend/react_vite/tsconfig.json.configure_compiler"
+      ],
+      "used_by": [],
+      "type": "object"
+    },
     "module.names": {
       "produced_by": [],
       "used_by": [
@@ -1016,14 +1055,6 @@
       "used_by": [],
       "type": "array"
     },
-    "application.config": {
-      "produced_by": [],
-      "used_by": [
-        "project_blueprint/backend/node/nestjs/src/app.module.ts.initialize_app",
-        "project_blueprint/backend/node/nestjs/src/main.ts.initialize"
-      ],
-      "type": "object"
-    },
     "dependency.dependencies": {
       "produced_by": [],
       "used_by": [
@@ -1035,27 +1066,16 @@
       "produced_by": [],
       "used_by": [
         "project_blueprint/backend/node/nestjs/src/app.module.ts.register",
-        "project_blueprint/backend/node/nestjs/src/main.ts.initialize",
+        "project_blueprint/backend/node/nestjs/src/main.ts.initialize_project",
         "project_blueprint/backend/node/nestjs/src/modules.get_module_config",
         "project_blueprint/backend/node/nestjs/src/modules.register"
       ],
       "type": "array"
     },
-    "entity.config": {
-      "produced_by": [
-        "project_blueprint/backend/node/nestjs/src/modules.get_module_config"
-      ],
-      "used_by": [
-        "project_blueprint/backend/node/nestjs/src/app.module.ts.register",
-        "project_blueprint/backend/node/nestjs/src/app.module.ts.start_server",
-        "project_blueprint/backend/node/nestjs/src/main.ts.start_app",
-        "project_blueprint/backend/node/nestjs/src/modules.register"
-      ],
-      "type": "object"
-    },
     "entity.registration_status": {
       "produced_by": [
-        "project_blueprint/backend/node/nestjs/src/app.module.ts.register"
+        "project_blueprint/backend/node/nestjs/src/app.module.ts.register",
+        "project_blueprint/backend/node/nestjs/src/modules.register"
       ],
       "used_by": [],
       "type": "object"
@@ -1199,9 +1219,9 @@
       ],
       "type": "array"
     },
-    "package.dependencies": {
+    "entity.dependencies": {
       "produced_by": [
-        "project_blueprint/frontend/react_vite/package.json.install_dependencies"
+        "project_blueprint/frontend/react_vite/package.json.manage_dependencies"
       ],
       "used_by": [],
       "type": "list"
@@ -1233,13 +1253,6 @@
       ],
       "used_by": [],
       "type": "string"
-    },
-    "compiler.config": {
-      "produced_by": [
-        "project_blueprint/frontend/react_vite/tsconfig.json.configure_compiler"
-      ],
-      "used_by": [],
-      "type": "object"
     },
     "module.import_paths": {
       "produced_by": [],

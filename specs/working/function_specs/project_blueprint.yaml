@@ -13,7 +13,7 @@ functions:
   produces:
   - project.blueprint
   description: Creates a new project based on the provided blueprint and stack type
-- name: get_blueprint
+- name: get_or_update_blueprint
   parameters:
   - name: template_name
     type: string
@@ -23,9 +23,3 @@ functions:
   produces:
   - blueprint.details
   description: Retrieves the details of a specific blueprint
-- name: process_user
-  parameters: []
-  return_type: unknown
-  entity: user
-  produces: []
-  description: ''

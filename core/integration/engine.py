@@ -139,8 +139,8 @@ class IntegrationEngine:
         )
 
         reporter.print_errors()
-        reporter.print_links()
-        reporter.print_function_graph()
+        # reporter.print_links()
+        # reporter.print_function_graph()
         reporter.print_summary()
 
     # FULL PIPELINE

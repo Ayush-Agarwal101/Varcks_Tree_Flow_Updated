@@ -33,10 +33,7 @@ class ActionValidator:
                 if var not in self.variables:
                     continue
 
-                if not fn:
-                    continue
-                # strict match
-                if fn not in all_functions:
+                if not fn or fn not in all_functions:
                     continue
 
                 valid.append(a)

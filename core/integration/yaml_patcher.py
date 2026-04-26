@@ -83,6 +83,8 @@ class YAMLPatcher:
         """
         Minimal safe function creation
         """
+        if not action.target or "." not in action.target:
+            return
         entity = action.target.split(".")[0]
 
         new_fn = {
@@ -144,8 +146,6 @@ class YAMLPatcher:
         if not var or not keep_fn:
             return
 
-        keep_fn_name = keep_fn.split(".")[-1]
-
         for root, _, files in os.walk(self.yaml_dir):
             for file in files:
                 if not file.endswith(".yaml"):
@@ -153,6 +153,7 @@ class YAMLPatcher:
 
                 path = os.path.join(root, file)
                 data = self._load_yaml(path)
+                file_name = data.get("file", "").replace(".yaml", "").replace(".yml", "")
 
                 modified = False
 
@@ -160,9 +161,10 @@ class YAMLPatcher:
                     fn_name = f.get("name")
                     produces = f.get("produces", [])
 
+                    full_fn_name = f"{file_name}.{fn_name}"
+
                     if var in produces:
-                        # remove from ALL except the chosen one
-                        if fn_name != keep_fn_name:
+                        if full_fn_name != keep_fn:
                             produces.remove(var)
                             modified = True
 
@@ -227,15 +229,22 @@ class YAMLPatcher:
     # FILE HELPERS
     # ---------------------------
 
-    def _find_yaml_file(self, file_name):
-        target = file_name.replace("\\", "/")
+    def _find_yaml_file(self, target_file_name):
+        target_file_name = target_file_name.replace("\\", "/")
+
         for root, _, files in os.walk(self.yaml_dir):
             for file in files:
-                if file.endswith(".yaml"):
-                    path = os.path.join(root, file)
-                    rel = path.replace("\\", "/")
-                    if rel.endswith(target + ".yaml"):
-                        return path
+                if not file.endswith(".yaml"):
+                    continue
+
+                path = os.path.join(root, file)
+                data = self._load_yaml(path)
+
+                file_name = data.get("file", "").replace(".yaml", "").replace(".yml", "")
+
+                if file_name == target_file_name:
+                    return path
+
         return None
 
     def _load_yaml(self, path):
