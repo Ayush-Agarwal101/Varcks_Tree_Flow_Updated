@@ -1,0 +1,23 @@
+{
+  "actions": [
+    {
+      "action": "connect_variable",
+      "target": "order.id",
+      "details": {
+        "to_function": "checkout"
+      }
+    },
+    {
+      "action": "map_variable",
+      "target": "cart.update_status",
+      "details": {
+        "new_name": "cart.status"
+      }
+    },
+    {
+      "action": "remove_variable",
+      "target": "blueprint.details",
+      "details": {}
+    }
+  ]
+}

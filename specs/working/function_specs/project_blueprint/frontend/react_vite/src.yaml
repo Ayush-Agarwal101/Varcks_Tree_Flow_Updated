@@ -34,6 +34,12 @@ functions:
   - name: id
     type: unknown
     entity: order
+  - name: list
+    type: unknown
+    entity: order
+  - name: status
+    type: unknown
+    entity: order
   return_type: object
   entity: order
   produces:

@@ -5,6 +5,8 @@ from core.llm_structured import StructuredLLM
 from pydantic import BaseModel
 import re
 import json
+from dotenv import load_dotenv
+load_dotenv()
 
 # SCHEMAS
 class RepairAction(BaseModel):
@@ -148,10 +150,11 @@ Allowed actions:
 
 4. suggest_improvement → suggest architectural or flow improvement
 
-For suggest_improvement:
+For add_producer:
+- You MUST specify the function that produces the variable
+- Use full function identifier: file.function_name
 
-You MUST:
-
+For suggest_improvement, You MUST:
 1. Identify WHERE the variable should flow next
 2. Suggest a specific function or type of function
 3. If no such function exists → suggest creating one

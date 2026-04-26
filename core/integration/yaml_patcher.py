@@ -25,7 +25,7 @@ class YAMLPatcher:
             elif action.action == "change_type":
                 self._handle_change_type(action)
 
-            if action.action == "connect_variable":
+            elif action.action == "connect_variable":
                 self._handle_connect_variable(action)
 
             elif action.action == "create_function":
@@ -39,10 +39,9 @@ class YAMLPatcher:
         var = action.target
         fn_name = action.details.get("to_function")
 
-        if not fn_name:
+        if not var or not fn_name:
             return
 
-        # find function
         for root, _, files in os.walk(self.yaml_dir):
             for file in files:
                 if not file.endswith(".yaml"):
@@ -50,6 +49,8 @@ class YAMLPatcher:
 
                 path = os.path.join(root, file)
                 data = self._load_yaml(path)
+
+                modified = False
 
                 for fn in data.get("functions", []):
                     if fn["name"] == fn_name:
@@ -64,8 +65,10 @@ class YAMLPatcher:
                                 "type": "unknown",
                                 "entity": entity
                             })
+                            modified = True
 
-                self._save_yaml(path, data)
+                if modified:
+                    self._save_yaml(path, data)
 
     def _handle_create_function(self, action):
         """
@@ -101,7 +104,7 @@ class YAMLPatcher:
         target = action.target  # e.g. user.user_id
         function = action.details.get("function")
 
-        if not function:
+        if not function or "." not in function:
             return
 
         file_name, fn_name = function.rsplit(".", 1)

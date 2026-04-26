@@ -5,6 +5,9 @@ functions:
   - name: ids
     type: array
     entity: product
+  - name: list
+    type: unknown
+    entity: product
   return_type: string
   entity: product
   produces:

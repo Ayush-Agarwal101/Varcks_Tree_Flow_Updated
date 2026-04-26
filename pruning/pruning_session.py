@@ -2,7 +2,8 @@
 
 from core.llm_structured import StructuredLLM
 from core.schemas import PruneDecision
-
+from dotenv import load_dotenv
+load_dotenv()
 
 class PruningSession:
 

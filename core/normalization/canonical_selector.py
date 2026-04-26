@@ -3,6 +3,8 @@
 from typing import List, Dict
 from core.llm_structured import StructuredLLM
 from pydantic import BaseModel
+from dotenv import load_dotenv
+load_dotenv()
 
 # Schema
 

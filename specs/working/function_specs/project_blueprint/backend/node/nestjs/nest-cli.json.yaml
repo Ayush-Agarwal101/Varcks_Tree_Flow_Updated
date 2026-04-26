@@ -2,13 +2,13 @@ file: project_blueprint/backend/node/nestjs/est-cli.json
 functions:
 - name: initializeProject
   parameters:
-  - name: app_name
+  - name: config
     type: string
-    entity: project
+    entity: entity
   return_type: None
   entity: project
   produces:
-  - project.name
+  - entity.instance
   description: Initializes a new NestJS project with specified name and configurations
 - name: configureDependencies
   parameters:

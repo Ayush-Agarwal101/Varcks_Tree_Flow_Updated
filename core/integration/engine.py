@@ -2,6 +2,7 @@
 
 from typing import Dict
 import os
+import copy
 from .loader import YAMLLoader
 from .detectors import IntegrationDetectors
 from .linker import IntegrationLinker
@@ -9,13 +10,26 @@ from .reporter import IntegrationReporter
 from core.normalization.build_canonical_map import build_canonical_maps
 from core.integration.canonical_rewriter import CanonicalRewriter
 from core.integration.canonical_injector import CanonicalInjector
-from core.integration.repair_engine import RepairEngine
+from core.integration.repair_engine import RepairEngine, RepairAction
 from core.integration.yaml_patcher import YAMLPatcher
 from core.integration.graph_visualizer import GraphVisualizer
 from core.integration.repair_logger import RepairLogger
 from core.integration.suggestion_parser import SuggestionParser
 from core.integration.validator import ActionValidator
 from core.integration.system_registry import SystemRegistryBuilder
+from core.integration.flow_reasoner import FlowReasoner
+
+def deduplicate(actions):
+    seen = set()
+    unique = []
+
+    for a in actions:
+        key = (a.action, a.target, str(a.details))
+        if key not in seen:
+            seen.add(key)
+            unique.append(a)
+
+    return unique
 
 class IntegrationEngine:
     def __init__(self, yaml_directory: str):
@@ -25,6 +39,39 @@ class IntegrationEngine:
         self.report = {}
         self.links = []
         self.graph = {}
+        self.prev_variables = {}
+
+    def _print_variable_changes(self):
+        if not self.prev_variables:
+            print("[DEBUG] Initial load (no previous state)")
+            return
+
+        print("\n[DEBUG] Variable Changes:")
+
+        changes = 0
+
+        for key, var in self.variables.items():
+            prev = self.prev_variables.get(key)
+
+            if not prev:
+                print(f"  [+] NEW VARIABLE: {key}")
+                changes += 1
+                continue
+
+            if set(var.produced_by) != set(prev.produced_by):
+                print(f"  [P] {key}")
+                print(f"     OLD producers: {prev.produced_by}")
+                print(f"     NEW producers: {var.produced_by}")
+                changes += 1
+
+            if set(var.used_by) != set(prev.used_by):
+                print(f"  [U] {key}")
+                print(f"     OLD used_by: {prev.used_by}")
+                print(f"     NEW used_by: {var.used_by}")
+                changes += 1
+
+        if changes == 0:
+            print("  No changes detected.")
 
     # STEP 0 — Canonical Mapping + Injection + Rewrite
 
@@ -56,12 +103,17 @@ class IntegrationEngine:
 
     # STEP 1 — Load YAMLs
 
-    def load(self):
+    def load(self, iteration = 0):
         loader = YAMLLoader()
-        self.variables = loader.load_directory(self.yaml_directory)
 
-        for k, v in list(self.variables.items())[:10]:
-            print(k, v.produced_by, v.used_by)
+        prev_snapshot = copy.deepcopy(self.variables)
+        self.variables = loader.load_directory(self.yaml_directory)
+        if iteration == 0:
+            for k, v in list(self.variables.items())[:10]:
+                print(k, v.produced_by, v.used_by)
+        else:
+            self.prev_variables = prev_snapshot
+            self._print_variable_changes()
 
     # STEP 2 —  Detect Issues
 
@@ -96,15 +148,18 @@ class IntegrationEngine:
     def run(self, iteration = 0):
         print("\n=== INTEGRATION ENGINE START ===\n")
 
-        self.apply_canonical_pipeline()
+        if iteration == 0:
+            self.apply_canonical_pipeline()
 
         print("RUNNING ON:", self.yaml_directory)
 
-        self.load()
+        self.load(iteration)
         self.detect()
         self.build_links()
-        pre_registry = SystemRegistryBuilder(self.variables)
-        pre_registry.save(f"outputs/registry_pre_iter_{iteration}.json")
+
+        pre_registry_builder = SystemRegistryBuilder(self.variables)
+        pre_system_registry = pre_registry_builder.build()
+        pre_registry_builder.save(f"outputs/registry_pre_iter_{iteration}.json")
         print("YAMLs loaded.")
 
         print("Detection complete.")
@@ -116,21 +171,38 @@ class IntegrationEngine:
         logger = RepairLogger()
 
         repair_engine.variables = self.variables
+        plan = repair_engine.generate_plan(self.report, self.variables, pre_system_registry)
+
+        # Step 1: Parse ONLY LLM actions
+        parser = SuggestionParser()
+        parsed_llm_actions = parser.parse(plan.actions)
         registry_builder = SystemRegistryBuilder(self.variables)
         system_registry = registry_builder.build()
-        plan = repair_engine.generate_plan(self.report, self.variables, system_registry)
-        parser = SuggestionParser()
-        validator = ActionValidator(self.variables)
 
-        parsed_actions = parser.parse(plan.actions)
-        validated_actions = validator.validate(parsed_actions)
+        # Step 2: Add flow actions AFTER parsing
+        flow_reasoner = FlowReasoner(system_registry)
+        flow_actions = flow_reasoner.generate_actions()
+        flow_repair_actions = [
+            RepairAction(
+                action=act["action"],
+                target=act["target"],
+                details=act["details"]
+            )
+            for act in flow_actions
+        ]
+
+        all_actions = deduplicate(parsed_llm_actions + flow_repair_actions)
+
+        # Step 3: Validate all
+        validator = ActionValidator(self.variables)
+        validated_actions = validator.validate(all_actions)
 
         plan.actions = validated_actions
 
         if not plan.actions:
             print("[REPAIR] No actions suggested by LLM.")
         else:
-            logger.save(plan, iteration=1)
+            logger.save(plan, iteration=iteration)
 
             print("Repair Plan:")
             for action in plan.actions:
@@ -140,7 +212,7 @@ class IntegrationEngine:
             print("Repair applied.")
 
             # RELOAD updated YAMLs
-            self.load()
+            self.load(iteration)
             self.detect()
             self.build_links()
 
