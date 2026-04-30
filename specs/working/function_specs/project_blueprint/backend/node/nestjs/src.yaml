@@ -18,9 +18,9 @@ functions:
   - name: id
     type: number
     entity: user
-  - name: details
+  - name: items
     type: object
-    entity: order
+    entity: cart
   return_type: number
   entity: order
   produces: []

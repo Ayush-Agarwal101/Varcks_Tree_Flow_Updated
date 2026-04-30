@@ -105,8 +105,16 @@ class StructuredLLM:
                 json_str = self.fix_invalid_escapes(json_str)
                 parsed = json.loads(json_str)
 
-                if "reason" not in parsed:
-                    parsed["reason"] = "No reason provided by model."
+                # Case 1: batch (dict of objects)
+                if isinstance(parsed, dict) and all(isinstance(v, dict) for v in parsed.values()):
+                    for v in parsed.values():
+                        if "reason" not in v:
+                            v["reason"] = "No reason provided by model."
+
+                # Case 2: single object
+                elif isinstance(parsed, dict):
+                    if "reason" not in parsed:
+                        parsed["reason"] = "No reason provided by model."
 
                 return schema(**parsed)
 

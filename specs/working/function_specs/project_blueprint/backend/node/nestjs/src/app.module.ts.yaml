@@ -4,14 +4,13 @@ functions:
   parameters:
   - name: config
     type: object
-    entity: entity
+    entity: application
   - name: dependencies
     type: array
     entity: dependency
   return_type: object
   entity: application
-  produces:
-  - entity.instance
+  produces: []
   description: Initializes the application instance with the given configuration and
     dependencies.
 - name: register

@@ -24,13 +24,10 @@ functions:
   entity: cart
   produces: []
   description: Adds an item to the user's cart and returns the update status
-- name: process_checkout
+- name: checkout
   parameters:
   - name: items
     type: array
-    entity: cart
-  - name: update_status
-    type: unknown
     entity: cart
   return_type: object
   entity: order

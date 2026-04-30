@@ -37,9 +37,38 @@ class YAMLPatcher:
             elif action.action == "keep_only_producer":
                 self._handle_keep_only_producer(action)
 
+            elif action.action == "remove_variable":
+                self._handle_remove_variable(action)
+
     # ---------------------------
     # ACTION HANDLERS
     # ---------------------------
+
+    def _handle_remove_variable(self, action):
+        var = action.target
+
+        if not var:
+            return
+
+        for root, _, files in os.walk(self.yaml_dir):
+            for file in files:
+                if not file.endswith(".yaml"):
+                    continue
+
+                path = os.path.join(root, file)
+                data = self._load_yaml(path)
+
+                modified = False
+
+                for fn in data.get("functions", []):
+                    produces = fn.get("produces", [])
+
+                    if var in produces:
+                        produces.remove(var)
+                        modified = True
+
+                if modified:
+                    self._save_yaml(path, data)
 
     def _handle_connect_variable(self, action):
         var = action.target

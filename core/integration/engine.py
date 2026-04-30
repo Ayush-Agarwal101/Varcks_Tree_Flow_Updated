@@ -18,18 +18,25 @@ from core.integration.suggestion_parser import SuggestionParser
 from core.integration.validator import ActionValidator
 from core.integration.system_registry import SystemRegistryBuilder
 from core.integration.flow_reasoner import FlowReasoner
+from core.integration.unused_reasoner import UnusedOutputReasoner
 
 def deduplicate(actions):
     seen = set()
-    unique = []
+    result = []
 
     for a in actions:
-        key = (a.action, a.target, str(a.details))
-        if key not in seen:
-            seen.add(key)
-            unique.append(a)
+        try:
+            key = (a.action, a.target, str(a.details))
+        except AttributeError:
+            continue
 
-    return unique
+        if key in seen:
+            continue
+
+        seen.add(key)
+        result.append(a)
+
+    return result
 
 class IntegrationEngine:
     def __init__(self, yaml_directory: str):
@@ -157,6 +164,20 @@ class IntegrationEngine:
         self.detect()
         self.build_links()
 
+        # SAVE BEFORE STATE
+        before_variables = copy.deepcopy(self.variables)
+        before_report = copy.deepcopy(self.report)
+
+        viz = GraphVisualizer(self.graph)
+
+        os.makedirs("outputs/debug", exist_ok=True)
+
+        viz.render_variable_graph_labeled(
+            before_variables,
+            before_report,
+            f"outputs/debug/variable_before_iter{iteration}"
+        )
+
         pre_registry_builder = SystemRegistryBuilder(self.variables)
         pre_system_registry = pre_registry_builder.build()
         pre_registry_builder.save(f"outputs/registry_pre_iter_{iteration}.json")
@@ -185,6 +206,22 @@ class IntegrationEngine:
         # Step 2: Add flow actions AFTER parsing
         flow_reasoner = FlowReasoner(system_registry)
         flow_actions = flow_reasoner.generate_actions()
+        unused_vars = self.report.get("unused_outputs", [])
+        unused_reasoner = UnusedOutputReasoner(self.variables, system_registry)
+        unused_actions = unused_reasoner.generate_actions(unused_vars)
+        unused_repair_actions = []
+
+        for a in unused_actions:
+            if not a.get("target"):
+                continue
+
+            unused_repair_actions.append(
+                RepairAction(
+                    action=a["action"],
+                    target=a["target"],
+                    details=a.get("details", {})
+                )
+            )
         print("\n[DEBUG] FLOW ACTIONS:")
         for a in flow_actions[:10]:
             print(a)
@@ -197,7 +234,7 @@ class IntegrationEngine:
             for act in flow_actions
         ]
 
-        all_actions = deduplicate(parsed_llm_actions + flow_repair_actions)
+        all_actions = deduplicate(parsed_llm_actions + flow_repair_actions + unused_repair_actions)
         print("\n[DEBUG] ALL ACTIONS (BEFORE VALIDATION):")
         for a in all_actions[:15]:
             print(a.action, a.target)
@@ -229,6 +266,17 @@ class IntegrationEngine:
             self.build_links()
 
         # SAVE POST-REPAIR REGISTRY
+        viz = GraphVisualizer(self.graph)
+        viz.render_variable_graph_labeled(
+            self.variables,
+            self.report,
+            "outputs/debug/variable_after"
+        )
+        viz.render_broken_flows(
+            self.variables,
+            self.report,
+            "outputs/debug/broken_flows"
+        )
         post_registry = SystemRegistryBuilder(self.variables)
         post_registry.save(f"outputs/registry_post_iter_{iteration}.json")
         print("Repair complete.")
@@ -237,9 +285,12 @@ class IntegrationEngine:
         self.report_results()
         print("Generating graph visualization...")
 
-        viz = GraphVisualizer(self.graph)
         os.makedirs("outputs", exist_ok=True)
-        viz.render("outputs/integration_graph")
+
+        # Function flow
+        viz.render_function_graph("outputs/function_graph")
+        # Variable flow (with issues)
+        viz.render_variable_graph(self.variables, self.report, "outputs/variable_graph")
 
         print("\n=== INTEGRATION ENGINE END ===\n")
 

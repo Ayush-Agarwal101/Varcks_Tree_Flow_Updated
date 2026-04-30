@@ -8,9 +8,6 @@ functions:
   - name: page
     type: number
     entity: pagination
-  - name: list
-    type: unknown
-    entity: product
   return_type: string
   entity: product_list
   produces:
@@ -29,13 +26,10 @@ functions:
   produces:
   - cart.update_status
   description: Handles adding products to the cart and updates the cart status
-- name: process_checkout
+- name: checkout
   parameters:
-  - name: details
+  - name: items
     type: object
-    entity: order
-  - name: update_status
-    type: unknown
     entity: cart
   return_type: string
   entity: order

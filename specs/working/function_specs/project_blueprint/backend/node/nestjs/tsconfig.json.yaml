@@ -16,6 +16,5 @@ functions:
     entity: module
   return_type: array
   entity: module
-  produces:
-  - module.paths
+  produces: []
   description: Resolves the given module names to their corresponding file paths.

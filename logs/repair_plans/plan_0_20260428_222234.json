@@ -1,25 +1,6 @@
 {
   "actions": [
     {
-      "action": "connect_variable",
-      "target": "cart.update_status",
-      "details": {
-        "to_function": "process_checkout"
-      }
-    },
-    {
-      "action": "remove_variable",
-      "target": "blueprint.details",
-      "details": {}
-    },
-    {
-      "action": "keep_only_producer",
-      "target": "entity.instance",
-      "details": {
-        "function": "project_blueprint/backend/node/nestjs/src/app.module.ts.initialize_app"
-      }
-    },
-    {
       "action": "keep_only_producer",
       "target": "product.list",
       "details": {
@@ -58,7 +39,7 @@
       "action": "keep_only_producer",
       "target": "order.status",
       "details": {
-        "function": "project_blueprint/frontend.process_checkout"
+        "function": "project_blueprint/frontend.checkout"
       }
     },
     {
@@ -91,6 +72,13 @@
     },
     {
       "action": "keep_only_producer",
+      "target": "application.instance",
+      "details": {
+        "function": "project_blueprint/backend/node/nestjs/src/app.module.ts.initialize_app"
+      }
+    },
+    {
+      "action": "keep_only_producer",
       "target": "entity.registration_status",
       "details": {
         "function": "project_blueprint/backend/node/nestjs/src/app.module.ts.register"
@@ -107,15 +95,92 @@
       "action": "keep_only_producer",
       "target": "user.profile",
       "details": {
-        "function": "project_blueprint/backend/node/nestjs/src/modules/user.update_user"
+        "function": "project_blueprint/backend/node/nestjs/src/modules/user.update_user_profile"
       }
     },
     {
       "action": "connect_variable",
       "target": "product.list",
       "details": {
-        "to_function": "render_product_list"
+        "to_function": "project_blueprint/frontend/react_vite.render_product_list"
       }
+    },
+    {
+      "action": "connect_variable",
+      "target": "user.profile",
+      "details": {
+        "to_function": "project_blueprint/backend/node/nestjs/src/modules/user.update_user_profile"
+      }
+    },
+    {
+      "action": "connect_variable",
+      "target": "user.data",
+      "details": {
+        "to_function": "project_blueprint/backend/node/nestjs/src/modules/user.update_user_profile"
+      }
+    },
+    {
+      "action": "connect_variable",
+      "target": "user.success_status",
+      "details": {
+        "to_function": "project_blueprint/backend/node/nestjs/src/modules/user.update_user_profile"
+      }
+    },
+    {
+      "action": "remove_variable",
+      "target": "blueprint.details",
+      "details": {}
+    },
+    {
+      "action": "connect_variable",
+      "target": "order.id",
+      "details": {
+        "to_function": "project_blueprint/backend/node/nestjs.create_order"
+      }
+    },
+    {
+      "action": "connect_variable",
+      "target": "product.success",
+      "details": {
+        "to_function": "project_blueprint/backend/node/express.update_product"
+      }
+    },
+    {
+      "action": "connect_variable",
+      "target": "entity.id",
+      "details": {
+        "to_function": "project_blueprint/backend/node.manage_bakery_item"
+      }
+    },
+    {
+      "action": "remove_variable",
+      "target": "project.dependencies",
+      "details": {}
+    },
+    {
+      "action": "remove_variable",
+      "target": "project.modules",
+      "details": {}
+    },
+    {
+      "action": "remove_variable",
+      "target": "module.paths",
+      "details": {}
+    },
+    {
+      "action": "remove_variable",
+      "target": "application.instance",
+      "details": {}
+    },
+    {
+      "action": "remove_variable",
+      "target": "database.connection",
+      "details": {}
+    },
+    {
+      "action": "remove_variable",
+      "target": "server.instance",
+      "details": {}
     }
   ]
 }
