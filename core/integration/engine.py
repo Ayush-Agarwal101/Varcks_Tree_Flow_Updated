@@ -19,6 +19,7 @@ from core.integration.validator import ActionValidator
 from core.integration.system_registry import SystemRegistryBuilder
 from core.integration.flow_reasoner import FlowReasoner
 from core.integration.unused_reasoner import UnusedOutputReasoner
+from core.integration.function_description_enricher import FunctionDescriptionEnricher
 
 def deduplicate(actions):
     seen = set()
@@ -47,6 +48,7 @@ class IntegrationEngine:
         self.links = []
         self.graph = {}
         self.prev_variables = {}
+        self.enricher = FunctionDescriptionEnricher()
 
     def _print_variable_changes(self):
         if not self.prev_variables:
@@ -180,7 +182,10 @@ class IntegrationEngine:
 
         pre_registry_builder = SystemRegistryBuilder(self.variables)
         pre_system_registry = pre_registry_builder.build()
+
+        pre_system_registry["functions"] = self.enricher.enrich(pre_system_registry["functions"])
         pre_registry_builder.save(f"outputs/registry_pre_iter_{iteration}.json")
+        pre_registry_builder.save_functions(f"outputs/functions_pre_iter_{iteration}.json")
         print("YAMLs loaded.")
 
         print("Detection complete.")
@@ -200,8 +205,7 @@ class IntegrationEngine:
         print("\n[DEBUG] LLM ACTIONS AFTER PARSE:")
         for a in parsed_llm_actions[:10]:
             print(a.action, a.target)
-        registry_builder = SystemRegistryBuilder(self.variables)
-        system_registry = registry_builder.build()
+        system_registry = pre_system_registry
 
         # Step 2: Add flow actions AFTER parsing
         flow_reasoner = FlowReasoner(system_registry)
@@ -277,8 +281,18 @@ class IntegrationEngine:
             self.report,
             "outputs/debug/broken_flows"
         )
-        post_registry = SystemRegistryBuilder(self.variables)
-        post_registry.save(f"outputs/registry_post_iter_{iteration}.json")
+        post_registry_builder = SystemRegistryBuilder(self.variables)
+        post_system_registry = post_registry_builder.build()
+
+        # enrich (will use cache, not LLM repeatedly)
+        post_system_registry["functions"] = self.enricher.enrich(post_system_registry["functions"])
+
+        # save enriched registry
+        with open(f"outputs/registry_post_iter_{iteration}.json", "w") as f:
+            import json
+            json.dump(post_system_registry, f, indent=2)
+
+        post_registry_builder.save_functions(f"outputs/functions_post_iter_{iteration}.json")
         print("Repair complete.")
         print("Linking complete.")
 

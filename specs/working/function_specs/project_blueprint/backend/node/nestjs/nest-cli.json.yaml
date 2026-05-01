@@ -7,8 +7,7 @@ functions:
     entity: project
   return_type: None
   entity: project
-  produces:
-  - project.name
+  produces: []
   description: Initializes a new NestJS project with specified name and configurations
 - name: configureDependencies
   parameters:

@@ -2,9 +2,9 @@ file: project_blueprint/README
 functions:
 - name: get_project_overview
   parameters:
-  - name: name
+  - name: instance
     type: string
-    entity: project
+    entity: entity
   return_type: string
   entity: project
   produces:

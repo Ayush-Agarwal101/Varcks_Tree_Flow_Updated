@@ -10,7 +10,8 @@ functions:
     entity: dependency
   return_type: object
   entity: application
-  produces: []
+  produces:
+  - entity.instance
   description: Initializes the application instance with the given configuration and
     dependencies.
 - name: register
